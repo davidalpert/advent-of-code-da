@@ -9,21 +9,15 @@ let soundingsFromInput (input:string) =
     input.Trim().Split("\n")
     |> Seq.map (fun s -> s.Trim())
     |> Seq.map (fun s -> s |> int)
-    |> List.ofSeq
 
-let numberOfTimesDepthIncreases (soundings:int list) = 
-    let rec loop prev rest acc =
-        match rest with
-        | head :: tail ->
-            if head > prev then
-                loop head tail (acc+1)
-            else
-                loop head tail acc
-        | [] -> acc
+let depthIncreased (prev,next) =
+    next > prev
 
-    match soundings with
-    | head :: tail -> loop head tail 0
-    | _ -> 0
+let numberOfTimesDepthIncreases (soundings:int seq) = 
+    soundings
+    |> Seq.pairwise
+    |> Seq.where depthIncreased
+    |> Seq.length
 
 [<Fact>]
 let ``Day 01 - Part 1 - Example`` () =
@@ -38,3 +32,22 @@ let ``Day 01 - Part 1 - Calculation`` () =
     |> soundingsFromInput
     |> numberOfTimesDepthIncreases
     |> should equal 1215
+
+[<Fact>]
+let ``Day 01 - Part 2 - Example`` () =
+    Input.day01sample
+    |> soundingsFromInput
+    |> Seq.windowed 3
+    |> Seq.map Seq.sum 
+    |> numberOfTimesDepthIncreases
+    |> should equal 5
+
+[<Fact>]
+let ``Day 01 - Part 2 - Calculation`` () =
+    Input.day01
+    |> soundingsFromInput
+    |> Seq.windowed 3
+    |> Seq.map Seq.sum 
+    |> numberOfTimesDepthIncreases
+    |> should equal 1150
+
