@@ -1,6 +1,10 @@
 namespace AdventOfCode
 
 module Input =
+  let splitToTrimmedLines (input:string) =
+      input.Trim().Split("\n")
+      |> Seq.map (fun s -> s.Trim())
+
   let day01sample = """
 199
 200
@@ -13,7 +17,7 @@ module Input =
 260
 263
 """
-  let day01 = """
+  let day01data = """
 182
 188
 204
@@ -2025,7 +2029,7 @@ down 8
 forward 2
 """
 
-  let day02 = """
+  let day02data = """
 forward 3
 down 9
 forward 6

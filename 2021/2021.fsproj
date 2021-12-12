@@ -8,7 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="input.fs" />
+    <Compile Include="day00_input.fs" />
+    <Compile Include="day01_depthSounder.fs" />
+    <Compile Include="day01_tests.fs" />
+    <Compile Include="day02_helm.fs" />
+    <Compile Include="day02_tests.fs" />
+    <Compile Include="day03_diagnostics.fs" />
+    <Compile Include="day03_tests.fs" />
     <Compile Include="Tests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
