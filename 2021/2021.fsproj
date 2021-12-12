@@ -9,12 +9,15 @@
 
   <ItemGroup>
     <Compile Include="day00_input.fs" />
+    <Compile Include="day00_utils.fs" />
     <Compile Include="day01_depthSounder.fs" />
     <Compile Include="day01_tests.fs" />
     <Compile Include="day02_helm.fs" />
     <Compile Include="day02_tests.fs" />
     <Compile Include="day03_diagnostics.fs" />
     <Compile Include="day03_tests.fs" />
+    <Compile Include="day04_bingo.fs" />
+    <Compile Include="day04_tests.fs" />
     <Compile Include="Tests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

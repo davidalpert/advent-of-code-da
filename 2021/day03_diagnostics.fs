@@ -2,20 +2,13 @@ namespace AdventOfCode
 
 open System
 open AdventOfCode.Input
+open AdventOfCode.utils
 
 module Diagnostics =
   let diagnosticReportFromInput (input: string) =
     splitToTrimmedLines input
     |> Seq.map List.ofSeq
     |> List.ofSeq
-
-  // https://rolfsuter.ch/code/f-transpose-a-list-of-lists-transpose-2d-matrix/
-  let rec transpose =
-    function
-    | (_ :: _) :: _ as M ->
-        List.map List.head M
-        :: transpose (List.map List.tail M)
-    | _ -> []
 
   let mostCommonBit (col: char list) =
     col
