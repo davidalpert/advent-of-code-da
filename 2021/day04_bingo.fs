@@ -2,22 +2,29 @@ namespace AdventOfCode
 
 module Bingo =
 
+  open System
+  open AdventOfCode.Input
   open AdventOfCode.utils
 
   type squareState =
   | Unmarked of int
   | Marked
 
-  type Card(squares:squareState list) =
+  type Card(lastNumberPlayed:int, squares:squareState list) =
     let state = squares
 
     with
+      // new from square values
       new(numbers:int list) =
         let squares =
           numbers
           |> List.ofSeq
           |> List.map Unmarked
-        Card(squares)
+        Card(-1,squares)
+
+      // new from squares
+      new(squares:squareState list) =
+        Card(-1,squares)
 
       member x.play (n:int) =
         state
@@ -26,10 +33,10 @@ module Bingo =
             | Marked      -> Marked
             | Unmarked(v) -> if v = n then Marked else Unmarked(v)
           )
-        |> Card
+        |> Card.applyPlay n
 
-      // static member applyPlay (play:int) (squares: squareState list) =
-      //   Card(play, squares)
+      static member applyPlay (numberPlayed:int) (squares: squareState list) =
+        Card(numberPlayed, squares)
 
       member x.unmarkedValue =
         let accumulatedUnmarkedSqareValues (currentScore:int) (square:squareState) =
@@ -39,6 +46,12 @@ module Bingo =
 
         state
         |> List.fold accumulatedUnmarkedSqareValues 0
+
+      member x.score =
+        if lastNumberPlayed < 0 then
+          0
+        else
+          x.unmarkedValue * lastNumberPlayed
 
       member x.hasWon =
         let winningLine (squares:squareState list) =
@@ -118,3 +131,54 @@ module Bingo =
         | None   -> false
 
     // let play n =
+
+  let calculateWinningScore (input:string) =
+    let lines =
+      input
+      |> splitToTrimmedLines
+      |> List.ofSeq
+
+    // first line is set of balls/numbers called
+    let balls =
+      lines.Head.Split ','
+      |> List.ofArray
+      |> List.map int
+
+    // remaining lines are groups of 6 (1 + Card.dimension)
+    // each starts with a blank line and then 5 lines of numbers
+    let cards =
+      lines.Tail
+      |> List.chunkBySize (1 + Card.dimemsions)
+      // first line is empty
+      |> List.map (fun ll -> ll.Tail)
+      // each list of lines represents a Card
+      |> List.map (fun cardLines ->
+          cardLines
+          |> List.map (fun line ->
+            line.Split " "
+            |> List.ofArray
+            |> List.filter (fun x -> x <> String.Empty)
+          )
+          |> List.concat
+          |> List.map int
+          |> Card
+        )
+    
+    let game =
+      cards
+      |> Game
+
+    let playUntilWinner (game:Game) (n:int) =
+      if game.hasWinner then
+        game
+      else
+        game.play(n)
+
+    let finishedGame =
+      balls
+      |> List.fold playUntilWinner game 
+
+    if finishedGame.hasWinner then
+      finishedGame.winningCard.score
+    else
+      0

@@ -4,6 +4,7 @@ module Day04 =
 
   open Xunit
   open FsUnit.Xunit
+  open AdventOfCode.Input
   open AdventOfCode.Bingo
 
   [<Fact>]
@@ -143,6 +144,21 @@ module Day04 =
     |> should equal true
 
     let card = endState.winningCard
+    
+    card.unmarkedValue
+    |> should equal 188
 
-    1 |> should equal 1
+    card.score
+    |> should equal 4512
 
+  [<Fact>]
+  let ``Day 04 - Part 1 - Sample`` () =
+    day04sample
+    |> calculateWinningScore
+    |> should equal 4512
+
+  [<Fact>]
+  let ``Day 04 - Part 1 - Data`` () =
+    day04data
+    |> calculateWinningScore
+    |> should equal 34506
