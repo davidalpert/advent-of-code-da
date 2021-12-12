@@ -28,6 +28,18 @@ module Bingo =
           )
         |> Card
 
+      // static member applyPlay (play:int) (squares: squareState list) =
+      //   Card(play, squares)
+
+      member x.unmarkedValue =
+        let accumulatedUnmarkedSqareValues (currentScore:int) (square:squareState) =
+          match square with
+          | Marked          -> currentScore
+          | Unmarked(value) -> currentScore + value
+
+        state
+        |> List.fold accumulatedUnmarkedSqareValues 0
+
       member x.hasWon =
         let winningLine (squares:squareState list) =
           let numberMarked =
@@ -71,7 +83,38 @@ module Bingo =
         else
           None
 
-  type Game(cards:Card seq) =
-    let x = cards
+      member x.printf =
+        state
+        |> List.chunkBySize Card.dimemsions
+        |> List.iter (fun row -> printfn "%A" row)
+
+  type Game(cards:Card list) =
+    let state = cards
+
+    with
+      member x.printf =
+        state
+        |> List.iter (fun g ->
+          printfn "------"
+          g.printf
+        )
+
+      member x.play (n:int) =
+        state
+        |> List.map (fun c -> c.play n)
+        |> Game
+
+      member x.winningCard =
+        state
+        |> List.find (fun c -> c.hasWon)
+
+      member x.tryFindWinner =
+        state
+        |> List.tryFind (fun c -> c.hasWon)
+
+      member x.hasWinner =
+        match x.tryFindWinner with
+        | Some _ -> true
+        | None   -> false
 
     // let play n =

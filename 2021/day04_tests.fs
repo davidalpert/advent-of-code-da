@@ -83,3 +83,66 @@ module Day04 =
 
     card.play(5).play(10).hasWon
     |> should equal true
+
+  [<Fact>]
+  let ``Day 04 - Part 1 - Bingo Cards - Can Score`` () =
+    let game =
+      [
+        [
+          22;13;17;11; 0;
+           8; 2;23; 4;24;
+          21; 9;14;16; 7;
+           6;10; 3;18; 5;
+           1;12;20;15;19;
+
+        ] |> Card;
+        [
+           3;15; 0; 2;22;
+           9;18;13;17; 5;
+          19; 8; 7;25;23;
+          20;11;10;24; 4;
+          14;21;16;12; 6;
+        ] |> Card;
+        [
+          14;21;17;24; 4;
+          10;16;15; 9;19;
+          18; 8;23;26;20;
+          22;11;13; 6; 5;
+           2; 0;12; 3; 7;
+        ] |> Card;
+      ]
+      |> Game
+
+    let playNumber (game:Game) (n:int) =
+      game.play(n)
+
+    let firstFive = [7; 4; 9; 5; 11]
+    let afterFirstFive =
+      firstFive
+      |> List.fold playNumber game 
+    
+    afterFirstFive.hasWinner
+    |> should equal false
+
+    let nextSix = [17; 23; 2; 0; 14; 21]
+    let afterNextSix =
+      nextSix
+      |> List.append nextSix
+      |> List.fold playNumber afterFirstFive 
+
+    afterNextSix.hasWinner
+    |> should equal false
+
+    let lastDraw = 24
+    let endState =
+      afterNextSix.play(lastDraw)
+
+    // endState.printf
+
+    endState.hasWinner
+    |> should equal true
+
+    let card = endState.winningCard
+
+    1 |> should equal 1
+
