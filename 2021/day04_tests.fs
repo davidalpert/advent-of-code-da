@@ -162,3 +162,9 @@ module Day04 =
     day04data
     |> calculateWinningScore
     |> should equal 34506
+
+  [<Fact>]
+  let ``Day 04 - Part 2 - Sample`` () =
+    day04sample
+    |> calculateLosingScore
+    |> should equal 1924

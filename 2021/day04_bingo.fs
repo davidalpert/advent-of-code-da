@@ -99,7 +99,13 @@ module Bingo =
       member x.printf =
         state
         |> List.chunkBySize Card.dimemsions
-        |> List.iter (fun row -> printfn "%A" row)
+        |> List.iter (fun row -> 
+          let stringValueFor (s:squareState) =
+            match s with
+            | Marked      -> " X"
+            | Unmarked(n) -> sprintf "%2i" n
+          printfn "%A" (row |> List.map stringValueFor)
+        )
 
   type Game(cards:Card list) =
     let state = cards
@@ -130,9 +136,11 @@ module Bingo =
         | Some _ -> true
         | None   -> false
 
-    // let play n =
+      member x.cardsWhichHaveNotYetWon =
+          state
+          |> List.filter (fun card -> card.hasWon = false)
 
-  let calculateWinningScore (input:string) =
+  let inputToBallsAndInitialGameState (input:string) =
     let lines =
       input
       |> splitToTrimmedLines
@@ -168,6 +176,11 @@ module Bingo =
       cards
       |> Game
 
+    (balls,game)
+
+  let calculateWinningScore (input:string) =
+    let (balls,game) = input |> inputToBallsAndInitialGameState
+
     let playUntilWinner (game:Game) (n:int) =
       if game.hasWinner then
         game
@@ -182,3 +195,35 @@ module Bingo =
       finishedGame.winningCard.score
     else
       0
+
+  let calculateLosingScore (input:string) =
+    let (balls,game) = input |> inputToBallsAndInitialGameState
+
+    let playUntilOneGameLeft (game:Game,losingCard:Card option,lastPlay:int) (thisPlay:int) =
+      let remainingCards = game.cardsWhichHaveNotYetWon
+      match (remainingCards,losingCard) with
+      // we already have the losing card; preserve the previous next play
+      | (_ :: [],Some(loser)) -> (game,Some(loser),lastPlay)
+      // we just found the losing card; save the current next play
+      | (loser :: [],None)    -> (game,Some(loser),thisPlay)
+      // we have multiple losers; keep playing
+      | _                     -> (game.play(thisPlay),None,thisPlay)
+
+    let playUntilOneGameLeftWatched  (game:Game,losingCard:Card option,lastPlay:int) (thisPlay:int)  =
+      let (game2,card2,lastPlayed2) = playUntilOneGameLeft (game, losingCard, lastPlay) thisPlay
+
+      printfn "after playing: %d" thisPlay
+      game2.printf
+
+      (game2,card2,lastPlayed2)
+
+    let (nearlyFinishedGame,losingCard,lastNumberToPlay) =
+      balls
+      |> List.fold playUntilOneGameLeft (game,None,-1) 
+
+    printfn "nearly finished:"
+    losingCard.Value.printf
+    printfn "about to play: %d" lastNumberToPlay
+
+    losingCard.Value.play(lastNumberToPlay).score
+    
