@@ -60,6 +60,7 @@ let ``Day 01 - Part 2 - Calculation`` () =
 type SubmarinePosition = {
     horizontal : int
     depth : int
+    aim : int
 }
 with
     member x.displacement =
@@ -68,6 +69,7 @@ with
 let initialPosition = {
     horizontal = 0;
     depth = 0;
+    aim = 0;
 }
 
 let navigateSubmarine (startingPosition:SubmarinePosition) (instructions:string list) =
@@ -75,6 +77,17 @@ let navigateSubmarine (startingPosition:SubmarinePosition) (instructions:string 
     | "forward" :: [x] -> { startingPosition with horizontal = startingPosition.horizontal + (x |> int) }
     | "up"      :: [x] -> { startingPosition with depth = startingPosition.depth - (x |> int) }
     | "down"    :: [x] -> { startingPosition with depth = startingPosition.depth + (x |> int) }
+    | _ -> startingPosition
+
+let navigateSubmarineWithAim (startingPosition:SubmarinePosition) (instructions:string list) =
+    match instructions with
+    | "down"    :: [x] -> { startingPosition with aim = startingPosition.aim + (x |> int) }
+    | "up"      :: [x] -> { startingPosition with aim = startingPosition.aim - (x |> int) }
+    | "forward" :: [x] -> {
+            startingPosition with
+                horizontal = startingPosition.horizontal + (x |> int);
+                depth = startingPosition.depth + (startingPosition.aim * (x |> int));
+        }
     | _ -> startingPosition
 
 [<Fact>]
@@ -91,4 +104,20 @@ let ``Day 02 - Part 1 - Calculation`` () =
     |> submarineInstructionsFromInput
     |> Seq.fold navigateSubmarine initialPosition
     |> (fun p -> p.displacement)
-    |> should equal 2073315
+    |> should equal 2_073_315
+
+[<Fact>]
+let ``Day 02 - Part 2 - Example`` () =
+    Input.day02sample
+    |> submarineInstructionsFromInput
+    |> Seq.fold navigateSubmarineWithAim initialPosition
+    |> (fun p -> p.displacement)
+    |> should equal 900
+
+[<Fact>]
+let ``Day 02 - Part 2 - Calculation`` () =
+    Input.day02
+    |> submarineInstructionsFromInput
+    |> Seq.fold navigateSubmarineWithAim initialPosition
+    |> (fun p -> p.displacement)
+    |> should equal 1_840_311_528
