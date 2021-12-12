@@ -165,6 +165,26 @@ module Day04 =
 
   [<Fact>]
   let ``Day 04 - Part 2 - Sample`` () =
+    printfn "Day 04 - Part 2 - Sample"
     day04sample
-    |> calculateLosingScore
+    |> calculateLosingScore false
     |> should equal 1924
+
+  [<Fact>]
+  let ``Day 04 - Part 2 - Data`` () =
+    printfn "Day 04 - Part 2 - Data"
+    day04data
+    |> calculateLosingScore false
+    |> should equal 7686
+
+  [<Fact>]
+  let ``Day 04 - Part 1 - Ray's Data`` () =
+    day04raysdata
+    |> calculateWinningScore
+    |> should equal 72770
+
+  [<Fact>]
+  let ``Day 04 - Part 2 - Ray's Data`` () =
+    day04raysdata
+    |> calculateLosingScore false
+    |> should equal 13912

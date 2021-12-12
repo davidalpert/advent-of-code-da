@@ -196,34 +196,43 @@ module Bingo =
     else
       0
 
-  let calculateLosingScore (input:string) =
+  let calculateLosingScore (verbose:bool) (input:string) =
     let (balls,game) = input |> inputToBallsAndInitialGameState
 
-    let playUntilOneGameLeft (game:Game,losingCard:Card option,lastPlay:int) (thisPlay:int) =
-      let remainingCards = game.cardsWhichHaveNotYetWon
-      match (remainingCards,losingCard) with
-      // we already have the losing card; preserve the previous next play
-      | (_ :: [],Some(loser)) -> (game,Some(loser),lastPlay)
-      // we just found the losing card; save the current next play
-      | (loser :: [],None)    -> (game,Some(loser),thisPlay)
-      // we have multiple losers; keep playing
-      | _                     -> (game.play(thisPlay),None,thisPlay)
+    let playUntilLastGameLoses (game:Game,lastPlay:int,losingCard:Card option) (thisPlay:int) =
+      match losingCard with
+      | Some(_) -> (game, lastPlay, losingCard)
+      | None ->
+        let remainingCards = game.cardsWhichHaveNotYetWon
+        match remainingCards with
+        | lastOne :: [] -> match lastOne.play(thisPlay).hasWon with
+                           | true ->  (game.play(thisPlay),thisPlay,Some(lastOne))
+                           | false -> (game.play(thisPlay),thisPlay,None)
+        | _ -> (game.play(thisPlay),thisPlay,None)
 
-    let playUntilOneGameLeftWatched  (game:Game,losingCard:Card option,lastPlay:int) (thisPlay:int)  =
-      let (game2,card2,lastPlayed2) = playUntilOneGameLeft (game, losingCard, lastPlay) thisPlay
+    let playUntilLastGameLosesWatched  (game:Game,lastPlay:int,losingCard:Card option) (thisPlay:int)  =
+      let (game2,lastPlay2,card2) = playUntilLastGameLoses (game, lastPlay, losingCard) thisPlay
 
-      printfn "after playing: %d" thisPlay
-      game2.printf
+      if verbose then
+        // printfn "after playing: %d" thisPlay
+        // game2.printf
+        printfn "after playing %d there are %d cards left unfinished" thisPlay game2.cardsWhichHaveNotYetWon.Length
 
-      (game2,card2,lastPlayed2)
+      (game2,lastPlay2,card2)
 
-    let (nearlyFinishedGame,losingCard,lastNumberToPlay) =
+    let (finishedGame,lastPlay,losingCard) =
       balls
-      |> List.fold playUntilOneGameLeft (game,None,-1) 
+      |> List.fold playUntilLastGameLosesWatched (game,-1,None) 
 
-    printfn "nearly finished:"
-    losingCard.Value.printf
-    printfn "about to play: %d" lastNumberToPlay
+    let finsihedLosingCard = losingCard.Value.play(lastPlay)
 
-    losingCard.Value.play(lastNumberToPlay).score
+    if verbose then
+      printfn "losing card:"
+      losingCard.Value.printf
+      printfn "about to play: %d" lastPlay
+      printfn "final card:"
+      finsihedLosingCard.printf
+
+    finsihedLosingCard.score
+
     
