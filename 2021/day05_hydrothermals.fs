@@ -53,8 +53,27 @@ module Hydrothermals =
       else
         []
 
+    member s.coveredDiagonally =
+      if s.isHorizontal || s.isVertical then
+        []
+      else
+        let deltaX = s.p2.x - s.p1.x
+        let xm = if deltaX > 0 then 1 else -1
+        let deltatY = s.p2.y - s.p1.y
+        let ym = if deltatY > 0 then 1 else -1
+
+        let xs = seq { s.p1.x .. xm .. s.p2.x }
+        let ys = seq { s.p1.y .. ym .. s.p2.y }
+
+        Seq.zip xs ys
+        |> Seq.map (fun (x, y) -> { x = x; y = y; })
+        |> List.ofSeq
+  
     member s.coveredHorizontallyOrVertically =
       List.concat [s.coveredHorizontally; s.coveredVertically]
+
+    member s.coveredHorizontallyOrVerticallyOrDiagnoally =
+      List.concat [s.coveredHorizontally; s.coveredVertically; s.coveredDiagonally]
 
   let segmentIsHorizontal (s:LineSegment) =
     s.isHorizontal
@@ -97,7 +116,7 @@ module Hydrothermals =
   type ThermalScan(vents:LineSegment list) =
     let vents = vents
 
-    member x.ventedPoints =
+    let collectVentedPoints (projection:LineSegment -> Point list) =
       let dict = new Dictionary<Point, int>()
 
       let apply (p:Point) =
@@ -107,10 +126,33 @@ module Hydrothermals =
           dict[p] <- 1
 
       vents
-      |> List.map (fun v -> v.coveredHorizontallyOrVertically)
+      |> List.map projection
       |> List.concat
       |> List.iter apply
 
       dict
 
-    
+    member x.ventedPoints =
+      collectVentedPoints (fun v -> v.coveredHorizontallyOrVertically)
+
+    member x.ventedPoints2 =
+      collectVentedPoints (fun v -> v.coveredHorizontallyOrVerticallyOrDiagnoally)
+
+  let diagram (ventedPoints:Dictionary<Point,int>) =
+    let maxX = ventedPoints.Keys |> Seq.map (fun p -> p.x) |> Seq.max
+    let maxY = ventedPoints.Keys |> Seq.map (fun p -> p.y) |> Seq.max
+    let asString (p:Point) =
+      if ventedPoints.ContainsKey(p) then
+        ventedPoints[p].ToString()
+      else
+        "."
+    seq { 0 .. maxY }
+    |> Seq.map (fun y ->
+      seq { 0 .. maxX }
+      |> Seq.map (fun x -> { x = x; y = y; })
+      |> Seq.map asString
+      |> Seq.fold (fun ss s -> ss + s) ""
+      // |> Seq.map asString
+    )
+    |> Seq.fold (fun ss line -> ss + line + "\n") ""
+

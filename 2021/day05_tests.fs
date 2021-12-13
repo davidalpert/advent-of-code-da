@@ -81,7 +81,7 @@ module Day05 =
       |> List.filter segmentIsHorizontalOrVertical
       |> ThermalScan
 
-    printfn "example: found %d vented points" scan.ventedPoints.Keys.Count
+    // printfn "example: found %d vented points" scan.ventedPoints.Keys.Count
     
     scan.ventedPoints
     |> Seq.filter (fun pair -> pair.Value >= 2)
@@ -96,9 +96,69 @@ module Day05 =
       |> List.filter segmentIsHorizontalOrVertical
       |> ThermalScan
 
-    printfn "data: found %d vented points" scan.ventedPoints.Keys.Count
+    // printfn "data: found %d vented points" scan.ventedPoints.Keys.Count
     
     scan.ventedPoints
     |> Seq.filter (fun pair -> pair.Value >= 2)
     |> Seq.length
     |> should equal 5442
+
+  [<Fact>]
+  let ``Day 05 - Part 2 - LineSegement covers Points diagonal`` () =
+    let s1 = {
+      p1 = { x = 1; y = 1; };
+      p2 = { x = 3; y = 3; };
+    }
+
+    s1.coveredDiagonally
+    |> List.ofSeq
+    |> should equal [
+      { x = 1; y = 1 };
+      { x = 2; y = 2 };
+      { x = 3; y = 3 }
+    ]
+
+  [<Fact>]
+  let ``Day 05 - Part 1 - LineSegement covers Points diagonally 2`` () =
+    let s2 = {
+      p1 = { x = 9; y = 7; };
+      p2 = { x = 7; y = 9; };
+    }
+
+    s2.coveredDiagonally
+    |> List.ofSeq
+    |> should equal [
+      { x = 9; y = 7 };
+      { x = 8; y = 8 };
+      { x = 7; y = 9 };
+    ]
+
+  [<Fact>]
+  let ``Day 05 - Part 2 - Example`` () =
+    let scan =
+      day05sample
+      |> ventsFromInput
+      |> ThermalScan
+
+    printfn "%s" (scan.ventedPoints2 |> diagram)
+    // printfn "example: found %d vented points" scan.ventedPoints.Keys.Count
+
+    scan.ventedPoints2
+    |> Seq.filter (fun pair -> pair.Value >= 2)
+    |> Seq.length
+    |> should equal 12
+
+  [<Fact>]
+  let ``Day 05 - Part 2 - Data`` () =
+    let scan =
+      day05data
+      |> ventsFromInput
+      |> ThermalScan
+
+    // printfn "%s" (scan.ventedPoints2 |> diagram)
+    // printfn "example: found %d vented points" scan.ventedPoints.Keys.Count
+
+    scan.ventedPoints2
+    |> Seq.filter (fun pair -> pair.Value >= 2)
+    |> Seq.length
+    |> should equal 19571
