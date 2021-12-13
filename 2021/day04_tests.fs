@@ -185,6 +185,25 @@ module Day04 =
 
   [<Fact>]
   let ``Day 04 - Part 2 - Ray's Data`` () =
+    // ray's losing board:
+    // 47 12 71 88 74
+    // 28  5 79 58 26
+    // 93 67 62 86 23
+    // 66 13 96 46 17
+    // 94 59 19 54 15
+    // losing card (about to lose):
+    // ["47"; " X"; " X"; " X"; " X"]
+    // [" X"; " 5"; " X"; " X"; " X"]
+    // [" X"; "67"; " X"; " X"; " X"]
+    // [" X"; " X"; "96"; " X"; " X"]
+    // [" X"; "59"; " X"; "54"; "15"]
+    // about to play: 47
+    // final card:
+    // [" X"; " X"; " X"; " X"; " X"]
+    // [" X"; " 5"; " X"; " X"; " X"]
+    // [" X"; "67"; " X"; " X"; " X"]
+    // [" X"; " X"; "96"; " X"; " X"]
+    // [" X"; "59"; " X"; "54"; "15"]
     day04raysdata
     |> calculateLosingScore false
     |> should equal 13912

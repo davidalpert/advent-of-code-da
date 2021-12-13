@@ -18,6 +18,8 @@
     <Compile Include="day03_tests.fs" />
     <Compile Include="day04_bingo.fs" />
     <Compile Include="day04_tests.fs" />
+    <Compile Include="day05_hydrothermals.fs" />
+    <Compile Include="day05_tests.fs" />
     <Compile Include="Tests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
