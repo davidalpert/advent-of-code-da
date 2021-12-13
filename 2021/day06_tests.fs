@@ -15,7 +15,7 @@ module Day06 =
     let today = model.projectToDay 80
 
     today.size
-    |> should equal ( 5934 |> int64 )
+    |> should equal 5934
 
   [<Fact>]
   let ``Day 06 - Part 1 - calculation`` () =
@@ -25,27 +25,7 @@ module Day06 =
     let today = model.projectToDay 80
 
     today.size
-    |> should equal ( 390923 |> int64 )
-
-  [<Fact>]
-  let ``Day 06 - Part 2 - example`` () =
-    let model =
-      day06sample |> populationModelFromInput
-    
-    let today = model.projectToDay 256
-
-    today.size
-    |> should equal 26984457539L
-
-  [<Fact>]
-  let ``Day 06 - Part 2 - calculation`` () =
-    let model =
-      day06data |> populationModelFromInput
-    
-    let today = model.projectToDay 80
-
-    today.size
-    |> should equal ( 390923 |> int64 )
+    |> should equal 390923
 
   // [<Fact>]
   // let ``Day 05 - Part 1 - LineSegement covers Points horizontal`` () =

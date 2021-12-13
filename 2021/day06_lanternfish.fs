@@ -5,39 +5,39 @@ module Lanternfish =
   open AdventOfCode.Input
   open System.Collections.Generic
 
-  type PopulationModel(ageInDays:int64, initialPopulation:int64 list) =
+  type PopulationModel(ageInDays:int, initialPopulation:int list) =
     let population = initialPopulation
 
     member x.ageInDays =
       ageInDays
     
     member x.size =
-      population.Length |> int64
+      population.Length
 
     member x.tick =
-      let babies = new List<int64>()
+      let babies = new List<int>()
       let oldFish =
         population
         |> List.map (fun a ->
           match a with
-          | 0L ->
+          | 0 ->
             babies.Add(8)
-            6L
-          | _ -> a-1L
+            6
+          | _ -> a-1
         )
       let newFish = babies |> List.ofSeq
       let newPop = List.concat [oldFish;newFish]
-      let newAgeInDays = ageInDays + 1L
+      let newAgeInDays = ageInDays + 1
 
       // printfn "After %d days: %A" newAgeInDays newPop
 
       PopulationModel(newAgeInDays, newPop)
     
     member x.projectToDay(projectedAge:int) =
-      let ageOneDay (model:PopulationModel) (newAge:int64) =
+      let ageOneDay (model:PopulationModel) (newAge:int) =
         model.tick
 
-      let newAge = (projectedAge |> int64) - 1L
+      let newAge = projectedAge - 1
       if newAge < x.ageInDays then
         x
       else
@@ -47,7 +47,7 @@ module Lanternfish =
   let toPopulationModel(ages:string[]) =
     let population =
       ages
-      |> Array.map (fun a -> a |> int64)
+      |> Array.map (fun a -> a |> int)
       |> List.ofArray
 
     PopulationModel(0, population)
