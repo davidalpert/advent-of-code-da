@@ -2,8 +2,15 @@ namespace AdventOfCode
 
 module Input =
   let splitToTrimmedLines (input:string) =
-      input.Trim().Split("\n")
-      |> Seq.map (fun s -> s.Trim())
+    input.Trim().Split("\n")
+    |> Seq.map (fun s -> s.Trim())
+
+  let splitToTrimmedLinesVerbose (input:string) =
+    printfn "input: %A" input
+    printfn "input.trimmed: %A" (input.Trim())
+    printfn "input.trimmed.split: %A" (input.Trim().Split("\n"))
+    input.Trim().Split("\n")
+    |> Seq.map (fun s -> s.Trim())
 
   let day01sample = """
 199

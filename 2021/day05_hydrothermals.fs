@@ -18,10 +18,16 @@ module Hydrothermals =
       (((s.p1.x < s.p2.x) && (s.p1.x <= p.x && p.x <= s.p2.x )) || ((s.p2.x <= s.p1.x) && (s.p2.x <= p.x && p.x <= s.p1.x ))) && 
       (((s.p1.y < s.p2.y) && (s.p1.y <= p.y && p.y <= s.p2.y )) || ((s.p2.y <= s.p1.y) && (s.p2.y <= p.y && p.y <= s.p1.y )))
 
+    member s.isVertical =
+      s.p1.x = s.p2.x
+
+    member s.isHorizontal =
+      s.p1.y = s.p2.y
+
     member s.coveredHorizontally =
-      if s.p1.y = s.p2.y then
+      if s.isHorizontal then
         let m =
-          if s.p1.x < s.p1.y then
+          if s.p1.x < s.p2.x then
             1
           else
             -1
@@ -33,7 +39,7 @@ module Hydrothermals =
         []
 
     member s.coveredVertically =
-      if s.p1.x = s.p2.x then
+      if s.isVertical then
         let m =
           if s.p1.y <= s.p2.y then
             1
@@ -49,30 +55,38 @@ module Hydrothermals =
     member s.coveredHorizontallyOrVertically =
       List.concat [s.coveredHorizontally; s.coveredVertically]
 
+  let segmentIsHorizontal (s:LineSegment) =
+    s.isHorizontal
+
+  let segmentIsVertical (s:LineSegment) =
+    s.isVertical
+
+  let segmentIsHorizontalOrVertical (s:LineSegment) =
+    s.isHorizontal || s.isVertical
+
   let ventsFromInput (input: string) =
-    splitToTrimmedLines input
-    |> Seq.map (fun s -> s.Split " -> ")
-    |> Seq.map Seq.ofArray
-    |> Seq.map (fun line ->
-      let points =
-        line
-        |> Seq.map (fun part ->
-          let coordinates = part.Split(",")
-          {
-            x = coordinates.[0] |> int;
-            y = coordinates.[1] |> int;
-          }
-        )
-        |> Array.ofSeq
+    let pairToPoint (pair:string) =
+        let coordinates = pair.Split(",")
+        {
+          x = coordinates.[0] |> int;
+          y = coordinates.[1] |> int;
+        }
+
+    let pointsToSegment (points:Point[]) =
       {
         p1 = points[0];
         p2 = points[1];
       }
-    )
-    |> Seq.map (fun l ->
-      printfn "%A" l
-      l
-    )
+
+    let lineToSegment (line:string) =
+      line
+      |> (fun s -> s.Split " -> ")
+      |> Array.map pairToPoint
+      |> pointsToSegment
+
+    splitToTrimmedLines input
+    |> Seq.map lineToSegment
+    |> List.ofSeq
 
   type VentedPoint = {
     p:Point
@@ -83,6 +97,8 @@ module Hydrothermals =
     let vents = vents
 
     let accumulateVentedPointCount (ventedPoints:VentedPoint list) (p:Point) =
+      printfn "accumulating point %A" p
+
       let pointAlreadyVented =
         ventedPoints
         |> List.tryFind (fun v -> v.p = p)
@@ -98,7 +114,7 @@ module Hydrothermals =
         )
       | None -> List.concat [ventedPoints; [ { p = p; intensity = 1; }]]
 
-    let ventedPoints =
+    member x.ventedPoints =
       vents
       |> List.map (fun v -> v.coveredHorizontallyOrVertically)
       |> List.concat

@@ -73,16 +73,32 @@ module Day05 =
      { p1 = { x = 5; y = 5 }; p2 = { x = 8; y = 2 } };
     ]
 
-  // [<Fact>]
-  // let ``Day 05 - Part 1 - Example`` () =
-  //   day05sample
-  //   |> ventsFromInput
-  //   |> should equal 150
+  [<Fact>]
+  let ``Day 05 - Part 1 - Example`` () =
+    let scan =
+      day05sample
+      |> ventsFromInput
+      |> List.filter segmentIsHorizontalOrVertical
+      |> ThermalScan
+
+    printfn "example: found %d vented points" scan.ventedPoints.Length
+    
+    scan.ventedPoints
+    |> List.filter (fun v -> v.intensity >= 2)
+    |> List.length
+    |> should equal 5
 
   [<Fact>]
   let ``Day 05 - Part 1 - Calculation`` () =
-    day02data
-    |> submarineInstructionsFromInput
-    |> Seq.fold navigateSubmarine initialPosition
-    |> (fun p -> p.displacement)
-    |> should equal 2_073_315
+    let scan =
+      day05data
+      |> ventsFromInput
+      |> List.filter segmentIsHorizontalOrVertical
+      |> ThermalScan
+
+    printfn "data: found %d vented points" scan.ventedPoints.Length
+    
+  //   scan.ventedPoints
+  //   |> List.filter (fun v -> v.intensity >= 2)
+  //   |> List.length
+  //   |> should equal 5
