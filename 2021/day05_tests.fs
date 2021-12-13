@@ -81,11 +81,11 @@ module Day05 =
       |> List.filter segmentIsHorizontalOrVertical
       |> ThermalScan
 
-    printfn "example: found %d vented points" scan.ventedPoints.Length
+    printfn "example: found %d vented points" scan.ventedPoints.Keys.Count
     
     scan.ventedPoints
-    |> List.filter (fun v -> v.intensity >= 2)
-    |> List.length
+    |> Seq.filter (fun pair -> pair.Value >= 2)
+    |> Seq.length
     |> should equal 5
 
   [<Fact>]
@@ -96,9 +96,9 @@ module Day05 =
       |> List.filter segmentIsHorizontalOrVertical
       |> ThermalScan
 
-    printfn "data: found %d vented points" scan.ventedPoints.Length
+    printfn "data: found %d vented points" scan.ventedPoints.Keys.Count
     
-  //   scan.ventedPoints
-  //   |> List.filter (fun v -> v.intensity >= 2)
-  //   |> List.length
-  //   |> should equal 5
+    scan.ventedPoints
+    |> Seq.filter (fun pair -> pair.Value >= 2)
+    |> Seq.length
+    |> should equal 5442

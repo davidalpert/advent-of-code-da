@@ -3,6 +3,7 @@ namespace AdventOfCode
 module Hydrothermals =
 
   open AdventOfCode.Input
+  open System.Collections.Generic
 
   type Point = {
     x: int
@@ -96,28 +97,20 @@ module Hydrothermals =
   type ThermalScan(vents:LineSegment list) =
     let vents = vents
 
-    let accumulateVentedPointCount (ventedPoints:VentedPoint list) (p:Point) =
-      printfn "accumulating point %A" p
-
-      let pointAlreadyVented =
-        ventedPoints
-        |> List.tryFind (fun v -> v.p = p)
-
-      match pointAlreadyVented with
-      | Some(_) ->
-        ventedPoints
-        |> List.map (fun v ->
-          if v.p = p then
-            { v with intensity = v.intensity + 1 }
-          else
-            v
-        )
-      | None -> List.concat [ventedPoints; [ { p = p; intensity = 1; }]]
-
     member x.ventedPoints =
+      let dict = new Dictionary<Point, int>()
+
+      let apply (p:Point) =
+        if dict.ContainsKey(p) then
+          dict[p] <- dict[p] + 1
+        else
+          dict[p] <- 1
+
       vents
       |> List.map (fun v -> v.coveredHorizontallyOrVertically)
       |> List.concat
-      |> List.fold accumulateVentedPointCount []
+      |> List.iter apply
+
+      dict
 
     
