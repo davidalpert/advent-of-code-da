@@ -140,7 +140,7 @@ module Day05 =
       |> ventsFromInput
       |> ThermalScan
 
-    printfn "%s" (scan.ventedPoints2 |> diagram)
+    // printfn "%s" (scan.ventedPoints2 |> diagram)
     // printfn "example: found %d vented points" scan.ventedPoints.Keys.Count
 
     scan.ventedPoints2

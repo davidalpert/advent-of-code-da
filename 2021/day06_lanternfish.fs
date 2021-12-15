@@ -5,6 +5,47 @@ module Lanternfish =
   open AdventOfCode.Input
   open System.Collections.Generic
 
+  type Fish(daysToFirstReproduction:int) =
+    let ageOfDay0 = 8 - daysToFirstReproduction
+
+    member x.dayOfFirstChild =
+      daysToFirstReproduction + 1
+
+    member x.ageAfterNDays (n:int) =
+      ageOfDay0 + n
+
+    member x.daysToNextReproductionAfterNDays (n:int) =
+      6 - (((x.ageAfterNDays n) - 2) % 7)
+
+    member x.numberOfDirectChildrenAfterNDays (n:int) =
+      //=floor(divide(AC7-2,7))
+      ((x.ageAfterNDays n) - 2) / 7
+
+    member x.daysLeftForNthChildUntilM (n:int) (m:int) =
+        // m - (x.dayOfFirstChild + ((n-1) * 7))
+        0
+
+
+    member x.numberOfDescendentsAfterNDays (n:int) =
+      let daysLeftForMthChild (birthOrder:int) =
+        n - (x.dayOfFirstChild + ((birthOrder-1) * 7))
+
+      // let numberInNextGen (daysLeft:int) =
+      //   let f = Fish 8
+      //   (f.numberOfDescendentsAfterNDays daysLeft) + 1
+
+      seq { 1 .. x.numberOfDirectChildrenAfterNDays(n) }
+      |> Seq.map daysLeftForMthChild
+      // |> Seq.map numberInNextGen
+      // |> Seq.fold (fun total n -> total + n) 0
+
+    // member x.familyAfterNDays(n:int) =
+    //   let initialAge = 8 - daysToFirstReproduction
+    //   let finalAge = initialAge + n
+    //   let numberOfChildren = (finalAge - 2) / 6
+      
+
+
   type PopulationModel(ageInDays:int, initialPopulation:int list) =
     let population = initialPopulation
 
