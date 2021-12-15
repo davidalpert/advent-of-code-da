@@ -5,59 +5,101 @@ module Lanternfish =
   open AdventOfCode.Input
   open System.Collections.Generic
 
-  type Fish(daysToFirstReproduction:int, dayOfBirth:int) =
-    let ageOfDay0 = 8 - daysToFirstReproduction
+  type Fish(r:int64) =
+    member f.age =
+      8L - r
 
-    member x.dayOfFirstChild =
-      daysToFirstReproduction + 1
+    member f.numberOfChildrenAfterNDays (n:int64) =
+      let numberOfReproductiveDays = ((f.age - 2L) + n)
+      numberOfReproductiveDays / 7L
 
-    member x.ageAfterNDays (n:int) =
-      ageOfDay0 + n
+    member f.daysToBirthOfChild (i:int64) =
+      (i - 1L) * 7L + (r + 1L)
 
-    member x.daysToNextReproductionAfterNDays (n:int) =
-      6 - (((x.ageAfterNDays n) - 2) % 7)
-
-    member x.numberOfDirectChildrenAfterNDays (n:int) =
-      //=floor(divide(AC7-2,7))
-      ((x.ageAfterNDays n) - 2) / 7
-
-    member x.daysLeftForNthChildUntilM (n:int) (m:int) =
-        // m - (x.dayOfFirstChild + ((n-1) * 7))
-        0
-
-
-    member x.sizeOfFamilyAfterNDays (n:int) =
+    member f.sizeOfFamilyAfterNDays (n:int64) =
       if n < 0 then
         0L
-      else 
-        // let daysLeftForMthChild (birthOrder:int) =
-          // n - (x.dayOfFirstChild + ((birthOrder-1) * 7))
+      else
+        let cc = f.numberOfChildrenAfterNDays n
 
-        // let numberInNextGen (daysLeft:int) =
-        //   let f = Fish 8
-        //   (f.numberOfDescendentsAfterNDays daysLeft) + 1
+        let d =
+          seq { 1L .. cc }
+          |> Seq.map (fun i ->
+            // printfn "after %d days; child %d" n i
+            if n = 256 then
+              printfn "child %d" i
+            else
+              ()
 
-        let m = 
-          seq { 1 .. x.numberOfDirectChildrenAfterNDays(n) }
-          |> Seq.map (fun i -> 
-            let daysRemaining = n - ((i-1) * 7) 
-            let f = Fish 6
-            f.sizeOfFamilyAfterNDays (daysRemaining - 2)
+            let d = f.daysToBirthOfChild i
+            Fish().sizeOfFamilyAfterNDays (n - d)
           )
           |> Seq.sum
+        
+        d + 1L
 
-        m + 1L // and this one
+    new() = Fish(8) // default r
 
-        // |> Seq.map numberInNextGen
-        // |> Seq.fold (fun total n -> total + n) 0
+  let poplationOfLanternfishFromInput (input:string) =
+    input.Trim().Split(",")
+    |> Array.map int64
+    |> Array.map Fish
+
+  // type Fish2(daysToFirstReproduction:int, dayOfBirth:int) =
+  //   let ageOfDay0 = 8 - daysToFirstReproduction
+
+  //   member x.dayOfFirstChild =
+  //     daysToFirstReproduction + 1
+
+  //   member x.ageAfterNDays (n:int) =
+  //     ageOfDay0 + n |> int64
+
+  //   member x.daysToNextReproductionAfterNDays (n:int) =
+  //     6L - (((x.ageAfterNDays n) - 2L) % 7L)
+
+  //   member x.numberOfDirectChildrenAfterNDays (n:int) =
+  //     //=floor(divide(AC7-2,7))
+  //     ((x.ageAfterNDays n) - 2L) / 7L
+
+  //   member x.daysLeftForNthChildUntilM (n:int) (m:int) =
+  //       // m - (x.dayOfFirstChild + ((n-1) * 7))
+  //       0
+
+
+  //   member x.sizeOfFamilyAfterNDays (n:int) =
+  //     if n < 0 then
+  //       0L
+  //     else 
+  //       // let daysLeftForMthChild (birthOrder:int) =
+  //         // n - (x.dayOfFirstChild + ((birthOrder-1) * 7))
+
+  //       // let numberInNextGen (daysLeft:int) =
+  //       //   let f = Fish2 8
+  //       //   (f.numberOfDescendentsAfterNDays daysLeft) + 1
+
+  //       let d = x.numberOfDirectChildrenAfterNDays(n)
+
+  //       let m = 
+  //         seq { 1L .. d }
+  //         |> Seq.map (fun i -> 
+  //           let daysRemaining = (n |> int64) - ((i-1L) * 7L)
+  //           let f = Fish2 6
+  //           f.sizeOfFamilyAfterNDays (daysRemaining - 2)
+  //         )
+  //         |> Seq.sum
+
+  //       d + m + 1L // and this one
+
+  //       // |> Seq.map numberInNextGen
+  //       // |> Seq.fold (fun total n -> total + n) 0
   
-    // member x.familyAfterNDays(n:int) =
-    //   let initialAge = 8 - daysToFirstReproduction
-    //   let finalAge = initialAge + n
-    //   let numberOfChildren = (finalAge - 2) / 6
+  //   // member x.familyAfterNDays(n:int) =
+  //   //   let initialAge = 8 - daysToFirstReproduction
+  //   //   let finalAge = initialAge + n
+  //   //   let numberOfChildren = (finalAge - 2) / 6
       
-    new(daysToFirstReproduction:int) =
-      Fish(daysToFirstReproduction,0)
+  //   new(daysToFirstReproduction:int) =
+  //     Fish2(daysToFirstReproduction,0)
 
 
 
