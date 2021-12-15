@@ -88,11 +88,24 @@ module Day06 =
     
   [<Theory>]
   [<InlineData(3,0,0)>]
+  [<InlineData(3,1,0)>]
+  [<InlineData(3,2,0)>]
   [<InlineData(3,3,0)>]
   [<InlineData(3,4,1)>]
   [<InlineData(3,5,1)>]
+  [<InlineData(3,6,1)>]
+  [<InlineData(3,7,1)>]
+  [<InlineData(3,8,1)>]
+  [<InlineData(3,9,1)>]
   [<InlineData(3,10,1)>]
   [<InlineData(3,11,2)>]
+  [<InlineData(3,12,2)>]
+  [<InlineData(3,13,3)>]
+  [<InlineData(3,14,3)>]
+  [<InlineData(3,15,3)>]
+  [<InlineData(3,16,3)>]
+  [<InlineData(3,17,3)>]
+  [<InlineData(3,18,4)>]
   let ``Day 06 - Part 2 - number of children after n days`` (initialDaysToReproduce:int,nDays:int,expectedNumberOfChildrenAfterNDays:int) =
 
     let f = Fish initialDaysToReproduce
@@ -121,21 +134,32 @@ module Day06 =
     f.daysLeftForNthChildUntilM nthChild nDays 
     |> should equal expectedDaysLeft
     
-  // [<Theory>]
-  // [<InlineData(3,0,0)>]
-  // [<InlineData(3,3,0)>]
-  // [<InlineData(3,4,1)>]
-  // [<InlineData(3,5,2)>]
-  // [<InlineData(3,10,1)>]
-  // [<InlineData(3,11,2)>]
-  // [<InlineData(3,12,2)>]
-  // [<InlineData(3,13,3)>]
+  [<Theory>]
+  [<InlineData(3, 0,1)>]
+  [<InlineData(3, 1,1)>]
+  [<InlineData(3, 2,1)>]
+  [<InlineData(3, 3,1)>]
+  [<InlineData(3, 4,2)>]
+  [<InlineData(3, 5,2)>]
+  [<InlineData(3, 6,2)>]
+  [<InlineData(3, 7,2)>]
+  [<InlineData(3, 8,2)>]
+  // [<InlineData(3, 9,2)>]
+  // [<InlineData(3,10,2)>]
+  // [<InlineData(3,11,3)>]
+  // [<InlineData(3,12,3)>]
+  // [<InlineData(3,13,4)>]
+  // [<InlineData(3,14,4)>]
+  // [<InlineData(3,15,4)>]
+  // [<InlineData(3,16,4)>]
+  // [<InlineData(3,17,4)>]
+  // [<InlineData(3,18,5)>]
   let ``Day 06 - Part 2 - number of descendents after n days`` (initialDaysToReproduce:int,nDays:int,expectedNumberOfDescendents) =
 
     let f = Fish initialDaysToReproduce
 
-    f.numberOfDescendentsAfterNDays nDays
-    |> should equal expectedNumberOfDescendents
+    f.sizeOfFamilyAfterNDays nDays
+    |> should equal ( expectedNumberOfDescendents |> int64 )
 
 
   // [<Theory>]
@@ -184,6 +208,26 @@ module Day06 =
   // [<InlineData(3,3,0)>]
   // [<InlineData(3,4,6)>]
   // let ``Day 06 - Part 2 - modulus`` (initialAge:int,nDays:int,expectedAge:int) =
+  //                     v
+  //   // Initial state: 3,
+  //   // After  1 day:  2,
+  //   // After  2 days: 1,
+  //   // After  3 days: 0,
+  //   // After  4 days: 6,8
+  //   // After  5 days: 5,7,
+  //   // After  6 days: 4,6,
+  //   // After  7 days: 3,5,
+  //   // After  8 days: 2,4,
+  //   // After  9 days: 1,3,
+  //   // After 10 days: 0,2,
+  //   // After 11 days: 6,1,8
+  //   // After 12 days: 5,0,7
+  //   // After 13 days: 4,6,6,8
+  //   // After 14 days: 3,5,5,7,
+  //   // After 15 days: 2,4,4,6,
+  //   // After 16 days: 1,3,3,5,
+  //   // After 17 days: 0,2,2,4,
+  //   // After 18 days: 6,1,1,3,8
   //                     v
   //   // Initial state: 3,4,3,1,2
   //   // After  1 day:  2,3,2,0,1
