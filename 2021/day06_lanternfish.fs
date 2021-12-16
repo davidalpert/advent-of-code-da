@@ -5,6 +5,22 @@ module Lanternfish =
   open AdventOfCode.Input
   open System.Collections.Generic
 
+  let rec sizeOfFamilyAfterNDays (nDays:int64) (daysToFirstReproduction:int64) =
+    let descendants =
+      if nDays < 0L then
+        0L
+      else
+        let cc = ((8L - 2L - daysToFirstReproduction) + nDays) / 7L
+        seq { 1L .. cc }
+        |> Seq.map (fun i ->
+          let d = (i - 1L) * 7L + (daysToFirstReproduction + 1L)
+          // printfn "after %d days: %d child, %d days consumed" nDays i d
+          sizeOfFamilyAfterNDays (nDays - d) 8L
+        )
+        |> Seq.sum
+
+    descendants + 1L
+
   type Fish(r:int64) =
     member f.age =
       8L - r
@@ -39,6 +55,10 @@ module Lanternfish =
         d + 1L
 
     new() = Fish(8) // default r
+
+  let daysToNextReproductionFromInput (input:string) =
+    input.Trim().Split(",")
+    |> Array.map int64
 
   let poplationOfLanternfishFromInput (input:string) =
     input.Trim().Split(",")

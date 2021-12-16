@@ -71,16 +71,18 @@ module Day06 =
   [<InlineData(3L,18L, 5L)>]
   let ``Day 06 - size of family after n days`` (r:int64, n:int64, s:int64) =
 
-    Fish(r).sizeOfFamilyAfterNDays n
+    // Fish(r).sizeOfFamilyAfterNDays n
+    // |> should equal s
+
+    r
+    |> sizeOfFamilyAfterNDays n
     |> should equal s
 
   [<Fact>]
   let ``Day 06 - Part 1 - example`` () =
-    let population =
-      day06sample |> poplationOfLanternfishFromInput
-    
-    population
-    |> Array.map (fun f -> f.sizeOfFamilyAfterNDays 80)
+    day06sample
+    |> daysToNextReproductionFromInput
+    |> Array.map (sizeOfFamilyAfterNDays 80)
     |> Array.sum
     |> should equal ( 5934 |> int64 )
 
@@ -96,10 +98,8 @@ module Day06 =
 
   [<Fact>]
   let ``Day 06 - Part 2 - example`` () =
-    let population =
-      day06sample |> poplationOfLanternfishFromInput
-    
-    population
-    |> Array.map (fun f -> f.sizeOfFamilyAfterNDays 256)
+    day06sample
+    |> daysToNextReproductionFromInput
+    |> Array.map (sizeOfFamilyAfterNDays 256)
     |> Array.sum
     |> should equal 26_984_457_539L
