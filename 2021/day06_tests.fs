@@ -7,99 +7,54 @@ module Day06 =
   open Xunit
   open FsUnit.Xunit
 
-  [<Theory>]
-  [<InlineData(8L,0L)>]
-  [<InlineData(7L,1L)>]
-  [<InlineData(6L,2L)>]
-  [<InlineData(5L,3L)>]
-  [<InlineData(4L,4L)>]
-  [<InlineData(3L,5L)>]
-  [<InlineData(2L,6L)>]
-  [<InlineData(1L,7L)>]
-  [<InlineData(0L,8L)>]
-  let ``Day 06 - age of a fish`` (daysUntilFirstReproduction:int64, expectedAge:int64) =
+  [<Fact>]
+  let ``Day 06 - test`` () =
+    let m =
+      day06sample
+      |> PopulationModel
 
-    Fish(daysUntilFirstReproduction).age
-    |> should equal expectedAge
+    m.allFishByDaysToNextReproduction
+    //                0   1   2   3   4   5   6   7   8
+    |> should equal [|0L; 1L; 1L; 2L; 1L; 0L; 0L; 0L; 0L|]
 
-  [<Theory>]
-  [<InlineData(3L, 0L, 0L)>]
-  [<InlineData(3L, 1L, 0L)>]
-  [<InlineData(3L, 2L, 0L)>]
-  [<InlineData(3L, 3L, 0L)>]
-  [<InlineData(3L, 4L, 1L)>]
-  [<InlineData(3L, 5L, 1L)>]
-  [<InlineData(3L, 6L, 1L)>]
-  [<InlineData(3L, 7L, 1L)>]
-  [<InlineData(3L, 8L, 1L)>]
-  [<InlineData(3L, 9L, 1L)>]
-  [<InlineData(3L,10L, 1L)>]
-  [<InlineData(3L,11L, 2L)>]
-  [<InlineData(3L,12L, 2L)>]
-  let ``Day 06 - number of direct children after n days`` (r:int64, n:int64, c:int64) =
+    m.tick.allFishByDaysToNextReproduction
+    //                0   1   2   3   4   5   6   7   8
+    |> should equal [|1L; 1L; 2L; 1L; 0L; 0L; 0L; 0L; 0L|]
 
-    Fish(r).numberOfChildrenAfterNDays n
-    |> should equal c
+    m.tick.tick.allFishByDaysToNextReproduction
+    //                0   1   2   3   4   5   6   7   8
+    |> should equal [|1L; 2L; 1L; 0L; 0L; 0L; 1L; 0L; 1L|]
 
-  [<Theory>]
-  [<InlineData(3L, 1L,  4L)>]
-  [<InlineData(3L, 2L, 11L)>]
-  [<InlineData(3L, 3L, 18L)>]
-  let ``Day 06 - days to birth of child`` (r:int64, c:int64, d:int64) =
+    (m.afterNDays 0).allFishByDaysToNextReproduction
+    |> should equal m.allFishByDaysToNextReproduction
 
-    Fish(r).daysToBirthOfChild c
-    |> should equal d
+    (m.afterNDays 1).allFishByDaysToNextReproduction
+    |> should equal m.tick.allFishByDaysToNextReproduction
 
-  [<Theory>]
-  [<InlineData(3L, 1L, 1L)>]
-  [<InlineData(3L, 2L, 1L)>]
-  [<InlineData(3L, 3L, 1L)>]
-  [<InlineData(3L, 4L, 2L)>]
-  [<InlineData(3L, 5L, 2L)>]
-  [<InlineData(3L, 6L, 2L)>]
-  [<InlineData(3L, 7L, 2L)>]
-  [<InlineData(3L, 8L, 2L)>]
-  [<InlineData(3L, 9L, 2L)>]
-  [<InlineData(3L,10L, 2L)>]
-  [<InlineData(3L,11L, 3L)>]
-  [<InlineData(3L,12L, 3L)>]
-  [<InlineData(3L,13L, 4L)>]
-  [<InlineData(3L,14L, 4L)>]
-  [<InlineData(3L,15L, 4L)>]
-  [<InlineData(3L,16L, 4L)>]
-  [<InlineData(3L,17L, 4L)>]
-  [<InlineData(3L,18L, 5L)>]
-  let ``Day 06 - size of family after n days`` (r:int64, n:int64, s:int64) =
-
-    // Fish(r).sizeOfFamilyAfterNDays n
-    // |> should equal s
-
-    r
-    |> sizeOfFamilyAfterNDays n
-    |> should equal s
+    (m.afterNDays 2).allFishByDaysToNextReproduction
+    |> should equal m.tick.tick.allFishByDaysToNextReproduction
 
   [<Fact>]
   let ``Day 06 - Part 1 - example`` () =
-    day06sample
-    |> daysToNextReproductionFromInput
-    |> Array.map (sizeOfFamilyAfterNDays 80)
-    |> Array.sum
+    let m = day06sample |> PopulationModel
+    (m.afterNDays 80).totalSize
     |> should equal ( 5934 |> int64 )
 
   [<Fact>]
   let ``Day 06 - Part 1 - calculation`` () =
-    let population =
-      day06data |> poplationOfLanternfishFromInput
+    let m = day06data |> PopulationModel
     
-    population
-    |> Array.map (fun f -> f.sizeOfFamilyAfterNDays 80)
-    |> Array.sum
+    (m.afterNDays 80).totalSize
     |> should equal ( 390923 |> int64 )
 
   [<Fact>]
   let ``Day 06 - Part 2 - example`` () =
-    day06sample
-    |> daysToNextReproductionFromInput
-    |> Array.map (sizeOfFamilyAfterNDays 256)
-    |> Array.sum
+    let m = day06sample |> PopulationModel
+    (m.afterNDays 256).totalSize
     |> should equal 26_984_457_539L
+
+  [<Fact>]
+  let ``Day 06 - Part 2 - calculation`` () =
+    let m = day06data |> PopulationModel
+    (m.afterNDays 256).totalSize
+    |> should equal 1749945484935L
