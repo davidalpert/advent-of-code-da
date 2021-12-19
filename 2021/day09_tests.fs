@@ -91,3 +91,89 @@ module Day09 =
     let pos = positionsFromInput day09data
     totalRiskOfLowPoints pos
     |> should equal 532
+
+  // type basin(pp:pos seq) =
+
+  //   member x.positions = pp |> List.ofSeq
+
+  //   member x.contains (p:pos) =
+  //     x.positions |> List.contains p 
+
+  //   member x.addOne (p:pos) =
+  //     basin(p :: x.positions)
+
+  //   member x.addSome (ps:pos seq) =
+  //     basin(List.concat [ps |> List.ofSeq; x.positions])
+
+  //   member x.join (b:basin) =
+  //     basin(List.concat [x.positions; b.positions])
+
+  // let max (positions:pos seq) =
+  //   let x = (positions |> Seq.maxBy (fun p -> p.x)).x
+  //   let y = (positions |> Seq.maxBy (fun p -> p.y)).y
+  //   { x = x; y = y; h = 0 }
+
+  let rec basinNeighbors (positions:pos[]) (p:pos) =
+      let bn =
+        actualNeighbors positions p
+        |> Array.filter (fun p -> p.h < 9)
+
+      let remaining =
+        positions
+        |> Array.filter (fun q ->
+          (q <> p) && ((Array.contains q bn) = false)
+        )
+
+      let otherNeighbors =
+        bn
+        |> Array.map (basinNeighbors remaining)
+        |> Array.concat
+
+      Array.concat [|[|p|]; bn; otherNeighbors|]
+      |> Array.distinct
+
+  let positionsToBasins (positions:pos[]) =
+    lowPoints positions
+    |> Array.map (fun l -> (l,(basinNeighbors positions l)))
+    // |> Array.map (nn)
+    // |> Array.map basin
+
+  let multipleOfThreeLargestBasins (positions:pos[]) =
+    positionsToBasins positions
+    |> Array.map (fun (_,b) -> b.Length)
+    |> Array.sortDescending
+    |> Array.take 3
+    |> Array.fold (fun runningTotal n -> runningTotal * n) 1
+
+  [<Fact>]
+  let ``Day 09 - test - positionsToBasins`` () =
+    let positions = positionsFromInput day09sample
+
+    let basins = positionsToBasins positions
+
+    // |> Array.length
+    // |> Array.take 1
+    basins
+    |> Array.map (fun (l,b) -> b.Length)
+    |> should equal [|3; 9; 14; 9|]
+
+    snd basins.[0]
+    |> should equal [|
+      { x = 1; y = 0; h = 1 };
+      { x = 0; y = 0; h = 2 };
+      { x = 0; y = 1; h = 3 }
+    |]
+
+  [<Fact>]
+  let ``Day 09 - part 2 - sample`` () =
+    let positions = positionsFromInput day09sample
+
+    multipleOfThreeLargestBasins positions
+    |> should equal 1134
+
+  [<Fact(Skip="inefficient; ran for over an hour with no result")>]
+  let ``Day 09 - part 2 - calculation`` () =
+    let positions = positionsFromInput day09data
+
+    multipleOfThreeLargestBasins positions
+    |> should equal -1
