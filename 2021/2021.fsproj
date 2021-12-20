@@ -27,6 +27,8 @@
     <Compile Include="day08_broken_display.fs" />
     <Compile Include="day08_tests.fs" />
     <Compile Include="day09_tests.fs" />
+    <Compile Include="day10_parser.fs" />
+    <Compile Include="day10_tests.fs" />
     <Compile Include="Tests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
