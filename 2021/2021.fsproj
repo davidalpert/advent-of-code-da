@@ -34,6 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FParsec-Pipes" Version="1.1.1" />
     <PackageReference Include="FsUnit" Version="4.1.0" />
     <PackageReference Include="FsUnit.xUnit" Version="4.1.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
