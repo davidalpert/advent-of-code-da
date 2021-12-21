@@ -13,6 +13,15 @@ module NavigationModel =
     ]
     |> dict
 
+  let scoreByIllegalChar = 
+    [
+      ')',     3 |> int64;
+      ']',    57 |> int64;
+      '}',  1197 |> int64;
+      '>', 25137 |> int64;
+    ]
+    |> dict
+
   type Chunk =
   | ValidChunk of startingChar:char * children:Chunk seq * endingChar:char
   | CorruptedChunk of startingChar:char * children:Chunk seq * expectedChar:char * actualChar:char * unparsed:string
@@ -77,6 +86,29 @@ module NavigationModel =
                  | None -> match tryFindIncomplete chunks with
                            | Some(c) -> IncompleteLine(chunks, c)
                            | None -> failwith (sprintf "something went wrong %s" (chunks |> Seq.map (fun x -> x.toAnnotatedString) |> String.concat " | "))
+
+  type Subsytem(lines:Line seq) =
+    member x.toAnnotatedString =
+      lines
+      |> Seq.map (fun l -> l.toAnnotatedString)
+      |> String.concat "\n"
+
+    member x.totalSyntaxScore =
+      lines
+      |> Seq.filter (fun l -> match l with | CorruptedLine(_,_) -> true | _ -> false)
+      |> Seq.map (fun l ->
+        match l with
+        | CorruptedLine(_,c) -> 
+            match c with
+            | CorruptedChunk(_,_,_,a,_) -> scoreByIllegalChar.[a]
+            | _ -> 0L
+        | _ -> 0L
+      )
+      // |> Seq.map (fun i ->
+      //   printfn "syntaxScore: %d" i
+      //   i
+      // )
+      |> Seq.sum
 
 module NavigationParser =
 
@@ -149,9 +181,9 @@ module NavigationParser =
     %% ws -- +.(pChunk * qty.[1..]) -- ws
     -|> Line.lift
 
-  let pSubsystem : Parser<Line seq,unit> =
+  let pSubsystem : Parser<Subsytem,unit> =
     %% ws -- +.(pLine * qty.[1..]) -- ws
-    -|> fun s -> s
+    -|> Subsytem
 
   let parseChunk (input:string) =
     match run pChunk input with

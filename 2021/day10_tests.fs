@@ -46,9 +46,7 @@ module Day10 =
 
     match r with
     | Error(e)   -> failwith e
-    | Ok(result) -> result
-                    |> Seq.map (fun l -> l.toAnnotatedString)
-                    |> String.concat "\n"
+    | Ok(result) -> result.toAnnotatedString
                     |> should equal ("""
 Incomplete | i:[i:(i:{i:(v:<v:(v:())v:[]>i:[i:[i:{v:[]i:{v:<v:()v:<>>
 Incomplete | v:[v:(v:()v:[v:<>])] | i:(i:{i:[i:<i:{v:<v:<v:[]>>i:(
@@ -61,3 +59,21 @@ Corrupted  | i:[i:<i:(i:<i:(i:<i:(c:<v:{}) expected '>' but got ')' ignoring: ')
 Corrupted  | i:<i:{i:(i:[i:(c:[v:[v:(v:<>v:())v:{}]> expected ']' but got '>' ignoring: '(<<{{'
 Incomplete | i:<i:{i:(i:[v:{v:{}}v:[v:<v:[v:[v:[v:<>v:{}]]]>v:[]]
 """.Trim())
+
+  [<Fact>]
+  let ``Day 10 - part 1 - sample`` () =
+    let r = NavigationParser.parseSubsystem day10sample
+
+    match r with
+    | Error(e)   -> failwith e
+    | Ok(result) -> result.totalSyntaxScore
+                    |> should equal ( 26397 |> int64 )
+
+  [<Fact>]
+  let ``Day 10 - part 1 - calculation`` () =
+    let r = NavigationParser.parseSubsystem day10data
+
+    match r with
+    | Error(e)   -> failwith e
+    | Ok(result) -> result.totalSyntaxScore
+                    |> should equal ( 167379 |> int64 )
