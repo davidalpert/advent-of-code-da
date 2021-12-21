@@ -2,6 +2,7 @@ namespace AdventOfCode
 
 module Day10 =
 
+  open Input
   open Xunit
   open FsUnit.Xunit
 
@@ -38,3 +39,25 @@ module Day10 =
     | Error(e)   -> failwith e
     | Ok(result) -> result.toAnnotatedString
                     |> should equal expected
+
+  [<Fact>]
+  let ``Day 10 - tests - parse subsystem`` () =
+    let r = NavigationParser.parseSubsystem day10sample
+
+    match r with
+    | Error(e)   -> failwith e
+    | Ok(result) -> result
+                    |> Seq.map (fun l -> l.toAnnotatedString)
+                    |> String.concat "\n"
+                    |> should equal ("""
+Incomplete | i:[i:(i:{i:(v:<v:(v:())v:[]>i:[i:[i:{v:[]i:{v:<v:()v:<>>
+Incomplete | v:[v:(v:()v:[v:<>])] | i:(i:{i:[i:<i:{v:<v:<v:[]>>i:(
+Corrupted  | i:{i:(i:[i:(i:<v:{}c:[v:<>v:[]} expected ']' but got '}' ignoring: '>{[]{[(<()>'
+Incomplete | i:(i:(i:(i:(v:{v:<>}i:<i:{i:<v:{v:<>}i:{v:[]i:{v:[]v:{}
+Corrupted  | i:[i:[i:<c:[v:(v:[])) expected ']' but got ')' ignoring: '<([[{}[[()]]]'
+Corrupted  | i:[i:{i:[i:{c:(v:{}] expected ')' but got ']' ignoring: '{}}([{[{{{}}([]'
+Incomplete | v:{v:<v:[v:[]]>} | i:<i:{i:[i:{i:[i:{v:[]i:{v:()i:[i:[v:[]
+Corrupted  | i:[i:<i:(i:<i:(i:<i:(c:<v:{}) expected '>' but got ')' ignoring: ')><([]([]()'
+Corrupted  | i:<i:{i:(i:[i:(c:[v:[v:(v:<>v:())v:{}]> expected ']' but got '>' ignoring: '(<<{{'
+Incomplete | i:<i:{i:(i:[v:{v:{}}v:[v:<v:[v:[v:[v:<>v:{}]]]>v:[]]
+""".Trim())

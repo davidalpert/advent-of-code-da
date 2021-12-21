@@ -126,7 +126,7 @@ module NavigationParser =
       |> Seq.filter (fun pair -> pair.Key <> startingChar)
       |> Seq.map (fun pair -> 
         (
-          %% (ch startingChar) -- +.(%[pAnyValidChunk]*qty.[0..]) -? (ch pair.Value) -- +.(restOfLine true)
+          %% (ch startingChar) -- +.(%[pAnyValidChunk]*qty.[0..]) -? (ch pair.Value) -- +.(restOfLine false)
           -|> fun c rest -> CorruptedChunk(startingChar,c,expectedEndingChar,pair.Value, rest)
         ) <!> ("pOneCorruptedChunk",startingChar,pair.Value)
       )
@@ -146,8 +146,12 @@ module NavigationParser =
     ]
 
   let pLine : Parser<Line,unit> =
-    %% ws -- +.(pChunk * qty.[1..])
+    %% ws -- +.(pChunk * qty.[1..]) -- ws
     -|> Line.lift
+
+  let pSubsystem : Parser<Line seq,unit> =
+    %% ws -- +.(pLine * qty.[1..]) -- ws
+    -|> fun s -> s
 
   let parseChunk (input:string) =
     match run pChunk input with
@@ -156,6 +160,11 @@ module NavigationParser =
 
   let parseLine (input:string) =
     match run pLine input with
+    | Success(r, _, _)   -> Result.Ok(r)
+    | Failure(errorMsg, _, _) -> Result.Error(errorMsg)
+
+  let parseSubsystem (input:string) =
+    match run pSubsystem input with
     | Success(r, _, _)   -> Result.Ok(r)
     | Failure(errorMsg, _, _) -> Result.Error(errorMsg)
 
