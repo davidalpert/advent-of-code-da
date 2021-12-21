@@ -40,6 +40,34 @@ module Day10 =
     | Ok(result) -> result.toAnnotatedString
                     |> should equal expected
 
+  [<Theory>]
+  [<InlineData("[({(<(())[]>[[{[]{<()<>>", "}}]])})]")>]
+  [<InlineData("[(()[<>])]({[<{<<[]>>(",   ")}>]})")>]
+  [<InlineData("(((({<>}<{<{<>}{[]{[]{}",  "}}>}>))))")>]
+  [<InlineData("{<[[]]>}<{[{[{[]{()[[[]",  "]]}}]}]}>")>]
+  [<InlineData("<{([{{}}[<[[[<>{}]]]>[]]", "])}>")>]
+  let ``Day 10 - tests - calculate completion string`` (input:string, expected:string) =
+    let r = NavigationParser.parseLine input
+
+    match r with
+    | Error(e)   -> failwith e
+    | Ok(result) -> result.completionString
+                    |> should equal expected
+
+  [<Theory>]
+  [<InlineData("[({(<(())[]>[[{[]{<()<>>", 288957)>]
+  [<InlineData("[(()[<>])]({[<{<<[]>>(",   5566)>]
+  [<InlineData("(((({<>}<{<{<>}{[]{[]{}",  1480781)>]
+  [<InlineData("{<[[]]>}<{[{[{[]{()[[[]",  995444)>]
+  [<InlineData("<{([{{}}[<[[[<>{}]]]>[]]", 294)>]
+  let ``Day 10 - tests - calculate completion score`` (input:string, expected:int) =
+    let r = NavigationParser.parseLine input
+
+    match r with
+    | Error(e)   -> failwith e
+    | Ok(result) -> result.completionScore
+                    |> should equal (expected |> int64)
+
   [<Fact>]
   let ``Day 10 - tests - parse subsystem`` () =
     let r = NavigationParser.parseSubsystem day10sample
@@ -77,3 +105,12 @@ Incomplete | i:<i:{i:(i:[v:{v:{}}v:[v:<v:[v:[v:[v:<>v:{}]]]>v:[]]
     | Error(e)   -> failwith e
     | Ok(result) -> result.totalSyntaxScore
                     |> should equal ( 167379 |> int64 )
+
+  [<Fact>]
+  let ``Day 10 - part 2 - sample`` () =
+    let r = NavigationParser.parseSubsystem day10sample
+
+    match r with
+    | Error(e)   -> failwith e
+    | Ok(result) -> result.winningCompletionScore
+                    |> should equal ( 288957 |> int64 )

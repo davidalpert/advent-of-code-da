@@ -22,6 +22,15 @@ module NavigationModel =
     ]
     |> dict
 
+  let completionScoreByChar =
+    [
+      ')', 1 |> int64;
+      ']', 2 |> int64;
+      '}', 3 |> int64;
+      '>', 4 |> int64;
+    ]
+    |> dict
+
   type Chunk =
   | ValidChunk of startingChar:char * children:Chunk seq * endingChar:char
   | CorruptedChunk of startingChar:char * children:Chunk seq * expectedChar:char * actualChar:char * unparsed:string
@@ -59,6 +68,18 @@ module NavigationModel =
       | CorruptedChunk(_,_,_,_,_) -> Some(x)
       | IncompleteChunk(_,cc)     -> Chunk.tryFindCorrupted cc
 
+    member x.completionString =
+      match x with
+      | ValidChunk(_,_,_)         -> ""
+      | CorruptedChunk(_,_,_,_,_) -> ""
+      | IncompleteChunk(u,cc)     ->
+        let innerCompletion =
+          cc
+          |> Seq.map (fun c -> c.completionString)
+          |> String.concat ""
+
+        innerCompletion + (validDelimeters.[u] |> string)
+
   and Line =
   | ValidLine of children:Chunk seq
   | CorruptedLine of children:Chunk seq * corrruptChunk:Chunk
@@ -69,6 +90,22 @@ module NavigationModel =
       | ValidLine(cc)         -> sprintf "Valid      | %s" (cc |> Seq.map (fun c -> c.toAnnotatedString) |> String.concat " | ")
       | CorruptedLine(cc, x)  -> sprintf "Corrupted  | %s" (cc |> Seq.map (fun c -> c.toAnnotatedString) |> String.concat " | ")
       | IncompleteLine(cc, x) -> sprintf "Incomplete | %s" (cc |> Seq.map (fun c -> c.toAnnotatedString) |> String.concat " | ")
+
+    member x.completionString = 
+      match x with
+      | ValidLine(_)         -> ""
+      | CorruptedLine(_,_)   -> ""
+      | IncompleteLine(cc,_) ->
+        cc
+        |> Seq.map (fun c -> c.completionString)
+        |> String.concat ""
+
+    member x.completionScore =
+      let foldFn sum c =
+        (sum * 5L) + completionScoreByChar.[c]
+
+      x.completionString.ToCharArray()
+      |> Array.fold foldFn 0
 
     static member lift (chunks:Chunk seq) =
       // printfn "lifting chunks: %s" (chunks |> Seq.map (fun c -> c.toAnnotatedString) |> String.concat "; ")
@@ -109,6 +146,20 @@ module NavigationModel =
       //   i
       // )
       |> Seq.sum
+
+    member x.winningCompletionScore =
+      let lineScores =
+        lines
+        |> Seq.filter (fun l -> match l with | IncompleteLine(_,_) -> true | _ -> false)
+        |> Seq.map (fun l -> l.completionScore)
+        |> Seq.sort
+        |> Array.ofSeq
+      
+      let numScores = lineScores.Length
+
+      let winner = numScores / 2
+
+      lineScores[winner]
 
 module NavigationParser =
 
