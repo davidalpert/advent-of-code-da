@@ -114,3 +114,12 @@ Incomplete | i:<i:{i:(i:[v:{v:{}}v:[v:<v:[v:[v:[v:<>v:{}]]]>v:[]]
     | Error(e)   -> failwith e
     | Ok(result) -> result.winningCompletionScore
                     |> should equal ( 288957 |> int64 )
+
+  [<Fact>]
+  let ``Day 10 - part 2 - calculation`` () =
+    let r = NavigationParser.parseSubsystem day10data
+
+    match r with
+    | Error(e)   -> failwith e
+    | Ok(result) -> result.winningCompletionScore
+                    |> should equal ( 2776842859L |> int64 )
