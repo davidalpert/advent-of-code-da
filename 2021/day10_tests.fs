@@ -89,36 +89,32 @@ Incomplete | i:<i:{i:(i:[v:{v:{}}v:[v:<v:[v:[v:[v:<>v:{}]]]>v:[]]
 """.Trim())
 
   [<Fact>]
-  let ``Day 10 - part 1 - sample`` () =
+  let ``Day 10 - sample`` () =
     let r = NavigationParser.parseSubsystem day10sample
 
+    // part 1
     match r with
     | Error(e)   -> failwith e
     | Ok(result) -> result.totalSyntaxScore
                     |> should equal ( 26397 |> int64 )
 
-  [<Fact>]
-  let ``Day 10 - part 1 - calculation`` () =
-    let r = NavigationParser.parseSubsystem day10data
-
-    match r with
-    | Error(e)   -> failwith e
-    | Ok(result) -> result.totalSyntaxScore
-                    |> should equal ( 167379 |> int64 )
-
-  [<Fact>]
-  let ``Day 10 - part 2 - sample`` () =
-    let r = NavigationParser.parseSubsystem day10sample
-
+    // part 2
     match r with
     | Error(e)   -> failwith e
     | Ok(result) -> result.winningCompletionScore
                     |> should equal ( 288957 |> int64 )
 
   [<Fact>]
-  let ``Day 10 - part 2 - calculation`` () =
+  let ``Day 10 - calculation`` () =
     let r = NavigationParser.parseSubsystem day10data
 
+    // part 1
+    match r with
+    | Error(e)   -> failwith e
+    | Ok(result) -> result.totalSyntaxScore
+                    |> should equal ( 167379 |> int64 )
+
+    // part 2
     match r with
     | Error(e)   -> failwith e
     | Ok(result) -> result.winningCompletionScore
