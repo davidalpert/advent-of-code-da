@@ -1,6 +1,7 @@
 namespace AdventOfCode
 
 module Octopods =
+  open System.Globalization
 
   let inline charToInt c = int c - int '0'
   let inline intToChar i = sprintf "%d" i 
@@ -54,33 +55,35 @@ module Octopods =
         grid |> existsInGrid isFlashing
 
       let rec resolveFlashes (grid:int[][]) =
-        let g2 =
+        let flashImpact =
+          grid
+          |> mapGridi (fun r c _ ->
+            numberOfFlashingAdjacents dim r c grid
+          )
+
+        let hasNewFlashes =
+          flashImpact
+          |> existsInGrid (fun n -> n > 0)
+
+        if hasNewFlashes then
           grid
           |> mapGridi (fun r c cell ->
-
-
+            cell + (flashImpact.[r].[c])
           )
+          |> resolveFlashes
+        else
+          grid
 
+        flashImpact
 
+      let inline reset (grid:int[][]) =
+        grid
+        |> mapGridi (fun r c cell -> if isFlashing cell then 0 else cell)
 
-
-        let applyFlashes r c cell =
-          validAdjacents r c
-          |> Seq.filter (fun (nr,nc) ->  grid[nr][nc] + 1
-          )
-
-        match hasUnflashed grid with
-        | false -> grid
-        | true  -> grid
-                   |> mapGridI (fun r c cell ->
-                     cell + grid
-                            |> flashingAdjacents dim r c
-                            |> Seq.sum
-                   )
-
-
-
-      Cavern(dim,increased)
+      increased
+      |> resolveFlashes
+      // |> reset
+      |> Cavern.ofDim dim
 
     member x.afterStep (n:int) =
       match sign n with
@@ -97,7 +100,7 @@ module Octopods =
         |> Array.map (fun row ->
           row
           |> Array.map intToChar
-          |> String.concat ""
+          |> String.concat "|"
         )
         |> String.concat "\n"
 
