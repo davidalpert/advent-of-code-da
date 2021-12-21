@@ -10,27 +10,29 @@
   <ItemGroup>
     <Compile Include="day00_input.fs" />
     <Compile Include="day00_utils.fs" />
-    <Compile Include="day01_depthSounder.fs" />
-    <Compile Include="day01_tests.fs" />
-    <Compile Include="day02_helm.fs" />
-    <Compile Include="day02_tests.fs" />
-    <Compile Include="day03_diagnostics.fs" />
-    <Compile Include="day03_tests.fs" />
-    <Compile Include="day04_bingo.fs" />
-    <Compile Include="day04_tests.fs" />
-    <Compile Include="day05_hydrothermals.fs" />
-    <Compile Include="day05_tests.fs" />
-    <Compile Include="day06_lanternfish.fs" />
-    <Compile Include="day06_tests.fs" />
-    <Compile Include="day07_crabs.fs" />
-    <Compile Include="day07_tests.fs" />
-    <Compile Include="day08_broken_display.fs" />
-    <Compile Include="day08_tests.fs" />
-    <Compile Include="day09_tests.fs" />
-    <Compile Include="day10_parser.fs" />
-    <Compile Include="day10_tests.fs" />
-    <Compile Include="Tests.fs" />
-    <Compile Include="Program.fs" />
+    <None Include="day01_depthSounder.fs" />
+    <None Include="day01_tests.fs" />
+    <None Include="day02_helm.fs" />
+    <None Include="day02_tests.fs" />
+    <None Include="day03_diagnostics.fs" />
+    <None Include="day03_tests.fs" />
+    <None Include="day04_bingo.fs" />
+    <None Include="day04_tests.fs" />
+    <None Include="day05_hydrothermals.fs" />
+    <None Include="day05_tests.fs" />
+    <None Include="day06_lanternfish.fs" />
+    <None Include="day06_tests.fs" />
+    <None Include="day07_crabs.fs" />
+    <None Include="day07_tests.fs" />
+    <None Include="day08_broken_display.fs" />
+    <None Include="day08_tests.fs" />
+    <None Include="day09_tests.fs" />
+    <None Include="day10_parser.fs" />
+    <None Include="day10_tests.fs" />
+    <Compile Include="day11_octopods.fs" />
+    <Compile Include="day11_tests.fs" />
+    <None Include="Tests.fs" />
+    <None Include="Program.fs" />
   </ItemGroup>
 
   <ItemGroup>
