@@ -66,13 +66,16 @@ fold along y=3
 
       result.foldInstructions.Length |> should equal 2
 
-      "\n" + (result.foldNTimes 1).render + "\n" |> should equal """
+      let folded = result.foldNTimes 1
+      "\n" + folded.render + "\n" |> should equal """
 #.##..#..#.
 #...#......
 ......#...#
 #...#......
 .#.#..#.###
 """
+
+      folded.numberOfVisibleDots |> should equal 17
 
   [<Fact>]
   let ``Day 13 - tests - sample input fold`` () =

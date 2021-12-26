@@ -57,6 +57,9 @@ module Origami =
           )
           |> String.concat "\n"
 
+      member image.numberOfVisibleDots =
+        image.coordinates |> Seq.length
+
       member image.foldNTimes n =
         let foldAgainst (cc:Coordinate seq) (f:FoldInstruction) =
           // printfn "folding: %A %d" f.direction f.value
@@ -81,7 +84,9 @@ module Origami =
         let remainingInstructions = image.foldInstructions[(n-1)..]
 
         let foldedCoordinates =
-          instructionsToApply |> Seq.fold foldAgainst (image.coordinates)
+          instructionsToApply
+          |> Seq.fold foldAgainst (image.coordinates)
+          |> Seq.distinct
 
         ThermalImage.lift foldedCoordinates remainingInstructions
 
