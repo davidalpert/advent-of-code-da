@@ -14,25 +14,25 @@ module Origami =
       static member lift x y =
         { x = x; y = y; }
 
-    type Axis =
-    | XAxis
-    | YAxis
+    type FoldDirection =
+    | Up
+    | Left
 
     type FoldInstruction = {
-      axis: Axis
+      direction: FoldDirection
       value: int
     }
     with
-      static member liftAlongAxis axis value =
-        { axis = axis; value = value; }
+      static member liftAlongAxis direction value =
+        { direction = direction; value = value; }
 
     type ThermalImage = {
       coordinates : Coordinate seq
-      foldInstructions: FoldInstruction seq
+      foldInstructions: FoldInstruction list
     }
     with
       static member lift coordinates foldInstructions =
-        { coordinates = coordinates; foldInstructions = foldInstructions; }
+        { coordinates = coordinates; foldInstructions = foldInstructions |> List.ofSeq; }
         
       member image.render =
         let max = {
@@ -89,13 +89,13 @@ module Origami =
       // <!> "coordinate"
 
     let foldAlong (c:char) a =
-      %% "fold along" -- ws -? c -- '=' -- +.number
+      %% "fold along" -- ws -? c -- '=' -- +.number -- ws
       -|> FoldInstruction.liftAlongAxis a
 
     let foldInstruction =
       %[
-        foldAlong 'x' XAxis;
-        foldAlong 'y' YAxis;
+        foldAlong 'y' Up;
+        foldAlong 'x' Left;
       ]
 
     let pThermalImage =
