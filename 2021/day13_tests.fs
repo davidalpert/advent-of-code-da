@@ -19,7 +19,9 @@ fold along x=1
 
     match r with
     | Error(e)   -> failwith e
-    | Ok(result) -> 1 |> should equal 1
+    | Ok(result) -> 
+      // printfn "\n%s\n" result.render
+      1 |> should equal 1
 
   [<Fact>]
   let ``Day 13 - tests - parse sample input`` () =
@@ -27,7 +29,9 @@ fold along x=1
 
     match r with
     | Error(e)   -> failwith e
-    | Ok(result) -> 1 |> should equal 1
+    | Ok(result) -> 
+      // printfn "\n%s\n" result.render
+      1 |> should equal 1
 
   [<Fact>]
   let ``Day 13 - tests - parse actual input`` () =
@@ -35,4 +39,5 @@ fold along x=1
 
     match r with
     | Error(e)   -> failwith e
-    | Ok(result) -> 1 |> should equal 1
+    | Ok(result) -> 
+      1 |> should equal 1

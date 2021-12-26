@@ -4,6 +4,8 @@ module Origami =
 
   module AST =
 
+    open System
+
     type Coordinate = {
       x:int
       y:int
@@ -31,6 +33,29 @@ module Origami =
     with
       static member lift coordinates foldInstructions =
         { coordinates = coordinates; foldInstructions = foldInstructions; }
+        
+      member image.render =
+        let max = {
+          x = (image.coordinates |> Seq.map (fun c -> c.x) |> Seq.max);
+          y = (image.coordinates |> Seq.map (fun c -> c.y) |> Seq.max);
+        }
+
+        let hasDot d =
+          image.coordinates |> Seq.exists (fun c -> c = d)
+
+        let coordinateToChar s =
+          match hasDot s with
+          | true -> '#'
+          | false -> '.'
+
+        seq { 0 .. max.y } |> Seq.map (fun y ->
+          seq { 0 .. max.x } |> Seq.map (fun x ->
+              coordinateToChar {x = x; y = y;}
+            )
+            |> Array.ofSeq
+            |> String
+          )
+          |> String.concat "\n"
 
   module Parser =
 
