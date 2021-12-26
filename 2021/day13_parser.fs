@@ -57,6 +57,37 @@ module Origami =
           )
           |> String.concat "\n"
 
+      member image.foldNTimes n =
+        let foldAgainst (cc:Coordinate seq) (f:FoldInstruction) =
+          // printfn "folding: %A %d" f.direction f.value
+
+          let transformAround v n = (0 - abs (n - v)) + v
+
+          match f.direction with
+          | Up -> cc |> Seq.map (fun c ->
+              {
+                x = c.x;
+                y = transformAround f.value c.y;
+              }
+            )
+          | Left -> cc |> Seq.map (fun c ->
+              {
+                x = transformAround f.value c.x;
+                y = c.y;
+              }
+            )
+
+        let instructionsToApply = image.foldInstructions[..(n-1)]
+        let remainingInstructions = image.foldInstructions[(n-1)..]
+
+        let foldedCoordinates =
+          instructionsToApply |> Seq.fold foldAgainst (image.coordinates)
+
+        ThermalImage.lift foldedCoordinates remainingInstructions
+
+      member image.fold =
+        image.foldNTimes image.foldInstructions.Length
+
   module Parser =
 
     open System
