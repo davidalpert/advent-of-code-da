@@ -94,3 +94,17 @@ fold along y=3
 #...#
 #####
 """
+
+  [<Fact>]
+  let ``Day 13 - part 1 - calculation`` () =
+    let r = Parser.parse day13data
+
+    match r with
+    | Error(e)   -> failwith e
+    | Ok(result) -> 
+
+      result.foldInstructions.Length |> should equal 12
+
+      let folded = result.foldNTimes 1
+
+      folded.numberOfVisibleDots |> should equal 781
