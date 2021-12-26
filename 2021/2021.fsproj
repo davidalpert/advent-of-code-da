@@ -10,6 +10,7 @@
   <ItemGroup>
     <Compile Include="day00_input.fs" />
     <Compile Include="day00_utils.fs" />
+    <!--
     <Compile Include="day01_depthSounder.fs" />
     <Compile Include="day01_tests.fs" />
     <Compile Include="day02_helm.fs" />
@@ -29,8 +30,7 @@
     <Compile Include="day09_tests.fs" />
     <Compile Include="day10_parser.fs" />
     <Compile Include="day10_tests.fs" />
-    <Compile Include="Tests.fs" />
-    <Compile Include="Program.fs" />
+    -->
   </ItemGroup>
 
   <ItemGroup>
