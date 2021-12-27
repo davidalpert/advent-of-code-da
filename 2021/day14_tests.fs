@@ -11,7 +11,7 @@ module Day14 =
   let ``Day 14 - tests - parse input`` () =
     let r = parse day14sample
 
-    r.template |> should equal "NNCB"
+    r.toString |> should equal "NNCB"
     r.rules |> Seq.length |> should equal 16
 
   [<Theory>]
@@ -38,6 +38,15 @@ module Day14 =
     let r = parse day14data
 
     let p = r.afterNSteps 10
+
+    p.differenceBetweenMaxAndMinNumberOfOccurances
+    |> should equal 3831
+
+  [<Fact>]
+  let ``Day 14 - part 2 - calculations`` () =
+    let r = parse day14data
+
+    let p = r.afterNSteps 40
 
     p.differenceBetweenMaxAndMinNumberOfOccurances
     |> should equal 3831
