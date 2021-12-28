@@ -37,7 +37,7 @@ module Polymerization =
 
     member x.afterNSteps n =
       let applyRules (i:instructions) n =
-        printfn "step: %d" n
+        // printfn "step: %d" n
         i.step
 
       seq { 1 .. n } |> Seq.fold applyRules x
