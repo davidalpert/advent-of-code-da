@@ -35,6 +35,8 @@
     -->
     <Compile Include="day14_polymerization.fs" />
     <Compile Include="day14_tests.fs" />
+    <Compile Include="day16_parser.fs" />
+    <Compile Include="day16_tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
