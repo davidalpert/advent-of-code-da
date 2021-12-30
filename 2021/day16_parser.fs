@@ -7,7 +7,7 @@ module Packets =
     type OperationType = int32
 
     type Packet =
-    | LiteralValue of PacketVersion * int32
+    | LiteralValue of PacketVersion * int64
     | Operation of PacketVersion * OperationType * Packet array
 
     with
@@ -111,7 +111,7 @@ module Packets =
 
     let literal =
       %% +.packetVersion -- "100" ?- +.payload // -- trailingZeros
-      -|> fun v cc -> (v, int32FromBinaryChars(cc)) |> LiteralValue
+      -|> fun v cc -> (v, int64FromBinaryChars(cc)) |> LiteralValue
       <!> "literal"
 
     // packetsByLength gets a custom stream parser so that we can parse

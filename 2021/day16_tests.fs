@@ -197,3 +197,13 @@ module Day16 =
     | Error(e)   -> failwith e
     | Ok(result) ->
       result.sumOfPacketVersions |> should equal expectedSum
+
+  [<Fact>]
+  let ``Day 16 - part 1 - sum of packet versions`` () =
+
+    let r = parseHexAsPacket day16data
+
+    match r with
+    | Error(e)   -> failwith e
+    | Ok(result) ->
+      result.sumOfPacketVersions |> should equal 963
