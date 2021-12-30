@@ -10,14 +10,9 @@ module Packets =
     | LiteralValue of PacketVersion * int32
     | Operation of PacketVersion * OperationType * Packet array
 
-    type OperationLength =
-    | LengthInBits of int32
-    | NumberOfSubPackets of int32
-
   module Parser =
 
     open System
-    open System.Collections.Generic
     open FParsec
     open FParsec.Pipes
     open AST
@@ -57,7 +52,10 @@ module Packets =
       fun stream ->
         printfn "%A: Entering %s" stream.Position label
         let reply = p stream
-        printfn "%A: Leaving %s (%A)" stream.Position label reply.Status
+        if reply.Status = Ok then
+          printfn "%A: Leaving %s (%A) [%A]" stream.Position label reply.Status reply.Result
+        else
+          printfn "%A: Leaving %s (%A) [%A]" stream.Position label reply.Status reply.Error
         reply
 
     let bit =
@@ -69,12 +67,12 @@ module Packets =
     let nonfinalpacket =
       %% '1' ?- +.(bit * qty.[4])
       -%> auto
-      // <!> "nonfinal packet"
+      <!> "nonfinal packet"
 
     let finalpacket =
       %% '0' ?- +.(bit * qty.[4])
       -%> auto
-      // <!> "final packet"
+      <!> "final packet"
 
     let payload =
       %% +.(nonfinalpacket * qty.[0..]) -- +.finalpacket
@@ -82,7 +80,7 @@ module Packets =
         nn.Add(f)
         nn |> Array.concat
       )
-      // <!> "payload"
+      <!> "payload"
 
     let int32FromBinaryChars (cc:char array) =
       Convert.ToInt32(cc |> String, 2)
@@ -90,78 +88,88 @@ module Packets =
     let int64FromBinaryChars (cc:char array) =
       Convert.ToInt64(cc |> String, 2)
 
-    let trailingZeros =
-      '0' * qty.[0..]
+    // let trailingZeros =
+    //   '0' * qty.[0..]
 
-    let version =
+    let packetVersion =
       %% +.(bit * qty[3])
       -|> int32FromBinaryChars
-      // <!> "version"
+      <!> "packetVersion"
+
+    let operationType =
+      %% +.(bit * qty[3])
+      -|> int32FromBinaryChars
+      <!> "operationType"
 
     let literal =
-      %% +.version -? "100" -- +.payload -- trailingZeros
+      %% +.packetVersion -- "100" ?- +.payload // -- trailingZeros
       -|> fun v cc -> (v, int32FromBinaryChars(cc)) |> LiteralValue
-      // <!> "literal"
+      <!> "literal"
 
-    let operationLength =
-      %[
-        %% '0' -- +.(bit * qty[15]) -|> int32FromBinaryChars |>> LengthInBits;
-        %% '1' -- +.(bit * qty[11]) -|> int32FromBinaryChars |>> NumberOfSubPackets;
-      ]
-
-    let rec operationsByLength n : Parser<_,_> =
-      let p = %% +.(packet * qty.[1..])
-              -|> fun pp -> pp
-      
-      let operationParsingError (i:int64) (e:ParserError) (msg:string) =
-        messageError (sprintf "error parsing operation at %d" (i + e.Position.Index))
-
+    // packetsByLength gets a custom stream parser so that we can parse
+    // packets until we have consumed the expected number of bits
+    // TODO: validate that we have not consumed too many bits
+    let rec packetsByLength n : Parser<_,_> =
       (
         fun stream ->
+          let initialState = stream.State
           let initialIndex = stream.Index
-          let ops = stream.Read n
-          match run p ops with
-          | Success(r, _, _) -> Reply(r |> Array.ofSeq)
-          | Failure(errorMsg, parseError, _) ->
-              Reply(Error, operationParsingError initialIndex parseError errorMsg)
-      )
-      <!> "operationsByLength"
+          let mutable errors : ErrorMessageList = null
+          let results = ResizeArray<Packet>()
 
-    and operation : Parser<_,_> =
+          while (stream.Index - initialIndex) < n && errors = null do
+            let reply : Reply<Packet> = (packet stream)
+            if reply.Error <> null then
+              errors <- reply.Error
+            else
+              results.Add(reply.Result)
+
+          if errors <> null then
+            Reply(Error, errors)
+          else
+            Reply(results.ToArray())
+      )
+      <!> "packetsByLength"
+
+    // operationBody gets a custom stream parser so we can make a choice
+    // of the next thing to parse based on the length type ID
+    and operationBody : Parser<_,_> =
       (
         fun stream ->
           let initialState = stream.State
 
-          let versionBits = stream.Read 3
-          let version = Convert.ToInt32(versionBits, 2)
-  
-          let operationBits = stream.Read 3
-          let operation = Convert.ToInt32(operationBits, 2)
+          let reply =
+            match stream.Read 1 with
+            | "0" ->
+              let lengthBits = stream.Read 15
+              let length = Convert.ToInt32(lengthBits, 2)
+              // printfn "%A: length is 15 bit number %d" stream.Position length
+              stream |> packetsByLength length
 
-          match stream.Read 1 with
-          | "0" ->
-            let lengthBits = stream.Read 15
-            let length = Convert.ToInt32(lengthBits, 2)
-            let rest = stream.Read length
-            match rest |> run (operationsByLength length) with
-            | Success(r,_,_) -> Reply(Operation(version, operation, r))
-            | Failure(errorMsg,_,_) ->
-              stream.BacktrackTo(initialState)
-              Reply(Error, messageError errorMsg)
+            | "1" ->
+              let nSubPacketsBits = stream.Read 11
+              let nSubPackets = Convert.ToInt32(nSubPacketsBits, 2)
+              // printfn "%A: length is %d sub packets " stream.Position nSubPackets
+              let p =
+                %% +.(packet * qty.[nSubPackets])
+                -|> fun r -> r
+                <!> "operationsByCount"
+              p stream
+            | _ ->
+              let error = expectedString "'0' or '1'"
+              Reply(Error, error)
 
-          | "1" ->
-            let nSubPacketsBits = stream.Read 11
-            let nSubPackets = Convert.ToInt32(nSubPacketsBits, 2)
-            let p =
-              %% +.(packet * qty.[nSubPackets])
-              -|> fun r -> r
-              <!> "operationsByCount"
-            let reply = p stream
-            Reply(Operation(version, operation, reply.Result))
-          | _ ->
-            let error = expectedString "'0' or '1'"
-            Reply(Error, error)
+          if reply.Error <> null then
+            stream.BacktrackTo initialState
+            reply
+          else
+            reply
       )
+      <!> "operationBody"
+
+    and operation : Parser<_,_> =
+      %% +.packetVersion -- +.operationType -- +.operationBody
+      -|> fun v o b -> Operation(v, o, b)
       <!> "operation"
 
     and packet =
@@ -170,13 +178,12 @@ module Packets =
         operation;
       ]
 
+    let parseBinaryPacket (binaryInput:string) =
+      match run packet binaryInput with
+      | Success(r, _, _)   -> Result.Ok(r)
+      | Failure(errorMsg, _, _) -> Result.Error(errorMsg)
+
     let parseHexAsPacket (input:string) =
-      match run packet (input |> hex2binary) with
-      | Success(r, _, _)   -> Result.Ok(r)
-      | Failure(errorMsg, _, _) -> Result.Error(errorMsg)
-
-    let parseHexAsOperation (input:string) =
-      match run operation (input |> hex2binary) with
-      | Success(r, _, _)   -> Result.Ok(r)
-      | Failure(errorMsg, _, _) -> Result.Error(errorMsg)
-
+      let b = input |> hex2binary
+      // printfn "hex '%s' to binary '%s'" input b
+      parseBinaryPacket b
