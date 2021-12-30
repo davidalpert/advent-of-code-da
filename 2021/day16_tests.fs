@@ -225,3 +225,13 @@ module Day16 =
     | Error(e)   -> failwith e
     | Ok(result) ->
       result.value |> should equal (expectedValue |> int64)
+
+  [<Fact>]
+  let ``Day 16 - part 2 - value of outermost packet`` () =
+
+    let r = parseHexAsPacket day16data
+
+    match r with
+    | Error(e)   -> failwith e
+    | Ok(result) ->
+      result.value |> should equal 1549026292886L
