@@ -50,12 +50,12 @@ module Packets =
     // trace helper to assist with debugging misbehaving parsers
     let (<!>) (p: Parser<_,_>) (label) : Parser<_,_> =
       fun stream ->
-        printfn "%A: Entering %s" stream.Position label
+        // printfn "%A: Entering %s" stream.Position label
         let reply = p stream
-        if reply.Status = Ok then
-          printfn "%A: Leaving %s (%A) [%A]" stream.Position label reply.Status reply.Result
-        else
-          printfn "%A: Leaving %s (%A) [%A]" stream.Position label reply.Status reply.Error
+        // if reply.Status = Ok then
+        //   printfn "%A: Leaving %s (%A) [%A]" stream.Position label reply.Status reply.Result
+        // else
+        //   printfn "%A: Leaving %s (%A) [%A]" stream.Position label reply.Status reply.Error
         reply
 
     let bit =
