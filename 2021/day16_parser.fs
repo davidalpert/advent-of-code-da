@@ -10,6 +10,14 @@ module Packets =
     | LiteralValue of PacketVersion * int32
     | Operation of PacketVersion * OperationType * Packet array
 
+    with
+      member x.sumOfPacketVersions =
+        match x with
+        | LiteralValue(v,_) -> v
+        | Operation(v,_,pp) ->
+          pp
+          |> Array.fold (fun s p -> s + p.sumOfPacketVersions) v
+
   module Parser =
 
     open System

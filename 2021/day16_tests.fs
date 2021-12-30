@@ -183,3 +183,17 @@ module Day16 =
     | Error(e)   -> failwith e
     | Ok(result) ->
       result |> should equal expected
+
+  [<Theory>]
+  [<InlineData("8A004A801A8002F478", 16)>]
+  [<InlineData("620080001611562C8802118E34", 12)>]
+  [<InlineData("C0015000016115A2E0802F182340", 23)>]
+  [<InlineData("A0016C880162017C3686B18A3D4780", 31)>]
+  let ``Day 16 - tests - sum of packet versions`` (input, expectedSum) =
+
+    let r = parseHexAsPacket input
+
+    match r with
+    | Error(e)   -> failwith e
+    | Ok(result) ->
+      result.sumOfPacketVersions |> should equal expectedSum
