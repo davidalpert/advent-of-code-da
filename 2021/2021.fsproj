@@ -32,11 +32,13 @@
     <Compile Include="day10_tests.fs" />
     <Compile Include="day13_parser.fs" />
     <Compile Include="day13_tests.fs" />
-    -->
     <Compile Include="day14_polymerization.fs" />
     <Compile Include="day14_tests.fs" />
     <Compile Include="day16_parser.fs" />
     <Compile Include="day16_tests.fs" />
+    -->
+    <Compile Include="day17_probe_launcher.fs" />
+    <Compile Include="day17_tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
