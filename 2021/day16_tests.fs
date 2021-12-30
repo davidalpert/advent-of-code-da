@@ -209,6 +209,34 @@ module Day16 =
       result.sumOfPacketVersions |> should equal 963
 
   [<Theory>]
+  [<InlineData("C200B40A82", """{ "sum": [1,2], "value": 3 }""")>]
+  [<InlineData("04005AC33890", """{ "product": [6,9], "value": 54 }""")>]
+  [<InlineData("880086C3E88112", """{ "minimum": [7,8,9], "value": 7 }""")>]
+  [<InlineData("CE00C43D881120", """{ "maximum": [7,8,9], "value": 9 }""")>]
+  [<InlineData("D8005AC2A8F0", """{ "less than": [5,15], "value": 1 }""")>]
+  [<InlineData("F600BC2D8F", """{ "greater than": [5,15], "value": 0 }""")>]
+  [<InlineData("9C005AC2F8F0", """{ "equal to": [5,15], "value": 0 }""")>]
+  [<InlineData("9C0141080250320F1802104A08",  """{ "equal to": [{ "sum": [1,3], "value": 4 },{ "product": [2,2], "value": 4 }], "value": 1 }""")>]
+  let ``Day 16 - tests - json of packets`` (input, expectedValue) =
+
+    let r = parseHexAsPacket input
+
+    match r with
+    | Error(e)   -> failwith e
+    | Ok(result) ->
+      result.toJson |> should equal (expectedValue.ToString().Trim())
+
+  [<Fact(Skip="skip)")>]
+  let ``Day 16 - part 2 - json of packets`` () =
+
+    let r = parseHexAsPacket day16data
+
+    match r with
+    | Error(e)   -> failwith e
+    | Ok(result) ->
+      result.toJson |> should equal ""
+
+  [<Theory>]
   [<InlineData("C200B40A82", 3)>]
   [<InlineData("04005AC33890", 54)>]
   [<InlineData("880086C3E88112", 7)>]

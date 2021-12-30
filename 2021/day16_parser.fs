@@ -18,6 +18,24 @@ module Packets =
           pp
           |> Array.fold (fun s p -> s + p.sumOfPacketVersions) v
 
+      member x.toJson =
+        match x with
+        | LiteralValue(_,v) -> sprintf "%d" v
+        | Operation(_,operationType,pp) ->
+          let operand =
+            match operationType with
+            | 0 -> (* sum     *) "sum"
+            | 1 -> (* product *) "product"
+            | 2 -> (* minimum *) "minimum"
+            | 3 -> (* maximum *) "maximum"
+            // // | 4 -> literal value
+            | 5 -> (* greater *) "greater than"
+            | 6 -> (* less    *) "less than"
+            | 7 -> (* equal   *) "equal to"
+            | _ -> failwith "unsupported operation type"
+
+          sprintf """{ "%s": [%s], "value": %d }""" operand (pp |> Array.map (fun p -> p.toJson) |> String.concat ",") (x.value)
+
       member x.value =
         match x with
         | LiteralValue(_,v) -> v
@@ -110,6 +128,9 @@ module Packets =
 
     let int64FromBinaryChars (cc:char array) =
       Convert.ToInt64(cc |> String, 2)
+
+    let bigIntFromBinaryChars (cc:char array) =
+      Convert.ToUInt64(cc |> String, 2) |> bigint
 
     // let trailingZeros =
     //   '0' * qty.[0..]
