@@ -18,6 +18,21 @@ module Packets =
           pp
           |> Array.fold (fun s p -> s + p.sumOfPacketVersions) v
 
+      member x.value =
+        match x with
+        | LiteralValue(_,v) -> v
+        | Operation(_,operationType,pp) ->
+          match operationType with
+          | 0 -> (* sum     *) pp |> Array.sumBy (fun p -> p.value)
+          | 1 -> (* product *) pp |> Array.fold (fun product p -> product * p.value) 1
+          | 2 -> (* minimum *) pp |> Seq.map (fun p -> p.value) |> Seq.min
+          | 3 -> (* maximum *) pp |> Seq.map (fun p -> p.value) |> Seq.max
+          // | 4 -> literal value
+          | 5 -> (* greater *) if pp.[0].value > pp.[1].value then 1 else 0
+          | 6 -> (* less    *) if pp.[0].value < pp.[1].value then 1 else 0
+          | 7 -> (* equal   *) if pp.[0].value = pp.[1].value then 1 else 0
+          | _ -> failwith "unsupported operation type"
+
   module Parser =
 
     open System

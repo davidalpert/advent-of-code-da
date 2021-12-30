@@ -207,3 +207,21 @@ module Day16 =
     | Error(e)   -> failwith e
     | Ok(result) ->
       result.sumOfPacketVersions |> should equal 963
+
+  [<Theory>]
+  [<InlineData("C200B40A82", 3)>]
+  [<InlineData("04005AC33890", 54)>]
+  [<InlineData("880086C3E88112", 7)>]
+  [<InlineData("CE00C43D881120", 9)>]
+  [<InlineData("D8005AC2A8F0", 1)>]
+  [<InlineData("F600BC2D8F", 0)>]
+  [<InlineData("9C005AC2F8F0", 0)>]
+  [<InlineData("9C0141080250320F1802104A08", 1)>]
+  let ``Day 16 - tests - value of packets`` (input, expectedValue) =
+
+    let r = parseHexAsPacket input
+
+    match r with
+    | Error(e)   -> failwith e
+    | Ok(result) ->
+      result.value |> should equal (expectedValue |> int64)
