@@ -36,9 +36,11 @@
     <Compile Include="day14_tests.fs" />
     <Compile Include="day16_parser.fs" />
     <Compile Include="day16_tests.fs" />
-    -->
     <Compile Include="day17_probe_launcher.fs" />
     <Compile Include="day17_tests.fs" />
+    -->
+    <Compile Include="day18_snailfish_math.fs" />
+    <Compile Include="day18_tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
