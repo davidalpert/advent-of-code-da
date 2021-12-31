@@ -26,9 +26,25 @@ module Day18 =
     (mustParse input).toString |> should equal input
 
   [<Theory>]
-  [<InlineData("[1,2]", "[[3,4],5]", "[[1,2],[[3,4],5]]")>]
-  let ``Day 18 - tests - addition`` (leftInput:string, rightInput:string, expectedString:string) =
-    let leftPair = leftInput |> mustParse
-    let rightPair = rightInput |> mustParse
+  [<InlineData("[5,2]", "[5,2]")>]
+  [<InlineData("[15,2]", "[[7,8],2]")>]
+  [<InlineData("[0,13]", "[0,[6,7]]")>]
+  [<InlineData("[[[[0,7],4],[15,[0,13]]],[1,1]]", "[[[[0,7],4],[[7,8],[0,13]]],[1,1]]")>]
+  [<InlineData("[[[[0,7],4],[[7,8],[0,13]]],[1,1]]", "[[[[0,7],4],[[7,8],[0,[6,7]]]],[1,1]]")>]
+  let ``Day 18 - tests - split`` (input:string, expectedString:string) =
+    let pair = input |> mustParse
 
-    (leftPair + rightPair).toString |> should equal expectedString
+    let didSplit,split = pair.split
+
+    let expectingSplit = (input <> expectedString)
+    didSplit |> should equal expectingSplit
+
+    split.toString |> should equal expectedString
+
+  // [<Theory>]
+  // [<InlineData("[1,2]", "[[3,4],5]", "[[1,2],[[3,4],5]]")>]
+  // let ``Day 18 - tests - addition`` (leftInput:string, rightInput:string, expectedString:string) =
+  //   let leftPair = leftInput |> mustParse
+  //   let rightPair = rightInput |> mustParse
+
+  //   (leftPair + rightPair).toString |> should equal expectedString
