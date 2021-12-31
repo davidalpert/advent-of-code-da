@@ -167,7 +167,7 @@ S....................#.........
     | Ok(area) ->
       (area.render vInitial) |> should equal expectedRender
 
-  [<Fact(Skip="silenced")>]
+  [<Fact>]
   let ``Day 17 - tests - allPossibleVelocitiesLessThan`` () =
     let input = "target area: x=20..30, y=-10..-5"
     let r = parse input
@@ -176,7 +176,7 @@ S....................#.........
     | Error(e) -> failwith e
     | Ok(area) ->
 
-      area.allPossibleVelocitiesLessThan 9
+      area.allPossibleVelocitiesLessThanYof 9
       |> Seq.map area.mapTrajectory
       |> Seq.filter area.endsInside
       |> Seq.maxBy highestPoint
@@ -191,10 +191,40 @@ S....................#.........
     | Error(e) -> failwith e
     | Ok(area) ->
 
-      area.allPossibleVelocitiesLessThan 300
+      area.allPossibleVelocitiesLessThanYof 150
       |> Seq.map area.mapTrajectory
       |> Seq.filter area.endsInside
-      // |> Seq.filter (fun t -> (t |> greatestHeight) > 0 )
       |> Seq.maxBy highestPoint
       |> greatestHeight
       |> should equal 5995 
+
+  [<Fact>]
+  let ``Day 17 - part 2 - example`` () =
+    let input = "target area: x=20..30, y=-10..-5"
+    let r = parse input
+
+    match r with
+    | Error(e) -> failwith e
+    | Ok(area) ->
+
+      area.allPossibleVelocitiesLessThanYof 10
+      |> Seq.map area.mapTrajectory
+      |> Seq.filter area.endsInside
+      |> Seq.distinctBy initialVelocity
+      |> Seq.length
+      |> should equal 112
+
+  [<Fact>]
+  let ``Day 17 - part 2 - calculation`` () =
+    let r = parse day17input
+
+    match r with
+    | Error(e) -> failwith e
+    | Ok(area) ->
+
+      area.allPossibleVelocitiesLessThanYof 150
+      |> Seq.map area.mapTrajectory
+      |> Seq.filter area.endsInside
+      |> Seq.distinctBy initialVelocity
+      |> Seq.length
+      |> should equal 3202

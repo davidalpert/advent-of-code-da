@@ -70,26 +70,28 @@ module ProbeLauncher =
 
       inside
 
-    member area.allPossibleVelocitiesLessThan (initialVY:int) =
+    member area.allPossibleVelocitiesLessThanYof (maxVY:int) =
+      let minY = area.lowestDepth
+
       Seq.unfold (fun (v:Velocity) ->
-        if (v.vy < area.greatestHeight && v.vx > area.farthestEdge) then
+        if v.vx = 0 && v.vy = maxVY then
           None
         else
           let vNext =
-            if v.vy < area.greatestHeight then
+            if v.vy = maxVY then
               {
-                vx = v.vx + 1;
-                vy = initialVY;
+                vx = v.vx - 1;
+                vy = minY;
               }
             else
               {
                 vx = v.vx;
-                vy = v.vy - 1;
+                vy = v.vy + 1;
               }
 
-          // printfn "v: %d,%d" v.vx v.vy
+          // printfn "> %d,%d" v.vx v.vy
           Some(v, vNext)
-      ) { vx = 0; vy = initialVY; }
+      ) { vx = area.farthestEdge; vy = area.lowestDepth; }
 
     member area.render (vInitial:Velocity) =
       let trajectory = vInitial |> area.mapTrajectory |> List.map fst
