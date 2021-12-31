@@ -41,6 +41,28 @@ module Day18 =
 
     split.toString |> should equal expectedString
 
+  [<Theory>]
+  [<InlineData("[5,2]", "[5,2]")>]
+  [<InlineData("[[[[[4,3],4],3],2],1]",
+                   "[[[[0,7],3],2],1]")>] // explode right
+  [<InlineData("[1,[2,[3,[4,[4,3]]]]]",
+               "[1,[2,[3,[8,0]]]]")>] // explode left
+  [<InlineData("[1,[[3,[[4,3],4]],2]]",
+               "[1,[[7,[0,7]],2]]")>] // explode both left and right
+  [<InlineData("[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]",
+               "[[[[  0  ,7],4],[7,[[8,4],9]]],[1,1]]")>] // from example
+  [<InlineData("[[[[0,7],4],[[7,8],[0,[6,7]]]],[1,1]]",
+               "[[[[0,7],4],[[7,8],[6,  0  ]]],[8,1]]")>] // from example
+  let ``Day 18 - tests - explode`` (input:string, expectedString:string) =
+    let expectingExplode = (input <> expectedString)
+    let pair = input |> mustParse
+
+    let exploded = pair.explode
+
+    fst exploded |> should equal expectingExplode
+
+    (snd exploded).toString |> should equal (expectedString.Replace(" ", ""))
+
   // [<Theory>]
   // [<InlineData("[1,2]", "[[3,4],5]", "[[1,2],[[3,4],5]]")>]
   // let ``Day 18 - tests - addition`` (leftInput:string, rightInput:string, expectedString:string) =

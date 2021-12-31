@@ -38,20 +38,66 @@ module SnailfishMath =
           let rightHasSplit,rightSplit = right.split
           (rightHasSplit, Pair(left,rightSplit))
 
-    member pair.reduce (depth:int) =
-      let innerDepth = depth + 1 
+    // To explode a pair, the pair's left value is added to the first regular number to the left of the exploding pair (if any), and the pair's right value is added to the first regular number to the right of the exploding pair (if any). Exploding pairs will always consist of two regular numbers. Then, the entire exploding pair is replaced with the regular number 0.
+    member private pair.explodeAtDepth (depth:int) : Option<int * int> * Pair =
+
+      let isValue (p:Pair) =
+        match p with
+        | Value(_) -> true
+        | Pair(_,_) -> false
+
+      let asValue (p:Pair) =
+        match p with
+        | Value(v) -> v
+        | Pair(_,_) -> failwith "Pair is not a Value"
+
       match pair with
-      | Value(v) ->
-        if v < 9 then
-          Value(v)
+      | Value(v) -> None, pair // a simple Value doesn't explode
+
+      | Pair(left,right) ->
+     
+        // an inner pair of Values deeper than 4 explodes (inside-out)
+        if depth > 4 && (left |> isValue) && (right |> isValue) then
+          let explodingLeft = left |> asValue
+          let explodingRight = right |> asValue
+          Some(explodingLeft, explodingRight), Value(0)
+
         else
-          // split
 
-          Value(v)
+          // check left for explosions
+          match left.explodeAtDepth (depth+1) with
 
-      | _ -> failwith "TBD"
-          // split
-    static member (+) (left:Pair, right:Pair) = Pair(left,right).reduce 0
+          // left exploded...
+          | Some(explodingLeft, explodingRight), newLeft ->
+
+            // merge right
+            match right with
+            | Value(v) ->  Some(explodingLeft, 0),              Pair(newLeft, Value(explodingRight + v))
+            | Pair(_,_) -> Some(explodingLeft, explodingRight), Pair(newLeft, right)
+
+          // left did not explode
+          | None, _ -> match right.explodeAtDepth (depth + 1) with
+
+                       // right exploded
+                       | Some(explodingLeft, explodingRight), newRight ->
+                          // merge left
+                          match left with
+                          | Value(v) -> Some(0, explodingRight),              Pair(Value(v + explodingLeft), newRight)
+                          | Pair(_,_) -> Some(explodingLeft, explodingRight), Pair(left, newRight)
+
+                       // neither child exploded; as you were...
+                       | None, _ -> None, pair
+
+    member pair.explode =
+      match pair.explodeAtDepth 1 with
+      | Some(_,_),p -> true, p
+      | None, p     -> false, p
+
+    // member pair.reduce (depth:int) =
+    //   match pair with
+    //   | _ -> failwith "TBD"
+    //       // split
+    // static member (+) (left:Pair, right:Pair) = Pair(left,right).reduce 0
 
 
 module SnailfishMathParser =
