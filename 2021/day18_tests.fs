@@ -219,13 +219,13 @@ module Day18 =
   let ``Day 18 - part 2 - oneWayCombinationsOf`` ()  =
     let lst = [1;2;3]
 
-    lst |> oneWayCombinationsOf |> should equal [[3]; [3; 2]; [3; 2; 1]; [3; 1]; [2]; [2; 1]; [1]]
+    lst |> combinationsOfSize 2 |> List.ofSeq |> should equal [[2; 1]; [3; 1]; [3; 2]]
 
   [<Fact>]
   let ``Day 18 - part 2 - allCombinationsOfSize2`` ()  =
     let lst = [1;2;3]
 
-    lst |> allCombinationsOfSize2 |> should equal [
+    lst |> allCombinationsOfSize2 |> List.ofArray |> should equal [
       (1, 2);
       (1, 3); 
       (2, 1);
@@ -243,7 +243,43 @@ module Day18 =
 
     pairs
     |> allCombinationsOfSize2
-    |> List.map (fun (x,y) -> x + y)
-    |> List.map (fun p -> p.magnitude)
-    |> List.max
+    |> Array.map (fun (x,y) -> x + y)
+    |> Array.map (fun p -> p.magnitude)
+    |> Array.max
     |> should equal ( 3993 |> int64 )
+
+  [<Fact>]
+  let ``Day 18 - part 2 - number of combinations to test`` ()  =
+    let pairs =
+      day18input.Trim().Split("\n")
+        |> Array.map mustParse
+        |> List.ofArray
+
+    printfn "generating combinations from %d lines of input...\n\n" pairs.Length
+
+    pairs
+    |> allCombinationsOfSize2
+    |> Seq.length
+    |> should equal 9900
+
+  [<Fact>]
+  let ``Day 18 - part 2 - calculation`` ()  =
+    let pairs =
+      day18input.Trim().Split("\n")
+        |> Array.map mustParse
+        |> List.ofArray
+
+    printfn "generating combinations from %d lines of input...\n\n" pairs.Length
+
+    pairs
+    |> allCombinationsOfSize2
+    |> Array.mapi (fun i (x:Pair,y:Pair) ->
+      printfn "%d - adding:\n%s\n%s\n\n" i x.toString y.toString
+      let sum = x + y
+      printfn "result: %s" sum.toString
+      let m = sum.magnitude
+      printfn "magnitude: %d" m
+      m
+    )
+    |> Array.max
+    |> should equal ( 4837 |> int64 )

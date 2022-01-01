@@ -178,6 +178,7 @@ module SnailfishMath =
       | Pair(left,right) -> (3L * left.magnitude) + (2L * right.magnitude)
       | Value(v)         -> v |> int64
 
+  // source: http://www.fssnip.net/2z/title/All-combinations-of-list-elements
   let oneWayCombinationsOf lst =
     let rec comb accLst elemLst =
         match elemLst with
@@ -187,10 +188,24 @@ module SnailfishMath =
         | _ -> accLst
     comb [] lst
 
+  // source: https://stackoverflow.com/a/4495708
+  let combinationsOfSize size set =
+    let rec comb size acc set = seq {
+      match size, set with 
+      | n, x::xs -> 
+          if n > 0 then yield! comb (n-1) (x::acc) xs
+          if n >= 0 then yield! comb n acc xs 
+      | 0, [] -> yield acc 
+      | _, [] -> ()
+    }
+
+    comb size [] set
+
   let allCombinationsOfSize2 lst =
-    let pairs = lst |> oneWayCombinationsOf |> List.filter (fun c -> c.Length = 2) |> List.map (fun c -> c[0],c[1])
-    pairs @ (pairs |> List.map (fun (a,b) -> b,a))
-    |> List.sort
+    let pairs = lst |> combinationsOfSize 2 |> Seq.map (fun c -> c[0],c[1])
+    Seq.concat [pairs; (pairs |> Seq.map (fun (a,b) -> b,a))]
+    |> Array.ofSeq
+    |> Array.sort
 
 module SnailfishMathParser =
   open FParsec
