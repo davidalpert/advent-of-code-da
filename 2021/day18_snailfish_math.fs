@@ -172,6 +172,12 @@ module SnailfishMath =
       ~~~ "---------\nadding:\n%s\n%s\n%s\n" left.toString right.toString result.toString
       Pair(left,right).reduce
 
+    // The magnitude of a pair is 3 times the magnitude of its left element plus 2 times the magnitude of its right element. The magnitude of a regular number is just that number.
+    member pair.magnitude : int64 =
+      match pair with
+      | Pair(left,right) -> (3L * left.magnitude) + (2L * right.magnitude)
+      | Value(v)         -> v |> int64
+
 module SnailfishMathParser =
   open FParsec
   open FParsec.Pipes

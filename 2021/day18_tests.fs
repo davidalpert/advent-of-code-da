@@ -154,3 +154,18 @@ module Day18 =
 
     result.toString
     |> should equal (expectedString.Trim())
+
+  [<Theory>]
+  [<InlineData("[9,1]", 29)>]
+  [<InlineData("[1,9]", 21)>]
+  [<InlineData("[[9,1],[1,9]]", 129)>]
+  [<InlineData("[[1,2],[[3,4],5]]", 143)>]
+  [<InlineData("[[[[0,7],4],[[7,8],[6,0]]],[8,1]]", 1384)>]
+  [<InlineData("[[[[1,1],[2,2]],[3,3]],[4,4]]", 445)>]
+  [<InlineData("[[[[3,0],[5,3]],[4,4]],[5,5]]", 791)>]
+  [<InlineData("[[[[5,0],[7,4]],[5,5]],[6,6]]", 1137)>]
+  [<InlineData("[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]", 3488)>]
+  let ``Day 18 - tests - magnitude`` (input:string, expectedMagnitude:int64) =
+    let pair = input |> mustParse
+
+    pair.magnitude |> should equal expectedMagnitude
