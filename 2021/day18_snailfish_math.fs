@@ -37,12 +37,12 @@ module SnailfishMath =
       match pair with
 
       | Value(v) ->
-        if v < 10 then
-          (false, pair)
-        else
+        if v > 9 then
           let left = v / 2
           let right = v - left
           (true, Pair(left |> Value, right |> Value))
+        else
+          (false, pair)
 
       | Pair(left,right) ->
         let leftHasSplit, leftSplit = left.split
