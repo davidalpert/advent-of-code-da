@@ -38,8 +38,23 @@ module SnailfishMath =
           let rightHasSplit,rightSplit = right.split
           (rightHasSplit, Pair(left,rightSplit))
 
+    member private pair.applyExplosion (explodingLeft:int option) (explodingRight:int option) =
+      // printfn "%s: applying explosion %A <--|--> %A" pair.toString explodingLeft explodingRight
+      match pair with
+      | Value(v) -> pair // don't apply an explosion to a value because we don't know which direction we are exploding
+      | Pair(left,right) ->
+        if explodingLeft.IsSome then
+          match right with
+          | Value(v)  -> Pair(left, Value(v + explodingLeft.Value))
+          | Pair(_,_) -> Pair(left, right.applyExplosion explodingLeft explodingRight)
+        else // explodingRight
+          match left with
+          | Value(v)  -> Pair(Value(v + explodingRight.Value), right)
+          | Pair(_,_) -> Pair(left.applyExplosion None explodingRight, right)
+
     // To explode a pair, the pair's left value is added to the first regular number to the left of the exploding pair (if any), and the pair's right value is added to the first regular number to the right of the exploding pair (if any). Exploding pairs will always consist of two regular numbers. Then, the entire exploding pair is replaced with the regular number 0.
     member private pair.explodeAtDepth (depth:int) : Option<int * int> * Pair =
+      // printfn "%s: exploding at depth %d" pair.toString depth
 
       let isValue (p:Pair) =
         match p with
@@ -60,6 +75,7 @@ module SnailfishMath =
         if depth > 4 && (left |> isValue) && (right |> isValue) then
           let explodingLeft = left |> asValue
           let explodingRight = right |> asValue
+          // printfn "pair explodes: %A <--|--> %A" explodingLeft explodingRight
           Some(explodingLeft, explodingRight), Value(0)
 
         else
@@ -67,23 +83,24 @@ module SnailfishMath =
           // check left for explosions
           match left.explodeAtDepth (depth+1) with
 
-          // left exploded...
           | Some(explodingLeft, explodingRight), newLeft ->
+            // printfn "%s: left exploded %A <--|--> %A" pair.toString explodingLeft explodingRight
 
             // merge right
             match right with
             | Value(v) ->  Some(explodingLeft, 0),              Pair(newLeft, Value(explodingRight + v))
-            | Pair(_,_) -> Some(explodingLeft, explodingRight), Pair(newLeft, right)
+            | Pair(_,_) -> Some(explodingLeft, explodingRight), Pair(newLeft, (right.applyExplosion None (Some explodingRight)))
 
           // left did not explode
           | None, _ -> match right.explodeAtDepth (depth + 1) with
 
-                       // right exploded
                        | Some(explodingLeft, explodingRight), newRight ->
+                          // printfn "%s: right exploded %A <--|--> %A" pair.toString explodingLeft explodingRight
+
                           // merge left
                           match left with
                           | Value(v) -> Some(0, explodingRight),              Pair(Value(v + explodingLeft), newRight)
-                          | Pair(_,_) -> Some(explodingLeft, explodingRight), Pair(left, newRight)
+                          | Pair(_,_) -> Some(explodingLeft, explodingRight), Pair(left.applyExplosion (Some explodingLeft) None, newRight)
 
                        // neither child exploded; as you were...
                        | None, _ -> None, pair
