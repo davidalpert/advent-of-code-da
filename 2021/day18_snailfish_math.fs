@@ -110,11 +110,32 @@ module SnailfishMath =
       | Some(_,_),p -> true, p
       | None, p     -> false, p
 
-    // member pair.reduce (depth:int) =
-    //   match pair with
-    //   | _ -> failwith "TBD"
-    //       // split
-    // static member (+) (left:Pair, right:Pair) = Pair(left,right).reduce 0
+    member pair.reduce =
+      match pair with
+      | Value(v) -> pair
+      | Pair(_,_) ->
+        let mutable reducing = true
+        let mutable currentPair = pair
+
+        while reducing do
+          // try to explode
+          let exploded, resultingPair = currentPair.explode
+          if exploded then
+            // printfn "%s : exploded : %s" currentPair.toString resultingPair.toString
+            currentPair <- resultingPair
+          else
+            // try to split
+            let split, splitPair = currentPair.split
+            if split then
+              // printfn "%s : split : %s" currentPair.toString resultingPair.toString
+              currentPair <- splitPair
+            else
+              // printfn "%s : done" currentPair.toString
+              reducing <- false
+
+        currentPair
+
+    static member (+) (left:Pair, right:Pair) = Pair(left,right).reduce
 
 
 module SnailfishMathParser =

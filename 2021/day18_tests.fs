@@ -63,10 +63,18 @@ module Day18 =
 
     (snd exploded).toString |> should equal (expectedString.Replace(" ", ""))
 
-  // [<Theory>]
-  // [<InlineData("[1,2]", "[[3,4],5]", "[[1,2],[[3,4],5]]")>]
-  // let ``Day 18 - tests - addition`` (leftInput:string, rightInput:string, expectedString:string) =
-  //   let leftPair = leftInput |> mustParse
-  //   let rightPair = rightInput |> mustParse
+  [<Theory>]
+  [<InlineData("[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]", "[[[[0,7],4],[[7,8],[6,0]]],[8,1]]")>]
+  let ``Day 18 - tests - reduce`` (input:string, expectedReducedResult:string) =
+    let pair = input |> mustParse
 
-  //   (leftPair + rightPair).toString |> should equal expectedString
+    pair.reduce.toString |> should equal expectedReducedResult
+
+
+  [<Theory>]
+  [<InlineData("[1,2]", "[[3,4],5]", "[[1,2],[[3,4],5]]")>]
+  let ``Day 18 - tests - addition`` (leftInput:string, rightInput:string, expectedString:string) =
+    let leftPair = leftInput |> mustParse
+    let rightPair = rightInput |> mustParse
+
+    (leftPair + rightPair).toString |> should equal expectedString
