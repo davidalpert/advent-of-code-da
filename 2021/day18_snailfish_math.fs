@@ -2,6 +2,20 @@ namespace AdventOfCode
 
 module SnailfishMath =
 
+  // debug helpers
+  let ( ~~~ ) =
+    // printfn
+    sprintf
+
+  let ( ~~~~ ) =
+    // printfn
+    sprintf
+
+  let ( ~~~~~ ) =
+    // printfn
+    sprintf
+
+
   // Snailfish numbers aren't like regular numbers. Instead, every snailfish number is a pair - an ordered list of two elements. Each element of the pair can be either a regular number or another pair.
   type Pair = 
   | Value of int 
@@ -23,7 +37,7 @@ module SnailfishMath =
       match pair with
 
       | Value(v) ->
-        if v < 9 then
+        if v < 10 then
           (false, pair)
         else
           let left = v / 2
@@ -39,22 +53,27 @@ module SnailfishMath =
           (rightHasSplit, Pair(left,rightSplit))
 
     member private pair.applyExplosion (explodingLeft:int option) (explodingRight:int option) =
-      // printfn "%s: applying explosion %A <--|--> %A" pair.toString explodingLeft explodingRight
+      ~~~~ "%s: applying explosion %A <--|--> %A" pair.toString explodingLeft explodingRight
+
       match pair with
-      | Value(v) -> pair // don't apply an explosion to a value because we don't know which direction we are exploding
+      | Value(v) -> false, pair // don't apply an explosion to a value because we don't know which direction we are exploding
       | Pair(left,right) ->
         if explodingLeft.IsSome then
           match right with
-          | Value(v)  -> Pair(left, Value(v + explodingLeft.Value))
-          | Pair(_,_) -> Pair(left, right.applyExplosion explodingLeft explodingRight)
+          | Value(v)  -> true, Pair(left, Value(v + explodingLeft.Value))
+          | Pair(_,_) ->
+            let applied, updatedRight = right.applyExplosion explodingLeft explodingRight
+            applied, Pair(left, updatedRight)
         else // explodingRight
           match left with
-          | Value(v)  -> Pair(Value(v + explodingRight.Value), right)
-          | Pair(_,_) -> Pair(left.applyExplosion None explodingRight, right)
+          | Value(v)  -> true, Pair(Value(v + explodingRight.Value), right)
+          | Pair(_,_) ->
+            let applied, updatedLeft = left.applyExplosion explodingLeft explodingRight
+            applied, Pair(updatedLeft, right)
 
     // To explode a pair, the pair's left value is added to the first regular number to the left of the exploding pair (if any), and the pair's right value is added to the first regular number to the right of the exploding pair (if any). Exploding pairs will always consist of two regular numbers. Then, the entire exploding pair is replaced with the regular number 0.
     member private pair.explodeAtDepth (depth:int) : Option<int * int> * Pair =
-      // printfn "%s: exploding at depth %d" pair.toString depth
+      ~~~~~ "%s: exploding at depth %d" pair.toString depth
 
       let isValue (p:Pair) =
         match p with
@@ -75,7 +94,7 @@ module SnailfishMath =
         if depth > 4 && (left |> isValue) && (right |> isValue) then
           let explodingLeft = left |> asValue
           let explodingRight = right |> asValue
-          // printfn "pair explodes: %A <--|--> %A" explodingLeft explodingRight
+          ~~~~ "pair explodes: %A <--|--> %A" explodingLeft explodingRight
           Some(explodingLeft, explodingRight), Value(0)
 
         else
@@ -84,23 +103,33 @@ module SnailfishMath =
           match left.explodeAtDepth (depth+1) with
 
           | Some(explodingLeft, explodingRight), newLeft ->
-            // printfn "%s: left exploded %A <--|--> %A" pair.toString explodingLeft explodingRight
+            ~~~~~ "%s: left exploded %A <--|--> %A" pair.toString explodingLeft explodingRight
 
             // merge right
             match right with
-            | Value(v) ->  Some(explodingLeft, 0),              Pair(newLeft, Value(explodingRight + v))
-            | Pair(_,_) -> Some(explodingLeft, explodingRight), Pair(newLeft, (right.applyExplosion None (Some explodingRight)))
+            | Value(v) ->  Some(explodingLeft, 0), Pair(newLeft, Value(explodingRight + v))
+            | Pair(_,_) ->
+              let applied, updatedRight = right.applyExplosion None (Some explodingRight)
+              if applied then
+                Some(explodingLeft, 0), Pair(newLeft, updatedRight)
+              else
+                Some(explodingLeft, explodingRight), Pair(newLeft, updatedRight)
 
           // left did not explode
           | None, _ -> match right.explodeAtDepth (depth + 1) with
 
                        | Some(explodingLeft, explodingRight), newRight ->
-                          // printfn "%s: right exploded %A <--|--> %A" pair.toString explodingLeft explodingRight
+                          ~~~~~ "%s: right exploded %A <--|--> %A" pair.toString explodingLeft explodingRight
 
                           // merge left
                           match left with
-                          | Value(v) -> Some(0, explodingRight),              Pair(Value(v + explodingLeft), newRight)
-                          | Pair(_,_) -> Some(explodingLeft, explodingRight), Pair(left.applyExplosion (Some explodingLeft) None, newRight)
+                          | Value(v) -> Some(0, explodingRight), Pair(Value(v + explodingLeft), newRight)
+                          | Pair(_,_) ->
+                            let applied, updatedLeft = left.applyExplosion (Some explodingLeft) None
+                            if applied then 
+                              Some(0, explodingRight), Pair(updatedLeft, newRight)
+                            else
+                              Some(explodingLeft, explodingRight), Pair(updatedLeft, newRight)
 
                        // neither child exploded; as you were...
                        | None, _ -> None, pair
@@ -118,25 +147,30 @@ module SnailfishMath =
         let mutable currentPair = pair
 
         while reducing do
+          // ~~~ "%s : reducing" currentPair.toString
           // try to explode
           let exploded, resultingPair = currentPair.explode
           if exploded then
-            // printfn "%s : exploded : %s" currentPair.toString resultingPair.toString
+            ~~~ "%s : exploded" currentPair.toString
             currentPair <- resultingPair
           else
             // try to split
             let split, splitPair = currentPair.split
             if split then
-              // printfn "%s : split : %s" currentPair.toString resultingPair.toString
+              ~~~ "%s : split" currentPair.toString
               currentPair <- splitPair
             else
-              // printfn "%s : done" currentPair.toString
+              ~~~ "%s : done" currentPair.toString
               reducing <- false
 
         currentPair
 
     static member (+) (left:Pair, right:Pair) = Pair(left,right).reduce
 
+    static member (++) (left:Pair, right:Pair) = // + with debugging
+      let result = Pair(left,right)
+      ~~~ "---------\nadding:\n%s\n%s\n%s\n" left.toString right.toString result.toString
+      Pair(left,right).reduce
 
 module SnailfishMathParser =
   open FParsec
