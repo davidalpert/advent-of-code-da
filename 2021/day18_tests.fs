@@ -199,3 +199,18 @@ module Day18 =
     result.toString |> should equal (expectedSum.Trim())
 
     result.magnitude |> should equal expectedMagnitude
+
+  [<Fact>]
+  let ``Day 18 - part 1 - calculation`` ()  =
+
+    let pairs = day18input.Trim().Split("\n")
+                |> Array.map mustParse
+                |> List.ofArray
+
+    let result =
+      pairs.Tail
+      |> List.fold (fun (s:Pair) (p:Pair) -> s + p) (pairs.Head)
+
+    result.toString |> should equal ("[[[[6,6],[6,6]],[[6,7],[7,7]]],[[[0,7],[7,7]],[[7,7],[7,8]]]]")
+
+    result.magnitude |> should equal (3734 |> int64)
