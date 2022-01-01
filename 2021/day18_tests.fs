@@ -233,3 +233,17 @@ module Day18 =
       (3, 1); 
       (3, 2);
     ]
+
+  [<Fact>]
+  let ``Day 18 - part 2 - example`` ()  =
+
+    let pairs = day18example.Trim().Split("\n")
+                |> Array.map mustParse
+                |> List.ofArray
+
+    pairs
+    |> allCombinationsOfSize2
+    |> List.map (fun (x,y) -> x + y)
+    |> List.map (fun p -> p.magnitude)
+    |> List.max
+    |> should equal ( 3993 |> int64 )
