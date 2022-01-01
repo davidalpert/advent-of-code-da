@@ -214,3 +214,22 @@ module Day18 =
     result.toString |> should equal ("[[[[6,6],[6,6]],[[6,7],[7,7]]],[[[0,7],[7,7]],[[7,7],[7,8]]]]")
 
     result.magnitude |> should equal (3734 |> int64)
+
+  [<Fact>]
+  let ``Day 18 - part 2 - oneWayCombinationsOf`` ()  =
+    let lst = [1;2;3]
+
+    lst |> oneWayCombinationsOf |> should equal [[3]; [3; 2]; [3; 2; 1]; [3; 1]; [2]; [2; 1]; [1]]
+
+  [<Fact>]
+  let ``Day 18 - part 2 - allCombinationsOfSize2`` ()  =
+    let lst = [1;2;3]
+
+    lst |> allCombinationsOfSize2 |> should equal [
+      (1, 2);
+      (1, 3); 
+      (2, 1);
+      (2, 3);
+      (3, 1); 
+      (3, 2);
+    ]

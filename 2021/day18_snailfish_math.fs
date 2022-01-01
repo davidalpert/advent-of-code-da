@@ -178,6 +178,20 @@ module SnailfishMath =
       | Pair(left,right) -> (3L * left.magnitude) + (2L * right.magnitude)
       | Value(v)         -> v |> int64
 
+  let oneWayCombinationsOf lst =
+    let rec comb accLst elemLst =
+        match elemLst with
+        | h::t ->
+            let next = [h]::List.map (fun el -> h::el) accLst @ accLst
+            comb next t
+        | _ -> accLst
+    comb [] lst
+
+  let allCombinationsOfSize2 lst =
+    let pairs = lst |> oneWayCombinationsOf |> List.filter (fun c -> c.Length = 2) |> List.map (fun c -> c[0],c[1])
+    pairs @ (pairs |> List.map (fun (a,b) -> b,a))
+    |> List.sort
+
 module SnailfishMathParser =
   open FParsec
   open FParsec.Pipes
