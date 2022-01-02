@@ -8,3 +8,16 @@ module utils =
         List.map List.head M
         :: transpose (List.map List.tail M)
     | _ -> []
+
+  // debug helpers
+  let ( ~~~ ) =
+    // printfn
+    sprintf
+
+  let ( ~~~~ ) =
+    // printfn
+    sprintf
+
+  let ( ~~~~~ ) =
+    // printfn
+    sprintf
