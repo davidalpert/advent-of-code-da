@@ -2,6 +2,8 @@ namespace AdventOfCode
 
 module BeaconScanner =
 
+  open FSharp.Stats
+
   // Due to magnetic alignment, each scanner is rotated some integer number of 90-degree turns around all of the x, y, and z axes. That is, one scanner might call a direction positive x, while another scanner might call that direction negative y. Or, two scanners might agree on which direction is positive x, but one scanner might be upside-down from the perspective of the other scanner. In total, each scanner could be in any of 24 different orientations: facing positive or negative x, y, or z, and considering any of four directions "up" from that facing.
   module Rotations =
 
@@ -61,23 +63,21 @@ module BeaconScanner =
 
   module Model =
     type Coordinate = {
-      x:int
-      y:int
-      z:int
+      v:Vector<int>
     }
     with
-      static member lift x y z = { x = x; y = y; z = z; }
+      // static member lift x y z = { x = x; y = y; z = z; }
+      static member lift (x:int) (y:int) (z:int) = {
+        v = ([| x; y; z; |] |> Vector.Generic.ofArray)
+      }
+
       static member unkonwn : Coordinate option = None
 
-      member c.string = sprintf "%d,%d,%d" c.x c.y c.z
+      member c.string = sprintf "%d,%d,%d" c.v.[0] c.v.[1] c.v.[2]
 
       member c.rotateByMatrix (m:int Matrix) =
-        let v = Matrix.Generic.ofSeq [| [| c.x; c.y; c.z; |] |]
-        let r = v * m
         {
-          x = r.[0, 0];
-          y = r.[0, 1];
-          z = r.[0, 2];
+          v = m * c.v
         }
 
       // member c.rotate fn = 

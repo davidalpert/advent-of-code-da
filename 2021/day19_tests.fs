@@ -40,19 +40,19 @@ module Day19 =
     Rotations.allRotationMatrices.Length
     |> should equal 24
 
-  // [<Theory>]
-  // [<InlineData("-1,-1,1", "1,-1,1")>]
+  [<Theory>]
+  [<InlineData("-1,-1,1", "1,-1,1")>]
   // [<InlineData("-2,-2,2", "2,-2,2")>]
   // [<InlineData("-3,-3,3", "3,-3,3")>]
   // [<InlineData("-2,-3,1", "2,-1,3")>]
   // [<InlineData("5,6,-4",  "-5,4,-6")>]
   // [<InlineData("8,0,7",   "-8,-7,0")>]
-  // let ``Day 19 - tests - transform a coordinate`` (input:string, expectedString:string) =
-  //   let c = Parser.mustParseCoordinate input
+  let ``Day 19 - tests - transform a coordinate`` (input:string, expectedString:string) =
+    let c = Parser.mustParseCoordinate input
 
-  //   // let m = Rotations.allRotationMatrices.[1]
+    let m = Rotations.allRotationMatrices.[1]
 
-  //   // (c.rotateByMatrix m).string |> should equal expectedString
+    (c.rotateByMatrix m).string |> should equal expectedString
 
   //   Rotations.allRotationMatrices
   //   |> Seq.findIndex (fun m -> (c.rotateByMatrix m).string = expectedString)

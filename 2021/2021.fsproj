@@ -47,7 +47,7 @@
 
   <ItemGroup>
     <PackageReference Include="FParsec-Pipes" Version="1.1.1" />
-    <PackageReference Include="FSPowerPack.Community" Version="3.0.0" />
+    <PackageReference Include="FSharp.Stats" Version="0.4.2" />
     <PackageReference Include="FsUnit" Version="4.1.0" />
     <PackageReference Include="FsUnit.xUnit" Version="4.1.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
