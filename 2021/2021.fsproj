@@ -43,6 +43,8 @@
     -->
     <Compile Include="day19_beacon_scanner.fs" />
     <Compile Include="day19_tests.fs" />
+    <Compile Include="day20_trench_map.fs" />
+    <Compile Include="day20_tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
