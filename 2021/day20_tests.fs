@@ -266,3 +266,41 @@ module Day20 =
     // |> should equal 5740 // too high
     // |> should equal 4922 // too low
     |> should equal 5306 // just right
+
+  [<Fact>]
+  let ``Day 20 - part 2 - exploration`` () =
+
+    let image = day20input |> Parser.mustParse
+
+    let expanded = image.expandBy 110
+
+    let n = 50
+
+    let enhanced = expanded.enhanceBy n
+
+    // printfn $"\n{expanded.render}\n"
+    // printfn "-------------------------"
+    // printfn $"\n{expanded.enhance.render}\n"
+    // printfn "-------------------------"
+    // printfn $"\n{expanded.enhance.enhance.render}\n"
+
+    let contracted = enhanced.contractBy n
+
+    printfn $"\n{contracted.render}\n"
+
+  [<Fact>]
+  let ``Day 20 - part 2 - calculation`` () =
+
+    let image = day20input |> Parser.mustParse
+
+    let expanded = image.expandBy 110
+
+    let n = 50
+
+    let enhanced = expanded.enhanceBy n
+
+    let contracted = enhanced.contractBy n
+
+    contracted.numberOfLitPixels
+    // |> should equal 40122 // too high
+    |> should equal 17497
