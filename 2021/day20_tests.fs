@@ -245,3 +245,24 @@ module Day20 =
     enhancedTwice.numberOfLitPixels
     |> should equal 35
 
+  [<Fact>]
+  let ``Day 20 - part 1 - calculation`` () =
+
+    let image = day20input |> Parser.mustParse
+
+    let expanded = image.expandBy 5
+
+    let enhancedTwice = expanded.enhanceBy 2
+
+    let contracted = enhancedTwice.contractBy 1 // to prune out the edge
+
+    // printfn $"\n{expanded.render}\n"
+    // printfn "-------------------------"
+    // printfn $"\n{expanded.enhance.render}\n"
+    // printfn "-------------------------"
+    // printfn $"\n{expanded.enhance.enhance.render}\n"
+
+    contracted.numberOfLitPixels
+    // |> should equal 5740 // too high
+    // |> should equal 4922 // too low
+    |> should equal 5306 // just right
