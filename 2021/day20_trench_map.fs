@@ -24,7 +24,7 @@ module TrenchMap =
 
   type Image = {
     EnhancementAlgorithm : char array
-    Content : ImageCoord [,]
+    Content : char [,]
   }
   with
     member i.getSurroundingCoords x y =
@@ -44,7 +44,7 @@ module TrenchMap =
         |> Seq.map (fun y ->
           seq { 0 .. (maxX-1) }
           |> Seq.map (fun x ->
-            i.Content[x,y].c
+            i.Content[x,y]
           )
           |> Array.ofSeq
           |> String
@@ -55,7 +55,7 @@ module TrenchMap =
         i.getSurroundingCoords x y
         |> Seq.map (fun (x,y) ->
           try
-            i.Content[x,y].c
+            i.Content[x,y]
           with
             | _ -> '.'
         )
@@ -81,9 +81,10 @@ module TrenchMap =
       let inputLines = lines.[2..] |> Array.map (fun s -> s.ToCharArray())
 
       let charFor x y =
-        {
-          x = x; y = y; c = inputLines[y][x]
-        }
+        // {
+        //   x = x; y = y; c = inputLines[y][x]
+        // }
+        inputLines[y][x]
 
       let inputImage = Array2D.init inputLines.[0].Length inputLines.Length charFor
 
