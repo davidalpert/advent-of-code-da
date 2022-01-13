@@ -24,7 +24,7 @@ module TrenchMap =
 
   type Image = {
     EnhancementAlgorithm : char array
-    Content : char [,]
+    Canvas : char [,]
   }
   with
     member i.getSurroundingCoords x y =
@@ -36,7 +36,7 @@ module TrenchMap =
       |> Seq.map (fun (mx, my) -> (x+mx, y+my))
 
       member i.dimensions =
-        i.Content |> Array2D.length1, i.Content |> Array2D.length2
+        i.Canvas |> Array2D.length1, i.Canvas |> Array2D.length2
 
       member i.render =
         let maxX,maxY = i.dimensions
@@ -44,7 +44,7 @@ module TrenchMap =
         |> Seq.map (fun y ->
           seq { 0 .. (maxX-1) }
           |> Seq.map (fun x ->
-            i.Content[x,y]
+            i.Canvas[x,y]
           )
           |> Array.ofSeq
           |> String
@@ -55,7 +55,7 @@ module TrenchMap =
         i.getSurroundingCoords x y
         |> Seq.map (fun (x,y) ->
           try
-            i.Content[x,y]
+            i.Canvas[x,y]
           with
             | _ -> '.'
         )
@@ -77,20 +77,20 @@ module TrenchMap =
       member i.expandBy n =
         let (mx,my) = i.dimensions
         let (nx,ny) = (mx+(n*2),my+(n*2))
-        let newContent = Array2D.init nx ny (fun x y -> '.')
+        let newCanvas = Array2D.init nx ny (fun x y -> '.')
 
-        Array2D.blit i.Content 0 0 newContent n n mx my
+        Array2D.blit i.Canvas 0 0 newCanvas n n mx my
 
-        { i with Content = newContent }
+        { i with Canvas = newCanvas }
 
       member i.contractBy n =
         let (mx,my) = i.dimensions
         let (nx,ny) = (mx-(n*2),my-(n*2))
-        let newContent = Array2D.init nx ny (fun x y -> '.')
+        let newCanvas = Array2D.init nx ny (fun x y -> '.')
 
-        Array2D.blit i.Content n n newContent 0 0 nx ny
+        Array2D.blit i.Canvas n n newCanvas 0 0 nx ny
 
-        { i with Content = newContent }
+        { i with Canvas = newCanvas }
 
   module Parser =
     let mustParse (input:string) =
@@ -108,5 +108,5 @@ module TrenchMap =
 
       {
         EnhancementAlgorithm = algorithm;
-        Content = inputImage;
+        Canvas = inputImage;
       }
