@@ -95,3 +95,33 @@ module Day20 =
     image.decimalFor x y
     |> should equal expected
 
+  [<Fact>]
+  let ``Day 20 - tests - expand`` () =
+
+    let image = day20sample |> Parser.mustParse
+
+    let expanded = image.expandBy 2
+
+    $"\n{expanded.render}\n"
+    |> should equal """
+.........
+.........
+..#..#...
+..#......
+..##..#..
+....#....
+....###..
+.........
+.........
+"""
+
+  [<Fact>]
+  let ``Day 20 - tests - contract`` () =
+
+    let image = day20sample |> Parser.mustParse
+
+    let expanded = image.expandBy 2
+
+    let contracted = expanded.contractBy 2
+
+    contracted.render |> should equal (image.render)

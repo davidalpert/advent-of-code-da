@@ -74,6 +74,24 @@ module TrenchMap =
       member i.decimalFor x y =
         i.bitStringFor x y |> binaryStringToInt
 
+      member i.expandBy n =
+        let (mx,my) = i.dimensions
+        let (nx,ny) = (mx+(n*2),my+(n*2))
+        let newContent = Array2D.init nx ny (fun x y -> '.')
+
+        Array2D.blit i.Content 0 0 newContent n n mx my
+
+        { i with Content = newContent }
+
+      member i.contractBy n =
+        let (mx,my) = i.dimensions
+        let (nx,ny) = (mx-(n*2),my-(n*2))
+        let newContent = Array2D.init nx ny (fun x y -> '.')
+
+        Array2D.blit i.Content n n newContent 0 0 nx ny
+
+        { i with Content = newContent }
+
   module Parser =
     let mustParse (input:string) =
       let lines = input.Trim().Split("\n")
