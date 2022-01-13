@@ -74,6 +74,9 @@ module TrenchMap =
       member i.decimalFor x y =
         i.bitStringFor x y |> binaryStringToInt
 
+      member i.enhancedCharByIndex e =
+        i.EnhancementAlgorithm[e]
+
       member i.expandBy n =
         let (mx,my) = i.dimensions
         let (nx,ny) = (mx+(n*2),my+(n*2))
@@ -91,6 +94,32 @@ module TrenchMap =
         Array2D.blit i.Canvas n n newCanvas 0 0 nx ny
 
         { i with Canvas = newCanvas }
+
+      member i.enhance =
+        let (mx,my) = i.dimensions
+
+        let c = 
+          i.Canvas
+          |> Array2D.mapi (fun x y c ->
+            // let d = i.decimalFor x y
+            // let nc = i.EnhancementAlgorithm[d]
+            // printfn $"enhancing ({x},{y}) '{c}' to {d} '{nc}'"
+            // nc
+            i.decimalFor x y
+            |> i.enhancedCharByIndex
+          )
+        
+        { i with Canvas = c }
+
+      member i.enhanceBy n =
+        seq { 1 .. n }
+        |> Seq.fold (fun (e:Image) i -> e.enhance) i
+
+      member i.numberOfLitPixels =
+        i.Canvas
+        |> Array2D.map toBit
+        |> Seq.cast<int>
+        |> Seq.sum
 
   module Parser =
     let mustParse (input:string) =
