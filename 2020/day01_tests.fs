@@ -35,16 +35,16 @@ module Day01 =
     |> multipleOfEntriesWhichSumByNTo 2 2020
     |> should equal 1013211
 
-  // [<Fact>]
-  // let ``Day 01 - Part 2 - Example`` () =
-  //   day01sample
-  //   |> soundingsFromInput
-  //   |> numberOfTimesDepthIncreasesByWindow 3
-  //   |> should equal 5
+  [<Fact>]
+  let ``Day 01 - Part 2 - Example`` () =
+    day01sample
+    |> integersFromInput
+    |> multipleOfEntriesWhichSumByNTo 3 2020
+    |> should equal 241861950
 
-  // [<Fact>]
-  // let ``Day 01 - Part 2 - Calculation`` () =
-  //   day01data
-  //   |> soundingsFromInput
-  //   |> numberOfTimesDepthIncreasesByWindow 3
-  //   |> should equal 1150
+  [<Fact>]
+  let ``Day 01 - Part 2 - Calculation`` () =
+    day01data
+    |> integersFromInput
+    |> multipleOfEntriesWhichSumByNTo 3 2020
+    |> should equal 13891280

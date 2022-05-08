@@ -21,7 +21,7 @@ test: restore ## run tests
 	dotnet test $(SLN)
 
 test-watch: restore ## run tests and watch
-	dotnet watch test --project 2020/2020.fsproj
+	dotnet watch test --project 2015/2015.fsproj
 
 .PHONY: help
 help: Makefile
