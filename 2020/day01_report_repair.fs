@@ -8,25 +8,22 @@ module ReportRepair =
         splitToTrimmedLines input
         |> Seq.map (fun s -> s |> int)
 
-    let chooserSumTo (n:int) (pair: int * int) =
-        let (a,b) = pair
-        // printfn "(%d + %d)" a b
-        if a + b = n then
-            Some(a,b)
+    let chooserSumTo (n:int) (expenses: int list) =
+        if expenses |> List.sum = n then
+            Some(expenses)
         else
             None
 
-    let entriesWhichSumTo (n:int) (report: seq<int>) : (int * int)  =
+    let entriesWhichSumByNTo (n:int) (s:int) (report: seq<int>) : (int list)  =
         report
         |> List.ofSeq
-        |> comb 2
-        |> Seq.map (fun ll -> (ll.[0], ll.[1]))
-        |> Seq.pick (chooserSumTo n)
+        |> comb n
+        |> Seq.pick (chooserSumTo s)
 
-    let multipleOfTuple (a:int, b:int) =
-        a * b
+    let multipleOfTuple (expenses: int list) =
+        expenses |> List.fold (fun state expense -> state * expense) 1
 
-    let multipleOfEntriesWhichSumTo (n:int) (report: seq<int>) =
+    let multipleOfEntriesWhichSumByNTo (n:int) (s:int) (report: seq<int>) =
         report
-        |> entriesWhichSumTo n
+        |> entriesWhichSumByNTo n s
         |> multipleOfTuple
