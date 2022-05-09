@@ -11,7 +11,7 @@
     <Compile Include="day00_input.fs" />
     <Compile Include="day00_utils.fs" />
     <Compile Include="day01_report_repair.fs" />
-    <Compile Include="day01_tests.fs" />
+    <!-- <Compile Include="day01_tests.fs" /> -->
   </ItemGroup>
 
   <ItemGroup>
