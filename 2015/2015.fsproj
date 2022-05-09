@@ -12,6 +12,8 @@
     <Compile Include="day00_utils.fs" />
     <Compile Include="day01_not_quite_lisp.fs" />
     <Compile Include="day01_tests.fs" />
+    <Compile Include="day02_wrapping_paper.fs" />
+    <Compile Include="day02_tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
