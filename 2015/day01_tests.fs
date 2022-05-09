@@ -27,3 +27,17 @@ module Day01 =
     day01data
     |> followDirections
     |> should equal 280 
+
+  [<Theory>]
+  [<InlineData(")", 1)>]
+  [<InlineData("()())", 5)>]
+  let ``Day 1 - part 2 - tests`` (input:string, expectedPosition:int) =
+    input
+    |> positionWhichEntersBasement
+    |> should equal expectedPosition
+
+  [<Fact>]
+  let ``Day 01 - Part 2 - calculation`` () =
+    day01data
+    |> positionWhichEntersBasement
+    |> should equal 1797 
