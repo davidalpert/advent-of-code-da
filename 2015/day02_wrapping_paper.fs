@@ -10,6 +10,22 @@ module WrappingPaper =
     w: int
     h: int
   }
+  with
+    member this.sides = [|
+        (this.l, this.w);
+        (this.w, this.h);
+        (this.h, this.l);
+      |]
+    
+    member this.sideAreas =
+      this.sides
+      |> Array.map (fun (x,y) -> x*y)
+
+    member this.sidePerimeters =
+      this.sides
+      |> Array.map (fun (x,y) -> x + x + y + y)
+
+    member this.volume = this.l * this.w * this.h
 
   let singleGiftToDimensions (s:string) =
     let dd = s.Split("x")
@@ -26,14 +42,18 @@ module WrappingPaper =
 
   let squareFootagePlusSlack (g:GiftDimensions) =
     // square footage rquired: 2*l*w + 2*w*h + 2*h*l 
-    let sides = [|
-      g.l * g.w;
-      g.w * g.h;
-      g.h * g.l;
-    |]
-
     // slack equal to the smallest side
-    let smallestSide = sides |> Array.min
+    let smallestSide = g.sideAreas |> Array.min
 
     // double the area of each side + the slack
-    ((sides |> Array.sum) * 2) + smallestSide
+    ((g.sideAreas |> Array.sum) * 2) + smallestSide
+
+  let lengthToWrap (g:GiftDimensions) =
+    g.sidePerimeters
+    |> Seq.min
+
+  let lengthForBow (g:GiftDimensions) =
+    g.volume
+
+  let lengthOfRibbonRequired (g:GiftDimensions) =
+    (g |> lengthToWrap) + (g |> lengthForBow)
