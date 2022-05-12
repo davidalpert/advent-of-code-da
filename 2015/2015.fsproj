@@ -18,6 +18,8 @@
     <Compile Include="day03_tests.fs" />
     <Compile Include="day04_mining_advent_coins.fs" />
     <Compile Include="day04_tests.fs" />
+    <Compile Include="day05_naughty_detector.fs" />
+    <Compile Include="day05_tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
