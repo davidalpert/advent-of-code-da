@@ -13,7 +13,8 @@ module Day04 =
   [<InlineData("abcdef", 5, 609043)>]
   [<InlineData("pqrstuv", 5, 1048970)>]
   [<InlineData("bgvyzdsv", 5, 254575)>] // <- day 4 - part 1 - input
-  let ``Day 4 - part 1`` (input:string, lengthOfPrefix:int, expectedN:int) =
+  [<InlineData("bgvyzdsv", 6, 1038736)>] // <- day 4 - part 2 - input
+  let ``Day 4`` (input:string, lengthOfPrefix:int, expectedN:int) =
     input
     |> firstCoinSuffix lengthOfPrefix
     |> should equal expectedN
