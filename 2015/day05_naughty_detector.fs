@@ -4,6 +4,7 @@ open AdventOfCode.Input
 
 module NaughtyDetector =
 
+  open System
   open System.Security.Cryptography
   open System.Text
 
@@ -33,6 +34,51 @@ module NaughtyDetector =
 
     found.IsNone
 
+  // It contains a pair of any two letters that appears at least twice in the string without overlapping, like xyxy (xy) or aabcdefgaa (aa), but not like aaa (aa, but it overlaps).
+  let containsPairOfLetters (s:string) : bool =
+    let found0 =
+      s
+      |> Seq.chunkBySize 2
+      |> Seq.filter (fun cc -> cc.Length = 2 )
+      |> Seq.countBy (fun cc -> (cc.[0],cc.[1]))
+      |> Seq.tryFind (fun (_,n) -> n > 1)
+
+    let found1 =
+      s
+      |> Seq.skip 1
+      |> Seq.chunkBySize 2
+      |> Seq.filter (fun cc -> cc.Length = 2 )
+      |> Seq.countBy (fun cc -> (cc.[0],cc.[1]))
+      |> Seq.tryFind (fun (_,n) -> n > 1)
+
+    found0.IsSome || found1.IsSome
+
+  let containsPairOfLetters2 (s:string) : bool =
+    // printfn "scanning: %s" s
+
+    let found =
+      s
+      |> Seq.windowed 2
+      |> Seq.mapi (fun i cc -> (i,cc))
+      |> Seq.filter (fun (i,cc) -> cc.Length = 2)
+      |> Seq.tryFind (fun (i,cc) ->
+        let pair = cc |> String.Concat
+        let rest = s.Substring(i+2)
+        // printfn "looking for %s in %s" pair rest
+        rest.Length >= 2 && rest.Contains(pair)
+      )
+
+    found.IsSome
+
+  // It contains at least one letter which repeats with exactly one letter between them, like xyx, abcdefeghi (efe), or even aaa.
+  let atLeastOneRepeatedLetter (s:string) : bool =
+    let found =
+      s
+      |> Seq.windowed 3
+      |> Seq.tryFind (fun w -> w.[0] = w.[2])
+
+    found.IsSome
+
   let isNice (input:string) : bool =
     let a = (containsAtLeastNVowels 3 input) 
     let b = (atLeastOneDuplicatedLetter 2 input)
@@ -42,3 +88,8 @@ module NaughtyDetector =
 
     a && b && c
 
+  let isNice2 (input:string) : bool =
+    let a = (containsPairOfLetters2 input)
+    let b = (atLeastOneRepeatedLetter input)
+
+    a && b
