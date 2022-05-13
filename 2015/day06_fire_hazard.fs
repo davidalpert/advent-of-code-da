@@ -72,4 +72,11 @@ module FireHazard =
     ii
     |> Seq.fold folder Set.empty<BulbLocation>
 
+
+  let calculateNewBrightness (oldBrightness:int) (i:Instruction) =
+    match i with
+    | TurnOn(_,_) -> oldBrightness + 1
+    | TurnOff(_,_) -> oldBrightness - 1
+    | Toggle(_,_) -> oldBrightness + 2
+    | Unrecognized(_) -> oldBrightness
   
