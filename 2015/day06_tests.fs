@@ -30,3 +30,23 @@ module Day06 =
     |> Seq.length
     |> should equal 400410
 
+  [<Theory>]
+  [<InlineData("turn on 0,0 through 0,0", 1)>] 
+  [<InlineData("toggle 0,0 through 999,999", 2000000)>] 
+  let ``Day 6 - part 2 - tests`` (input:string, expected:int) =
+    let i =
+      input
+      |> Instruction.fromString
+
+    [|i|]
+    |> applyInstructions2
+    |> Seq.sum
+    |> should equal expected
+
+  [<Fact>]
+  let ``Day 6 - part 2 - calculation``() =
+    day06input
+    |> toInstructions
+    |> applyInstructions2
+    |> Seq.sum
+    |> should equal 15343601

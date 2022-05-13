@@ -72,11 +72,33 @@ module FireHazard =
     ii
     |> Seq.fold folder Set.empty<BulbLocation>
 
+  let applyInstructions2 (ii:seq<Instruction>) =
+    let brightness = System.Collections.Generic.Dictionary<BulbLocation,int>()
 
-  let calculateNewBrightness (oldBrightness:int) (i:Instruction) =
-    match i with
-    | TurnOn(_,_) -> oldBrightness + 1
-    | TurnOff(_,_) -> oldBrightness - 1
-    | Toggle(_,_) -> oldBrightness + 2
-    | Unrecognized(_) -> oldBrightness
+    let calculateNewBrightness (oldBrightness:int) (i:Instruction) =
+      match i with
+      | TurnOn(_,_) -> oldBrightness + 1
+      | TurnOff(_,_) -> Math.Max(0,(oldBrightness - 1))
+      | Toggle(_,_) -> oldBrightness + 2
+      | Unrecognized(_) -> oldBrightness
   
+    let applyBrightnessChange (i:Instruction) (l:BulbLocation) =
+      match brightness.ContainsKey l with
+      | true -> brightness.[l] <- calculateNewBrightness (brightness.[l]) i
+      | false -> brightness.Add(l, (calculateNewBrightness 0 i))
+
+    let apply (i:Instruction) =
+      let range =
+        match i with
+        | TurnOn(l1,l2) -> seq { for x in l1.x .. l2.x do for y in l1.y .. l2.y do yield { x = x; y = y} }
+        | TurnOff(l1,l2) -> seq { for x in l1.x .. l2.x do for y in l1.y .. l2.y do yield { x = x; y = y} }
+        | Toggle(l1,l2) -> seq { for x in l1.x .. l2.x do for y in l1.y .. l2.y do yield { x = x; y = y} }
+        | Unrecognized(_) -> [||]
+
+      range
+      |> Seq.iter (applyBrightnessChange i)
+    
+    ii
+    |> Seq.iter apply
+
+    brightness.Values
