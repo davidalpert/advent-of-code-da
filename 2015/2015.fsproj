@@ -20,6 +20,8 @@
     <Compile Include="day04_tests.fs" />
     <Compile Include="day05_naughty_detector.fs" />
     <Compile Include="day05_tests.fs" />
+    <Compile Include="day06_fire_hazard.fs" />
+    <Compile Include="day06_tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
