@@ -19,33 +19,27 @@ module AssemblyRequired =
   | LeftShift of wire * int * wire
   | RightShift of wire * int * wire
   | BitwiseComplement of wire * wire
-  with
-    static member cache = Dictionary<wire,uint16>()
 
-    member this.valueOf (cc:IDictionary<wire,CircuitComponent>) =
-      // printfn "valueOf: %A" this
-      let cacheOrLookup (w:wire) =
-        if CircuitComponent.cache.ContainsKey(w) then
-          printfn "cachedValueOf %A" w 
-          CircuitComponent.cache.[w]
-        else
-          let v = (cc.[w].valueOf cc)
-          CircuitComponent.cache.Add(w,v)
-          v
+  let valueSentToWire (s:string) (cc:IDictionary<wire,CircuitComponent>) =
+    let rec valueOf (ss:string) =
+      let lookupAndCache (www:wire) =
+        let v = valueOf www
+        // printfn "caching '%s': %d" www v
+        cc.[www] <- Signal(v, www)
+        v
 
-      match this with
+      match cc.[ss] with
       | Signal(v,w) -> v
-      | DirectRoutingFrom(x,w) -> cacheOrLookup x
-      | BitwiseAnd(x,y,w) -> (cacheOrLookup x) &&& (cacheOrLookup y)
-      | BitwiseNumericAnd(x,y,w) -> x &&& (cacheOrLookup y)
-      | BitwiseOr(x,y,w) -> (cacheOrLookup x) ||| (cacheOrLookup y)
-      | LeftShift(x,v,w) -> (cacheOrLookup x) <<< v
-      | RightShift(x,v,w) -> (cacheOrLookup x) >>> v
-      | BitwiseComplement(x,w) -> ~~~ (cacheOrLookup x)
+      | DirectRoutingFrom(x,w) -> lookupAndCache x
+      | BitwiseAnd(x,y,w) -> (lookupAndCache x) &&& (lookupAndCache y)
+      | BitwiseNumericAnd(x,y,w) -> x &&& (lookupAndCache y)
+      | BitwiseOr(x,y,w) -> (lookupAndCache x) ||| (lookupAndCache y)
+      | LeftShift(x,v,w) -> (lookupAndCache x) <<< v
+      | RightShift(x,v,w) -> (lookupAndCache x) >>> v
+      | BitwiseComplement(x,w) -> ~~~ (lookupAndCache x)
 
-  let valueSentToWire (w:string) (cc:IDictionary<wire,CircuitComponent>) =
-    if cc.ContainsKey(w) then
-      cc.[w].valueOf cc
+    if cc.ContainsKey(s) then
+      valueOf s
     else
       0 |> uint16
 

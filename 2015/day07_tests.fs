@@ -91,9 +91,8 @@ NOT y -> i
 
   [<Fact>]
   let ``Day 7 - part 1 - calculation``() =
-    let circuitMap =
-      day07input
-      |> splitToTrimmedLines
-      |> assembleCircuit
-
-    circuitMap.["a"].valueOf(circuitMap) |> should equal -1
+    day07input
+    |> splitToTrimmedLines
+    |> assembleCircuit
+    |> valueSentToWire "a"
+    |> should equal (46065 |> uint16)
