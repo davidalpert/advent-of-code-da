@@ -24,6 +24,8 @@
     <Compile Include="day06_tests.fs" />
     <Compile Include="day07_assembly_required.fs" />
     <Compile Include="day07_tests.fs" />
+    <Compile Include="day08_matchsticks.fs" />
+    <Compile Include="day08_tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
