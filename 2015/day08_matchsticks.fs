@@ -106,3 +106,24 @@ module Matchsticks =
       |> Seq.fold folder (0,0)
 
     totalLengthRaw - totalLengthInMemory
+
+  let encodeRawString (s:string) =
+    s.Replace("\\", "\\\\").Replace("\"", "\\\"")
+
+  let calculateDifference2 (rawStrings:seq<string>) =
+    let lengthOfEncodedStrings =
+      rawStrings
+      |> Seq.map encodeRawString
+      |> Seq.sumBy (fun s -> s.Length + 2)
+
+    let folder (lengthRaw,lengthInMemory) (partRaw, partInMemory) =
+      (lengthRaw + partRaw, lengthInMemory + partInMemory)
+
+    let (totalLengthRaw, totalLengthInMemory) =
+      rawStrings
+      |> Seq.map parseRawString
+      |> Seq.fold folder (0,0)
+
+    // printfn "encodedLength %d - rawLength %d" lengthOfEncodedStrings totalLengthRaw
+
+    lengthOfEncodedStrings - totalLengthRaw
