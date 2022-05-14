@@ -81,3 +81,8 @@ module AllInASingleDay =
     rawEdges
     |> calculateCostsForEachPathToVisitAllNodes
     |> Seq.min
+
+  let calculatedLongestPathToVisitAllNodes (rawEdges:seq<string>) =
+    rawEdges
+    |> calculateCostsForEachPathToVisitAllNodes
+    |> Seq.max

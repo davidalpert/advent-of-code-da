@@ -26,3 +26,10 @@ Dublin to Belfast = 141
     |> splitToTrimmedLines
     |> calculatedShortestPathToVisitAllNodes
     |> should equal 251
+
+  [<Fact>]
+  let ``Day 9 - part 2 - calculation`` () =
+    day09input
+    |> splitToTrimmedLines
+    |> calculatedLongestPathToVisitAllNodes
+    |> should equal 898
