@@ -26,6 +26,8 @@
     <Compile Include="day07_tests.fs" />
     <Compile Include="day08_matchsticks.fs" />
     <Compile Include="day08_tests.fs" />
+    <Compile Include="day09_all_in_a_single_night.fs" />
+    <Compile Include="day09_tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
