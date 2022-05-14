@@ -3007,4 +3007,6 @@ Norrath to Arbre = 135
 Straylight to Arbre = 127
 """
 
+  let day10input = "3113322113"
+
   let lastData = ""

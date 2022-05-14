@@ -28,6 +28,8 @@
     <Compile Include="day08_tests.fs" />
     <Compile Include="day09_all_in_a_single_night.fs" />
     <Compile Include="day09_tests.fs" />
+    <Compile Include="day10_look_and_say.fs" />
+    <Compile Include="day10_tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
