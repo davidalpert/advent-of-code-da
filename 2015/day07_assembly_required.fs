@@ -61,3 +61,15 @@ module AssemblyRequired =
     )
 
     cc
+
+  let replaceSignalSentToB (overriddenValueOfB:uint16) (instructions:seq<string>) =
+    instructions
+    |> Seq.map (fun i ->
+      // printfn "preprocessing: %s" i
+      match i with 
+      | Regex @"^(\d+) -> b$" [ v] ->
+        let newI = sprintf "%d -> b" overriddenValueOfB
+        // printfn "overriding '%s' with '%s'" i newI
+        newI
+      | _ -> i
+    )

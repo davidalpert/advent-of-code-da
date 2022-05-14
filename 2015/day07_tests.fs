@@ -96,3 +96,12 @@ NOT y -> i
     |> assembleCircuit
     |> valueSentToWire "a"
     |> should equal (46065 |> uint16)
+
+  [<Fact>]
+  let ``Day 7 - part 2 - calculation``() =
+    day07input
+    |> splitToTrimmedLines
+    |> replaceSignalSentToB (46065 |> uint16) // override b with initial value of a
+    |> assembleCircuit
+    |> valueSentToWire "a"
+    |> should equal (14134 |> uint16)
