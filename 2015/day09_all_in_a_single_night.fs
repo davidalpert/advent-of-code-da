@@ -34,9 +34,9 @@ module AllInASingleDay =
     | Success(r, _, _) -> r
     | Failure(msg, _, _) -> raise (System.Exception(msg))
 
-  let calculatedShortestPathToVisitAllNodes (rawEdge:seq<string>) =
+  let calculateCostsForEachPathToVisitAllNodes (rawEdges:seq<string>) =
     let edges = 
-      rawEdge
+      rawEdges
       |> Seq.map parseRawEdge
 
     let vertices =
@@ -62,21 +62,22 @@ module AllInASingleDay =
       )
       |> Map.ofSeq
 
-    let a =
-      combinations
-      |> Seq.map (fun path ->
-        path
-        |> Array.ofList
-        |> Array.windowed 2
-        |> Array.map (fun nodes ->
-          let seg = (nodes.[0], nodes.[1])
-          if edgeMap.ContainsKey(seg) then
-            edgeMap.[seg]
-          else
-            raise (System.Exception(sprintf "cannot find cost of %A" seg))
-        )
-        |> Array.sum
+    combinations
+    |> Seq.map (fun path ->
+      path
+      |> Array.ofList
+      |> Array.windowed 2
+      |> Array.map (fun nodes ->
+        let seg = (nodes.[0], nodes.[1])
+        if edgeMap.ContainsKey(seg) then
+          edgeMap.[seg]
+        else
+          raise (System.Exception(sprintf "cannot find cost of %A" seg))
       )
-      |> Seq.min
+      |> Array.sum
+    )
 
-    a
+  let calculatedShortestPathToVisitAllNodes (rawEdges:seq<string>) =
+    rawEdges
+    |> calculateCostsForEachPathToVisitAllNodes
+    |> Seq.min
