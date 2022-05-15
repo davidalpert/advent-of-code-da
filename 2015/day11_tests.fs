@@ -20,16 +20,19 @@ module Day11 =
     [<InlineData("xxxxxxyz", "xxxxxxza")>]
     [<InlineData("xxxxxxya", "xxxxxxyb")>]
     [<InlineData("zzzzzzzz", "aaaaaaaa")>]
+    [<InlineData("abcdegaa", "abcdegab")>]
+    [<InlineData("abcdeaaz", "abcdeaba")>]
+    [<InlineData("abadzzzz", "abaeaaaa")>]
     let ``Day 11 - part 1 - nextPassword`` (s, expected) =
         s |> nextPassword |> should equal expected
 
     [<Theory>]
     [<InlineData("hijklmmn", true)>]
     [<InlineData("abbceffg", false)>]
-    let ``Day 11 - part 1 - includesIncreasingStraightOfMinNChars`` (s, expected) =
+    let ``Day 11 - part 1 - includesIncreasingStraightOfThreeChars`` (s, expected) =
         s
         |> Array.ofSeq
-        |> includesIncreasingStraightOfMinNChars 3
+        |> includesIncreasingStraightOfThreeChars
         |> should equal expected
 
     [<Theory>]
@@ -52,27 +55,14 @@ module Day11 =
         |> containsAtLeastTwoDifferentNonOverlappingPairs
         |> should equal expected
 
-// [<Theory>]
-// [<InlineData("1", 1, "11")>]
-// [<InlineData("1", 2, "21")>]
-// [<InlineData("1", 3, "1211")>]
-// [<InlineData("1", 4, "111221")>]
-// [<InlineData("1", 5, "312211")>]
-// let ``Day 10 - part 1 - lookAndSayNTimes`` (s, n, expected) =
-//   s
-//   |> (lookAndSayNTimes n false)
-//   |> should equal expected
+    [<Theory>]
+    [<InlineData("abcdefgh", "abcdffaa")>]
+    [<InlineData("ghijklmn", "ghjaabcc")>]
+    let ``Day 11 - part 1 - nextValidPassword`` (s, expected) =
+        s |> nextValidPassword |> should equal expected
 
-// [<Fact>]
-// let ``Day 10 - part 1 - calculation`` () =
-//   day10input
-//   |> (lookAndSayNTimes 40 false)
-//   |> (fun s -> s.Length)
-//   |> should equal 329356
-
-// [<Fact>]
-// let ``Day 10 - part 2 - calculation`` () =
-//   day10input
-//   |> (lookAndSayNTimes 50 false)
-//   |> (fun s -> s.Length)
-//   |> should equal 4666278
+    [<Fact>]
+    let ``Day 11 - part 1 - calculation`` () =
+        "vzbxkghb"
+        |> nextValidPassword
+        |> should equal "vzbxxyzz"
