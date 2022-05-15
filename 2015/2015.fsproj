@@ -35,6 +35,8 @@
     <Compile Include="day12_json.fs" />
     <Compile Include="day12_json_abacus.fs" />
     <Compile Include="day12_tests.fs" />
+    <Compile Include="day13_seating_arrangements.fs" />
+    <Compile Include="day13_tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
