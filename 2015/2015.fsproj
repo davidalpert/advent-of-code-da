@@ -30,6 +30,8 @@
     <Compile Include="day09_tests.fs" />
     <Compile Include="day10_look_and_say.fs" />
     <Compile Include="day10_tests.fs" />
+    <Compile Include="day11_corporate_policy.fs" />
+    <Compile Include="day11_tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
