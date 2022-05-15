@@ -32,6 +32,9 @@
     <Compile Include="day10_tests.fs" />
     <Compile Include="day11_corporate_policy.fs" />
     <Compile Include="day11_tests.fs" />
+    <Compile Include="day12_json.fs" />
+    <Compile Include="day12_json_abacus.fs" />
+    <Compile Include="day12_tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
