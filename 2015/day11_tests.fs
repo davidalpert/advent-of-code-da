@@ -66,3 +66,9 @@ module Day11 =
         "vzbxkghb"
         |> nextValidPassword
         |> should equal "vzbxxyzz"
+
+    [<Fact>]
+    let ``Day 11 - part 2 - calculation`` () =
+        "vzbxxyzz"
+        |> nextValidPassword
+        |> should equal "vzcaabcc"
