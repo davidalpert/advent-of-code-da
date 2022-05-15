@@ -18,7 +18,7 @@ module SeatingArrangements =
 
     let toImpactMap (s: string) = s |> parseInput |> Map.ofSeq
 
-    let findHappiestAggangement (s: string) =
+    let findHappiestAggangement (includeApatheticSelf: bool) (s: string) =
         let relationships = s |> parseInput
 
         let knights =

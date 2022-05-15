@@ -36,13 +36,13 @@ David would gain 41 happiness units by sitting next to Carol.
     [<Fact>]
     let ``Day13 - part 1 - examples`` () =
         exampleInput
-        |> findHappiestAggangement
+        |> findHappiestAggangement false
         |> snd
         |> should equal 330
 
     [<Fact>]
     let ``Day13 - part 1 - calculation`` () =
         day13input
-        |> findHappiestAggangement
+        |> findHappiestAggangement false
         |> snd
         |> should equal 664
