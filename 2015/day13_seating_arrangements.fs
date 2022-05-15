@@ -19,12 +19,27 @@ module SeatingArrangements =
     let toImpactMap (s: string) = s |> parseInput |> Map.ofSeq
 
     let findHappiestAggangement (includeApatheticSelf: bool) (s: string) =
-        let relationships = s |> parseInput
+        let mutable relationships = s |> parseInput
 
-        let knights =
-            relationships
+        let findUniqueGuests (rr: ((string * string) * int) []) =
+            rr
             |> Array.collect (fun ((x, y), _) -> [| x; y |])
             |> Array.distinct
+
+        let mutable knights = relationships |> findUniqueGuests
+
+        if includeApatheticSelf then
+            let myRelationships =
+                knights
+                |> Array.collect (fun k ->
+                    [| (("myself", k), 0)
+                       ((k, "myself"), 0) |])
+
+            relationships <-
+                [| relationships; myRelationships |]
+                |> Array.concat
+
+            knights <- relationships |> findUniqueGuests
 
         let impactMap = relationships |> Map.ofSeq
 
