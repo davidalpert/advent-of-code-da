@@ -11,32 +11,34 @@
     <Compile Include="day00_input.fs" />
     <Compile Include="day00_utils.fs" />
     <Compile Include="day01_not_quite_lisp.fs" />
-    <Compile Include="day01_tests.fs" />
+    <!-- <Compile Include="day01_tests.fs" /> -->
     <Compile Include="day02_wrapping_paper.fs" />
-    <Compile Include="day02_tests.fs" />
+    <!-- <Compile Include="day02_tests.fs" /> -->
     <Compile Include="day03_gift_delivery.fs" />
-    <Compile Include="day03_tests.fs" />
+    <!-- <Compile Include="day03_tests.fs" /> -->
     <Compile Include="day04_mining_advent_coins.fs" />
-    <Compile Include="day04_tests.fs" />
+    <!-- <Compile Include="day04_tests.fs" /> -->
     <Compile Include="day05_naughty_detector.fs" />
-    <Compile Include="day05_tests.fs" />
+    <!-- <Compile Include="day05_tests.fs" /> -->
     <Compile Include="day06_fire_hazard.fs" />
-    <Compile Include="day06_tests.fs" />
+    <!-- <Compile Include="day06_tests.fs" /> -->
     <Compile Include="day07_assembly_required.fs" />
-    <Compile Include="day07_tests.fs" />
+    <!-- <Compile Include="day07_tests.fs" /> -->
     <Compile Include="day08_matchsticks.fs" />
-    <Compile Include="day08_tests.fs" />
+    <!-- <Compile Include="day08_tests.fs" /> -->
     <Compile Include="day09_all_in_a_single_night.fs" />
-    <Compile Include="day09_tests.fs" />
+    <!-- <Compile Include="day09_tests.fs" /> -->
     <Compile Include="day10_look_and_say.fs" />
-    <Compile Include="day10_tests.fs" />
+    <!-- <Compile Include="day10_tests.fs" /> -->
     <Compile Include="day11_corporate_policy.fs" />
-    <Compile Include="day11_tests.fs" />
+    <!-- <Compile Include="day11_tests.fs" /> -->
     <Compile Include="day12_json.fs" />
     <Compile Include="day12_json_abacus.fs" />
-    <Compile Include="day12_tests.fs" />
+    <!-- <Compile Include="day12_tests.fs" /> -->
     <Compile Include="day13_seating_arrangements.fs" />
-    <Compile Include="day13_tests.fs" />
+    <!-- <Compile Include="day13_tests.fs" /> -->
+    <Compile Include="day14_reindeer_olympics.fs" />
+    <Compile Include="day14_tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
