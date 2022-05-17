@@ -3,6 +3,7 @@ namespace AdventOfCode
 module ReindeerOlympics =
 
     open System
+    open System.Collections.Generic
     open AdventOfCode.Input
     open AdventOfCode.utils
     open FSharp.Data.UnitSystems.SI.UnitNames
@@ -63,3 +64,27 @@ module ReindeerOlympics =
         stats
         |> Array.map (fun s -> (s.name, s.distanceAfterNSeconds n))
         |> Map.ofArray
+
+    let competeForNSeconds2 (n: int<second>) (stats: Stats []) =
+        let points =
+            Dictionary<string, int>(stats |> Seq.map (fun s -> (s.name, 0)) |> dict)
+
+        let folder (p: IDictionary<string, int>) (i: int) =
+            let currentDistanceByName = stats |> competeForNSeconds (i * 1<second>)
+
+            let leaderDistance =
+                currentDistanceByName
+                |> Seq.maxBy (fun pair -> pair.Value)
+                |> (fun pair -> pair.Value)
+
+            currentDistanceByName
+            |> Seq.filter (fun pair -> pair.Value = leaderDistance)
+            |> Seq.iter (fun pair -> p.[pair.Key] <- p.[pair.Key] + 1)
+
+            p
+
+        seq { 1 .. (n / 1<second>) }
+        |> Seq.fold folder points
+// |> Seq.map (fun pair -> pair.Key, pair.Value)
+// |> Seq.maxBy snd
+// |> snd

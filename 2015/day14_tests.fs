@@ -79,3 +79,26 @@ Prancer can fly 25 km/s for 6 seconds, but then must rest for 143 seconds.
         |> Seq.maxBy (fun pair -> pair.Value)
         |> (fun pair -> pair.Value)
         |> should equal ((2660 |> float) * 1.0<kilometer>)
+
+    [<Theory>]
+    [<InlineData(1, 0, 1)>]
+    [<InlineData(140, 1, 139)>]
+    [<InlineData(1000, 312, 689)>]
+    let ``Day14 - part 2 - competeForNSeconds2`` (n, cometsPoints, dancerPoints) =
+        let stats = exampleInput |> parseStats
+
+        let m = stats |> competeForNSeconds2 n
+
+        m.["Comet"] |> should equal cometsPoints
+
+        m.["Dancer"] |> should equal dancerPoints
+
+    [<Fact>]
+    let ``Day14 - part 2 - calculation`` () =
+        puzzleInput
+        |> parseStats
+        |> competeForNSeconds2 (2503 * 1<second>)
+        |> Seq.map (fun pair -> pair.Key, pair.Value)
+        |> Seq.maxBy snd
+        |> snd
+        |> should equal 1256
