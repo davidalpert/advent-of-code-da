@@ -108,3 +108,9 @@ module ScienceForHungryPeople =
         input
         |> generateAllPossibleCookieRecipies nTeaspoons
         |> Array.maxBy snd
+
+    let findHighestScoringCookieRecipeWithCalorieLimit (nTeaspoons: int) (exactCalories: int) (input: string) =
+        input
+        |> generateAllPossibleCookieRecipies nTeaspoons
+        |> Array.filter (fun (c, _) -> c.totals.calories = exactCalories)
+        |> Array.maxBy snd

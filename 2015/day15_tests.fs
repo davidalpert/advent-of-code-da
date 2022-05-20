@@ -55,9 +55,23 @@ Sugar: capacity 0, durability 0, flavor -2, texture 2, calories 1
         |> snd
         |> should equal 62842880
 
-    [<Fact>]
+    // [<Fact>] // slow
     let ``Day 15 - Part 1 - calculation`` () =
         puzzleInput
         |> findHighestScoringCookieRecipe 100
         |> snd
         |> should equal 18965440
+
+    [<Fact>]
+    let ``Day 15 - Part 2 - sample`` () =
+        exampleInput
+        |> findHighestScoringCookieRecipeWithCalorieLimit 100 500
+        |> snd
+        |> should equal 57600000
+
+    // [<Fact>] // slow
+    let ``Day 15 - Part 2 - calculation`` () =
+        puzzleInput
+        |> findHighestScoringCookieRecipeWithCalorieLimit 100 500
+        |> snd
+        |> should equal 15862900
