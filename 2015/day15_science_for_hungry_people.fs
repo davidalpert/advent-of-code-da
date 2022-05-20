@@ -21,10 +21,7 @@ module ScienceForHungryPeople =
             portions
             |> Array.mapi (fun i n -> (n, allIngredients.[i]))
 
-        member this.totalScore =
-            let addTo x y = x + y
-            let multiplyBy x y = x * y
-
+        member this.totals =
             // - A capacity of 44*-1 + 56*2 = 68
             // - A durability of 44*-2 + 56*3 = 80
             // - A flavor of 44*6 + 56*-2 = 152
@@ -47,14 +44,16 @@ module ScienceForHungryPeople =
                     texture = acc.texture + n * i.texture
                     calories = acc.calories + n * i.calories }
 
-            let totals =
-                this.ingredients
-                |> Array.fold folder initialValues
+            this.ingredients
+            |> Array.fold folder initialValues
 
-            [ Math.Max(0, totals.capacity)
-              Math.Max(0, totals.durability)
-              Math.Max(0, totals.flavor)
-              Math.Max(0, totals.texture) ]
+        member this.totalScore =
+            let multiplyBy x y = x * y
+
+            [ Math.Max(0, this.totals.capacity)
+              Math.Max(0, this.totals.durability)
+              Math.Max(0, this.totals.flavor)
+              Math.Max(0, this.totals.texture) ]
             |> Seq.fold multiplyBy 1
 
     let fromInput (s: string) =
@@ -96,7 +95,7 @@ module ScienceForHungryPeople =
         |> Array.ofSeq
         |> Array.map (fun l -> l |> Array.ofList)
 
-    let findHighestScoringCookieRecipe (nTeaspoons: int) (input: string) =
+    let generateAllPossibleCookieRecipies (nTeaspoons: int) (input: string) =
         let allIngredients = input |> fromInput
 
         let allCombinations = recipeCombinationsOfN (allIngredients.Length) nTeaspoons
@@ -104,4 +103,8 @@ module ScienceForHungryPeople =
         allCombinations
         |> Array.map (fun ii -> CookieRecipe(allIngredients, ii))
         |> Array.map (fun c -> (c, c.totalScore))
+
+    let findHighestScoringCookieRecipe (nTeaspoons: int) (input: string) =
+        input
+        |> generateAllPossibleCookieRecipies nTeaspoons
         |> Array.maxBy snd
