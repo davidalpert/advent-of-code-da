@@ -39,6 +39,8 @@
     <!-- <Compile Include="day13_tests.fs" /> -->
     <Compile Include="day14_reindeer_olympics.fs" />
     <Compile Include="day14_tests.fs" />
+    <Compile Include="day15_science_for_hungry_people.fs" />
+    <Compile Include="day15_tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
