@@ -42,6 +42,50 @@ module MedicineforRudolph =
                 |> Array.ofSeq)
             |> Set.ofSeq
 
+        member this.replacements = replacements
+        member this.calibrationString = calibrationString
+
+        member this.sortedReplacements =
+            this.replacements
+            |> Array.sortByDescending (fun (_, b) -> b.Length)
+
+        member this.cheapestConstructionSteps(molecule: string) =
+            // steps with an element and more molecules cannot be simplified to a single element
+            let validStep (s: string) : bool = not (s.Contains('e') && s.Length > 1)
+
+            let possibleNextSteps (lastPossibilities: string seq) =
+                lastPossibilities
+                |> Seq.collect (fun anS ->
+                    this.sortedReplacements
+                    |> Seq.collect (fun (a, b) ->
+                        let l = b.Length
+
+                        anS
+                        |> Seq.windowed l
+                        |> Seq.mapi (fun i s -> (i, s |> String))
+                        |> Seq.filter (fun (i, s) -> s = b)
+                        |> Seq.map (fun (i, _) -> anS.[0 .. (i - 1)] + a + anS.[(i + l) ..]))
+                    |> mapRenderEach
+                    |> Seq.filter validStep
+                    |> Set.ofSeq)
+            // |> Array.ofSeq
+            // |> Array.sortBy (fun s -> s.Length)
+
+            let generator (lastPossibilities: string seq, lastDepth) =
+                // printfn "depth '%d'; considering '%d' possibilities..." lastDepth lastPossibilities.Length
+
+                match lastPossibilities
+                      |> Seq.tryFind (fun s -> s = "e")
+                    with
+                | Some (p) -> None // nothing more to do
+                | None ->
+                    // keep looking
+                    Some(lastDepth, (lastPossibilities |> possibleNextSteps, lastDepth + 1))
+
+            ([| molecule |] |> Seq.ofArray, 0)
+            |> Seq.unfold generator
+            |> mapRenderEach
+
     type InputLine =
         | Replacement of string * string
         | Calibration of string

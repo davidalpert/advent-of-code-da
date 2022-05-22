@@ -2,6 +2,7 @@ namespace AdventOfCode
 
 module Day19 =
 
+    open System
     open FSharp.Data.UnitSystems.SI.UnitNames
     open AdventOfCode.Input
     open AdventOfCode.MedicineforRudolph
@@ -10,6 +11,15 @@ module Day19 =
 
     let exampleInput =
         """
+H => HO
+H => OH
+O => HH
+"""
+
+    let exampleInput2 =
+        """
+e => H
+e => O
 H => HO
 H => OH
 O => HH
@@ -83,3 +93,23 @@ CRnSiRnCaPTiMgYCaPTiRnFArSiThFArCaSiThSiThPBCaCaSiRnSiRnTiTiMgArPBCaPMgYPTiRnFAr
         // |> mapRenderEach
         |> Seq.length
         |> should equal 518
+
+    [<Theory>]
+    [<InlineData("HOH", 3)>]
+    [<InlineData("HOHOHO", 6)>]
+    let ``2015 - Day 19 - part 2 - construction example`` (s: string, expected: int) =
+        (sprintf "%s\n\n%s" exampleInput2 s)
+        |> fromInput
+        |> (fun m -> m.cheapestConstructionSteps m.calibrationString)
+        // |> mapRenderEach
+        |> Seq.length
+        |> should equal expected
+
+    [<Fact>]
+    let ``2015 - Day 19 - part 2`` () =
+        puzzleInput
+        |> fromInput
+        |> (fun m -> m.cheapestConstructionSteps m.calibrationString)
+        // |> mapRenderEach
+        |> Seq.length
+        |> should equal -1
