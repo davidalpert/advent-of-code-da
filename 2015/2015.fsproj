@@ -47,6 +47,8 @@
     <Compile Include="day17_tests.fs" />
     <Compile Include="day18_like_a_gif_for_your_yard.fs" />
     <Compile Include="day18_tests.fs" />
+    <Compile Include="day19_medicine_for_rudolph.fs" />
+    <Compile Include="day19_tests.fs" />
     <!-- NEXT -->
   </ItemGroup>
 
