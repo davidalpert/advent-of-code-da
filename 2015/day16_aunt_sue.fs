@@ -98,4 +98,41 @@ module AuntSue =
             && isKnownMatchOrTrue sue "cars" (sue.cars) (expected.cars)
             && isKnownMatchOrTrue sue "perfumes" (sue.perfumes) (expected.perfumes))
 
-// SueProfile.fromInput (expected.number)
+    let findSueMatching2 (expected: SueProfile) (allKnown: SueProfile []) =
+        let isKnownMatchOrTrue (s: SueProfile) (aspect: string) (a: int option) (e: int option) =
+            match e with
+            | None -> true // don't know expected value; could be a match
+            | Some (ev) ->
+                match a with
+                | None -> true // don't remember this Sue's value; could be a match
+                | Some (n) -> n = ev // know both; a match if the values match
+
+        let isKnownLowerThanOrTrue (s: SueProfile) (aspect: string) (a: int option) (e: int option) =
+            match e with
+            | None -> true // don't know expected value; could be a match
+            | Some (ev) ->
+                match a with
+                | None -> true // don't remember this Sue's value; could be a match
+                | Some (n) -> n < ev // know both; a match if this value is less than expected
+
+        let isKnownGreaterThanOrTrue (s: SueProfile) (aspect: string) (a: int option) (e: int option) =
+            match e with
+            | None -> true // don't know expected value; could be a match
+            | Some (ev) ->
+                match a with
+                | None -> true // don't remember this Sue's value; could be a match
+                | Some (n) -> n > ev // know both; a match if this value is greater than expected
+
+        allKnown
+        |> Array.filter (fun sue ->
+            // (sue.children.IsSome && sue.children.Value = expected.children.Value) || (sue.cats.IsSome && sue)
+            isKnownMatchOrTrue sue "children" (sue.children) (expected.children)
+            && isKnownGreaterThanOrTrue sue "cats" (sue.cats) (expected.cats)
+            && isKnownMatchOrTrue sue "samoyeds" (sue.samoyeds) (expected.samoyeds)
+            && isKnownLowerThanOrTrue sue "pomeranians" (sue.pomeranians) (expected.pomeranians)
+            && isKnownMatchOrTrue sue "akitas" (sue.akitas) (expected.akitas)
+            && isKnownMatchOrTrue sue "vizslas" (sue.vizslas) (expected.vizslas)
+            && isKnownLowerThanOrTrue sue "goldfish" (sue.goldfish) (expected.goldfish)
+            && isKnownGreaterThanOrTrue sue "trees" (sue.trees) (expected.trees)
+            && isKnownMatchOrTrue sue "cars" (sue.cars) (expected.cars)
+            && isKnownMatchOrTrue sue "perfumes" (sue.perfumes) (expected.perfumes))

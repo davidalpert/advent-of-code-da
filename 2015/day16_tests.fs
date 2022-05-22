@@ -56,3 +56,25 @@ perfumes: 1
         possibleMatches.Length |> should equal 1
 
         possibleMatches.[0].number |> should equal 373
+
+    [<Fact>]
+    let ``Day 16 - part 2 - calculate`` () =
+        let mfcsam =
+            { SueProfile.fromInput 0 with
+                children = Some(3)
+                cats = Some(7)
+                samoyeds = Some(2)
+                pomeranians = Some(3)
+                akitas = Some(0)
+                vizslas = Some(0)
+                goldfish = Some(5)
+                trees = Some(3)
+                cars = Some(2)
+                perfumes = Some(1) }
+
+        let possibleMatches = day16input |> fromInput |> findSueMatching2 mfcsam
+        //   |> should equal ""
+
+        possibleMatches.Length |> should equal 1
+
+        possibleMatches.[0].number |> should equal 260
