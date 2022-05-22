@@ -45,6 +45,7 @@
     <Compile Include="day20_trench_map.fs" />
     <Compile Include="day20_tests.fs" />
     -->
+    <!-- NEXT -->
   </ItemGroup>
 
   <ItemGroup>
