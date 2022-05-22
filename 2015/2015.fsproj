@@ -41,6 +41,8 @@
     <Compile Include="day14_tests.fs" />
     <Compile Include="day15_science_for_hungry_people.fs" />
     <Compile Include="day15_tests.fs" />
+    <Compile Include="day16_aunt_sue.fs" />
+    <Compile Include="day16_tests.fs" />
   </ItemGroup>
 
   <ItemGroup>

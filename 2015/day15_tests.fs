@@ -1,3 +1,5 @@
+namespace AdventOfCode
+
 module Day15 =
 
     open FSharp.Data.UnitSystems.SI.UnitNames
