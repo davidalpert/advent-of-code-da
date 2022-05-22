@@ -56,3 +56,19 @@ module Day17 =
         |> differentWaysToStoreNLitres 150
         |> Array.length
         |> should equal 4372
+
+    [<Fact>]
+    let ``2015 - Day 17 - part 2 - example`` () =
+        exampleInput
+        |> fromInput
+        |> differentWaysToStoreNLitresWithMinimumUsedContainers 25
+        |> Array.length
+        |> should equal 3
+
+    [<Fact>]
+    let ``2015 - Day 17 - part 2`` () =
+        puzzleInput
+        |> fromInput
+        |> differentWaysToStoreNLitresWithMinimumUsedContainers 150
+        |> Array.length
+        |> should equal 4
