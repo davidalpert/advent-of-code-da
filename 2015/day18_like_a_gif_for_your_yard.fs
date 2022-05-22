@@ -94,3 +94,23 @@ module LikeaGIFForYourYard =
     let stateAfterNIterations (n: int) (dim: int) (litBefore: Set<BulbLocation>) : Set<BulbLocation> =
         seq { 1..1..n }
         |> Seq.fold (fun s _ -> s |> (nextState dim)) litBefore
+
+    let stateAfterNIterationsWithBrokenCorners (n: int) (dim: int) (litBefore: Set<BulbLocation>) : Set<BulbLocation> =
+
+        let litCorners =
+            [ { x = 1; y = 1 }
+              { x = dim; y = 1 }
+              { x = 1; y = dim }
+              { x = dim; y = dim } ]
+            |> Set.ofSeq
+
+        seq { 1..1..n }
+        |> Seq.fold
+            (fun s i ->
+                // printfn "iteration %d" (i - 1)
+
+                s
+                |> (nextState dim)
+                // |> renderAsGrid dim
+                |> Set.union litCorners)
+            (Set.union litBefore litCorners)

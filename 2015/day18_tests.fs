@@ -167,3 +167,29 @@ module Day18 =
         |> stateAfterNIterations 100 100
         |> numberOfLitBulbs
         |> should equal 1061
+
+    [<Theory>]
+    [<InlineData(0, 17)>]
+    [<InlineData(1, 18)>]
+    [<InlineData(2, 18)>]
+    [<InlineData(3, 18)>]
+    [<InlineData(4, 14)>]
+    [<InlineData(5, 17)>]
+    let ``2015 - Day 18 - part 2 - iteration examples`` (n: int, expected: int) =
+        // printfn "iteration %d" n
+
+        exampleInput
+        |> fromInput
+        |> stateAfterNIterationsWithBrokenCorners n 6
+        // |> renderSet
+        // |> renderAsGrid 6
+        |> numberOfLitBulbs
+        |> should equal expected
+
+    // [<Fact>] // slow (~60s)
+    let ``2015 - Day 18 - part 2`` () =
+        puzzleInput
+        |> fromInput
+        |> stateAfterNIterationsWithBrokenCorners 100 100
+        |> numberOfLitBulbs
+        |> should equal 1006
