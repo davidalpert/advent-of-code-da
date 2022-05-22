@@ -75,17 +75,6 @@ module ScienceForHungryPeople =
             | _ -> raise (System.Exception(sprintf "could not parse: '%s'" ss)))
         |> Array.ofSeq
 
-    // the cartesian product of a list of lists:
-    // https://stackoverflow.com/a/3334871/8997
-    let rec cart1 LL =
-        match LL with
-        | [] -> Seq.singleton []
-        | L :: Ls ->
-            seq {
-                for x in L do
-                    for xs in cart1 Ls -> x :: xs
-            }
-
     let recipeCombinationsOfN (n: int) (k: int) =
         seq { 1..n }
         |> List.ofSeq

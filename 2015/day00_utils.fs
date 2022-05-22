@@ -55,6 +55,16 @@ module utils =
             | head :: tail -> yield! Seq.collect (insert [] head) (permuteAll tail)
         }
 
+    // the cartesian product of a list of lists:
+    // https://stackoverflow.com/a/3334871/8997
+    let rec cart1 LL =
+        match LL with
+        | [] -> Seq.singleton []
+        | L :: Ls ->
+            seq {
+                for x in L do
+                    for xs in cart1 Ls -> x :: xs
+            }
 // // debug helpers
 // let ( ~~~ ) =
 //   // printfn
