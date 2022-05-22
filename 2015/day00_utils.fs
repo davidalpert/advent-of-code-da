@@ -28,10 +28,10 @@ module utils =
         | _, [] -> []
         | k, (x :: xs) -> List.map ((@) [ x ]) (comb (k - 1) xs) @ comb k xs
 
+    // http://www.fssnip.net/2z/title/All-combinations-of-list-elements
     // This takes something like [1;2;3;4] and returns
     // [4][4; 3][4; 3; 2][4; 3; 2; 1][4; 3; 1][4; 2][4; 2; 1]
     // [4; 1][3][3; 2][3; 2; 1][3; 1][2][2; 1][1]
-
     let allCombinations lst =
         let rec comb accLst elemLst =
             match elemLst with
