@@ -43,6 +43,8 @@
     <Compile Include="day15_tests.fs" />
     <Compile Include="day16_aunt_sue.fs" />
     <Compile Include="day16_tests.fs" />
+    <Compile Include="day17_no_such_thing_as_too_much.fs" />
+    <Compile Include="day17_tests.fs" />
   </ItemGroup>
 
   <ItemGroup>

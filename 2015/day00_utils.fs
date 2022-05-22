@@ -28,6 +28,23 @@ module utils =
         | _, [] -> []
         | k, (x :: xs) -> List.map ((@) [ x ]) (comb (k - 1) xs) @ comb k xs
 
+    // This takes something like [1;2;3;4] and returns
+    // [4][4; 3][4; 3; 2][4; 3; 2; 1][4; 3; 1][4; 2][4; 2; 1]
+    // [4; 1][3][3; 2][3; 2; 1][3; 1][2][2; 1][1]
+
+    let allCombinations lst =
+        let rec comb accLst elemLst =
+            match elemLst with
+            | h :: t ->
+                let next =
+                    [ h ] :: List.map (fun el -> h :: el) accLst
+                    @ accLst
+
+                comb next t
+            | _ -> accLst
+
+        comb [] lst
+
     // http://www.fssnip.net/fF/title/Combinations-n-choose-k
     let n_choose_k k n =
         let rec choose lo =
