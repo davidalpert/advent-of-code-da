@@ -3,6 +3,7 @@ namespace AdventOfCode
 module Input =
     let splitToTrimmedLines (input: string) =
         input.Trim().Split("\n")
+        |> Seq.where (fun s -> s.Length > 0)
         |> Seq.map (fun s -> s.Trim())
 
     let splitToTrimmedLinesVerbose (input: string) =
