@@ -19,28 +19,32 @@ module MedicineforRudolph =
         col
 
     type Machine(replacements: array<string * string>, calibrationString: string) =
-        member this.calibrationSet =
-            replacements
-            |> Array.collect (fun (a, b) ->
-                let l = a.Length
+        let generateAllFabrications (initialSet: Set<string>) =
+            initialSet
+            |> Seq.collect (fun m ->
+                replacements
+                |> Array.collect (fun (a, b) ->
+                    let l = a.Length
 
-                calibrationString
-                |> Seq.windowed l
-                |> Seq.mapi (fun i s -> (s |> String, i))
-                |> Seq.filter (fun (s, _) -> s = a)
-                // |> Seq.map (fun s ->
-                //     printfn "> %A" s
-                //     s)
-                |> Seq.map snd
-                |> Seq.map (fun i ->
-                    calibrationString.[0 .. (i - 1)]
-                    + b
-                    + calibrationString.[(i + l) ..])
-                // |> Seq.map (fun s ->
-                //     printfn "> %A" s
-                //     s)
-                |> Array.ofSeq)
+                    m
+                    |> Seq.windowed l
+                    |> Seq.mapi (fun i s -> (s |> String, i))
+                    |> Seq.filter (fun (s, _) -> s = a)
+                    // |> Seq.map (fun s ->
+                    //     printfn "> %A" s
+                    //     s)
+                    |> Seq.map snd
+                    |> Seq.map (fun i -> m.[0 .. (i - 1)] + b + m.[(i + l) ..])
+                    // |> Seq.map (fun s ->
+                    //     printfn "> %A" s
+                    //     s)
+                    |> Array.ofSeq))
             |> Set.ofSeq
+
+        member this.calibrationSet =
+            [| calibrationString |]
+            |> Set.ofSeq
+            |> generateAllFabrications
 
         member this.replacements = replacements
         member this.calibrationString = calibrationString
@@ -49,7 +53,7 @@ module MedicineforRudolph =
             this.replacements
             |> Array.sortByDescending (fun (_, b) -> b.Length)
 
-        member this.cheapestConstructionSteps(molecule: string) =
+        member this.cheapestConstructionStepsTopDown(molecule: string) =
             // steps with an element and more molecules cannot be simplified to a single element
             let validStep (s: string) : bool = not (s.Contains('e') && s.Length > 1)
 
@@ -65,7 +69,7 @@ module MedicineforRudolph =
                         |> Seq.mapi (fun i s -> (i, s |> String))
                         |> Seq.filter (fun (i, s) -> s = b)
                         |> Seq.map (fun (i, _) -> anS.[0 .. (i - 1)] + a + anS.[(i + l) ..]))
-                    |> mapRenderEach
+                    // |> mapRenderEach
                     |> Seq.filter validStep
                     |> Set.ofSeq)
             // |> Array.ofSeq
@@ -85,6 +89,22 @@ module MedicineforRudolph =
             ([| molecule |] |> Seq.ofArray, 0)
             |> Seq.unfold generator
             |> mapRenderEach
+
+        member this.cheapestConstructionSteps(molecule: string) =
+
+            let elements =
+                this.sortedReplacements
+                |> Array.filter (fun (a, b) -> a = "e")
+                |> Array.map fst
+
+            let generator (lastPossibilities: Set<string>, lastDepth: int) =
+                match lastPossibilities.Contains(molecule) with
+                | true -> None // done
+                | false ->
+                    printfn "molecule not yet found at depth %d (%d possibilities)" lastDepth lastPossibilities.Count
+                    Some(lastPossibilities, (lastPossibilities |> generateAllFabrications, lastDepth + 1))
+
+            (elements |> Set.ofSeq, 0) |> Seq.unfold generator
 
     type InputLine =
         | Replacement of string * string
