@@ -97,7 +97,7 @@ CRnSiRnCaPTiMgYCaPTiRnFArSiThFArCaSiThSiThPBCaCaSiRnSiRnTiTiMgArPBCaPMgYPTiRnFAr
     [<Theory>]
     [<InlineData("HOH", 3)>]
     [<InlineData("HOHOHO", 6)>]
-    let ``2015 - Day 19 - part 2 - construction example`` (s: string, expected: int) =
+    let ``2015 - Day 19 - part 2 - construction example - width-first`` (s: string, expected: int) =
         (sprintf "%s\n\n%s" exampleInput2 s)
         |> fromInput
         |> (fun m -> m.cheapestConstructionSteps m.calibrationString)
@@ -105,7 +105,7 @@ CRnSiRnCaPTiMgYCaPTiRnFArSiThFArCaSiThSiThPBCaCaSiRnSiRnTiTiMgArPBCaPMgYPTiRnFAr
         |> Seq.length
         |> should equal expected
 
-    [<Fact>]
+    // [<Fact>] // width-first e -> molecule: sloooooooooow
     let ``2015 - Day 19 - part 2`` () =
         puzzleInput
         |> fromInput
@@ -113,3 +113,14 @@ CRnSiRnCaPTiMgYCaPTiRnFArSiThFArCaSiThSiThPBCaCaSiRnSiRnTiTiMgArPBCaPMgYPTiRnFAr
         // |> mapRenderEach
         |> Seq.length
         |> should equal -1
+
+    [<Fact>]
+    let ``2015 - Day 19 - part 2 - greedy replacement`` () =
+        let reverseSequence =
+            puzzleInput
+            |> fromInput
+            |> (fun m -> m.cheapestConstructionStepsTopDownGreedy m.calibrationString)
+
+        // reverseSequence |> Seq.rev |> Seq.iteri (fun i (a, b, p) -> printfn "step '%d': %s" i p)
+
+        reverseSequence |> Seq.length |> should equal 200

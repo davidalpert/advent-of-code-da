@@ -90,6 +90,33 @@ module MedicineforRudolph =
             |> Seq.unfold generator
             |> mapRenderEach
 
+        // https://www.reddit.com/r/adventofcode/comments/num2k6/comment/h0yi5ue/?utm_source=share&utm_medium=web2x&context=3
+        member this.cheapestConstructionStepsTopDownGreedy(molecule: string) =
+            // steps with an element and more molecules cannot be simplified to a single element
+            let validStep (s: string) : bool = not (s.Contains('e') && s.Length > 1)
+            let isElement (s: string) : bool = s = "e"
+
+            let nextReplacement (s: string) =
+                let m =
+                    this.sortedReplacements
+                    |> Seq.tryFind (fun (a, b) -> s.Contains(b))
+
+                match m with
+                | None -> None
+                | Some (a, b) ->
+                    let i = s.LastIndexOf(b)
+                    Some(a, b, s.[0 .. (i - 1)] + a + s.[i + (b.Length) ..])
+
+            let generator (lastString: string, lastDepth) =
+                // printfn "depth '%d'" lastDepth
+
+                match nextReplacement lastString with
+                | Some (a, b, p) -> Some((a, b, p), (p, lastDepth + 1)) // nothing more to do
+                | None -> None
+
+            (molecule, 0) |> Seq.unfold generator
+        // |> mapRenderEach
+
         member this.cheapestConstructionSteps(molecule: string) =
 
             let elements =
@@ -101,7 +128,7 @@ module MedicineforRudolph =
                 match lastPossibilities.Contains(molecule) with
                 | true -> None // done
                 | false ->
-                    printfn "molecule not yet found at depth %d (%d possibilities)" lastDepth lastPossibilities.Count
+                    // printfn "molecule not yet found at depth %d (%d possibilities)" lastDepth lastPossibilities.Count
                     Some(lastPossibilities, (lastPossibilities |> generateAllFabrications, lastDepth + 1))
 
             (elements |> Set.ofSeq, 0) |> Seq.unfold generator
