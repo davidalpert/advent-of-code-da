@@ -64,11 +64,13 @@ module InfiniteElvesandInfiniteHouses =
             s + n
     // end: https://www.bartwolff.com/Blog/2013/04/04/project-euler-problem-21
 
-    let numPresentsDeliveredToHouseN (n: int) = (SumDivMap n) * 10
-    // n
-    // |> divisorsOf
-    // |> Seq.map (fun i -> i * 10)
-    // |> Seq.sum
+    let numPresentsDeliveredToHouseN (n: int) =
+        // this was too slow
+        // n
+        // |> divisorsOf
+        // |> Seq.map (fun i -> i * 10)
+        // |> Seq.sum
+        (SumDivMap n) * 10
 
     let houseNumbersWhichGetAtLeastNPresents (n: int) =
         seq {
