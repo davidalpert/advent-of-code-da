@@ -82,11 +82,12 @@ module InfiniteElvesandInfiniteHouses =
                 yield!
                     seq {
                         for i in s .. -1 .. 1 do
-                            if n % i = 0 then
-                                let z = n / i
-                                if z > s then z
+                            if n % i = 0 then n / i
+                    // let z = n / i
+                    // if z > s then z
                     }
             }
+            |> Seq.distinct
 
     let sumDivSeq (n: int) = n |> divisorsAsSeq |> Seq.sum
 
@@ -138,14 +139,7 @@ module InfiniteElvesandInfiniteHouses =
 
         // seq {
         //     for i in 1 .. (n / 11) do
-        //         let p = numPresentsDeliveredToHouseNWithLimit 50 i
-
-        //         // if i % 1000 = 0 then
-        //         // if i > 1006900 then
-        //         if p >= n then
-        //             printfn "considering '%d' (%d presents)" i p
-        //         // printf "*"
-
-        //         if p >= n then yield i
+        //         yield numPresentsDeliveredToHouseNWithLimit 50 i
         // }
+        // |> Seq.findIndex (fun s -> s >= n)
         findPart2UsingSolutionFromReddit n
