@@ -64,13 +64,35 @@ module InfiniteElvesandInfiniteHouses =
             s + n
     // end: https://www.bartwolff.com/Blog/2013/04/04/project-euler-problem-21
 
+    // the second version of https://www.geeksforgeeks.org/find-all-divisors-of-a-natural-number-set-2/
+    // in C# is a solution in O(sqrt(n)) Time and O(1) Space; here is an F# way to express this sequence
+    let divisorsAsSeq (n: int) : seq<int> =
+        match n with
+        | 1 -> 1 |> Seq.singleton // 1 is a special case
+        | _ ->
+            let s = Math.Sqrt(n) |> int
+
+            seq {
+                yield!
+                    seq {
+                        for i in 1..1..s do
+                            if n % i = 0 then i
+                    }
+
+                yield!
+                    seq {
+                        for i in s .. -1 .. 1 do
+                            if n % i = 0 then
+                                let z = n / i
+                                if z > s then z
+                    }
+            }
+
+    let sumDivSeq (n: int) = n |> divisorsAsSeq |> Seq.sum
+
     let numPresentsDeliveredToHouseN (n: int) =
-        // this was too slow
-        // n
-        // |> divisorsOf
-        // |> Seq.map (fun i -> i * 10)
-        // |> Seq.sum
-        (SumDivMap n) * 10
+        // (SumDivMap n) * 10
+        (sumDivSeq n) * 10
 
     let houseNumbersWhichGetAtLeastNPresents (n: int) =
         seq {
@@ -81,3 +103,49 @@ module InfiniteElvesandInfiniteHouses =
 
                 if p >= n then yield i
         }
+
+    let sumDivSeqWithLimit (l: int) (n: int) =
+        n
+        |> divisorsAsSeq
+        |> Seq.mapi (fun i x -> (i, x))
+        |> Seq.filter (fun (i, x) -> i <= 50)
+        |> Seq.sumBy snd
+
+    let numPresentsDeliveredToHouseNWithLimit (l: int) (n: int) = (sumDivSeqWithLimit l n) * 11
+
+    // I was close; this comes from https://www.reddit.com/r/adventofcode/comments/3xjpp2/comment/cy59ygt/?utm_source=share&utm_medium=web2x&context=3
+    let factors number =
+        seq {
+            for divisor in 1 .. (float >> sqrt >> int) number do
+                if number % divisor = 0 then
+                    yield (number, divisor)
+                    yield (number, number / divisor)
+        }
+
+    let find filt pres n =
+        Seq.initInfinite (fun i ->
+            (factors i)
+            |> Seq.distinctBy snd
+            |> Seq.filter filt
+            |> Seq.sumBy snd
+            |> (*) pres)
+        |> Seq.findIndex (fun sum -> sum >= n)
+
+    let findPart2UsingSolutionFromReddit n =
+        (find (fun (i, fact) -> i / fact <= 50) 11 n)
+
+    let houseNumbersWhichGetAtLeastNPresentsWithElvesStoppingAfter50Houses (n: int) =
+
+        // seq {
+        //     for i in 1 .. (n / 11) do
+        //         let p = numPresentsDeliveredToHouseNWithLimit 50 i
+
+        //         // if i % 1000 = 0 then
+        //         // if i > 1006900 then
+        //         if p >= n then
+        //             printfn "considering '%d' (%d presents)" i p
+        //         // printf "*"
+
+        //         if p >= n then yield i
+        // }
+        findPart2UsingSolutionFromReddit n

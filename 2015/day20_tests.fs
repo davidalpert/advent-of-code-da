@@ -8,13 +8,7 @@ module Day20 =
     open Xunit
     open FsUnit.Xunit
 
-    let exampleInput =
-        """
-"""
-
-    let puzzleInput =
-        """
-"""
+    let puzzleInput = 36000000
 
     [<Theory>]
     [<InlineData(1, 1)>]
@@ -28,7 +22,7 @@ module Day20 =
     [<InlineData(9, 3)>]
     [<InlineData(100, 9)>]
     let ``2015 - Day 20 - divisorsOf`` (num, numFactors) =
-        divisorsOf num
+        divisorsAsSeq num
         |> Seq.length
         |> should equal numFactors
 
@@ -42,7 +36,7 @@ module Day20 =
     [<InlineData(7, 2, 80)>]
     [<InlineData(8, 4, 150)>]
     [<InlineData(9, 3, 130)>]
-    [<InlineData(831600, 0, 36902400)>] // <- part 1 answer (after finding it in the following test)
+    // [<InlineData(831600, 0, 36902400)>] // <- part 1 answer (after finding it in the following test)
     let ``2015 - Day 20 - numPresentsDeliveredToHouseN`` (house, _, numPresentsDelivered) =
         house
         |> numPresentsDeliveredToHouseN
@@ -54,8 +48,40 @@ module Day20 =
     [<InlineData(60, 4)>]
     [<InlineData(80, 6)>]
     [<InlineData(100, 6)>]
-    // [<InlineData(36000000, 831600)>] // <- part 1 answer; takes 18m
+    // [<InlineData(36000000, 831600)>] // <- part 1 answer; takes 8s :tada:
+    //                        884520
     let ``2015 - Day 20 - part 1`` (minNumberPresents, expected) =
         houseNumbersWhichGetAtLeastNPresents minNumberPresents
         |> Seq.head
         |> should equal expected
+
+    // [<Theory>]
+    // [<InlineData(36000000)>]
+    // [<InlineData(125)>]
+    let ``2015 - Day 20 - part 1 - divisorsAsSeq`` (houseNumber) =
+        divisorsAsSeq 36000000
+        |> Seq.take 50
+        |> Array.ofSeq
+        |> should equal [||]
+
+
+    [<Theory>]
+    [<InlineData(10, 1)>]
+    // [<InlineData(40, 3)>]
+    // [<InlineData(60, 4)>]
+    // [<InlineData(80, 6)>]
+    // [<InlineData(100, 6)>]
+    // 1006920 is too high
+    // 1006920
+    [<InlineData(36000000, 884520)>] // <- part 2 answer; takes 18m
+    //           11171160
+    let ``2015 - Day 20 - part 2`` (minNumberPresents, expected) =
+        houseNumbersWhichGetAtLeastNPresentsWithElvesStoppingAfter50Houses minNumberPresents
+        // |> Seq.head
+        |> should equal expected
+
+    [<Fact>]
+    let ``foool`` () =
+        // 36000000 -> 3600000 visits -> 831600)>] // <- part 1 answer; takes 18m
+        // 3272727
+        puzzleInput / 11 |> should equal 3272727
