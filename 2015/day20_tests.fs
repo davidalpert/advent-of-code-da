@@ -42,7 +42,7 @@ module Day20 =
         |> numPresentsDeliveredToHouseN
         |> should equal numPresentsDelivered
 
-    [<Theory>]
+    // [<Theory>]
     [<InlineData(10, 1)>]
     [<InlineData(40, 3)>]
     [<InlineData(60, 4)>]
@@ -54,7 +54,7 @@ module Day20 =
         |> Seq.head
         |> should equal expected
 
-    [<Theory>]
+    // [<Theory>]
     [<InlineData(36000000, 884520)>] // <- part 2 answer; takes ~8s
     let ``2015 - Day 20 - part 2`` (minNumberPresents, expected) =
         houseNumbersWhichGetAtLeastNPresentsWithElvesStoppingAfter50Houses minNumberPresents
