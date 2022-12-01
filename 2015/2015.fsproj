@@ -51,6 +51,8 @@
     <Compile Include="day19_tests.fs" />
     <Compile Include="day20_infinite_elves_and_infinite_houses.fs" />
     <Compile Include="day20_tests.fs" />
+    <Compile Include="day21_rpg_simulator_20xx.fs" />
+    <Compile Include="day21_tests.fs" />
     <!-- NEXT -->
   </ItemGroup>
 
