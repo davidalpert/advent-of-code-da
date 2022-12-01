@@ -10,41 +10,41 @@
   <ItemGroup>
     <Compile Include="day00_input.fs" />
     <Compile Include="day00_utils.fs" />
-    <!--
+    
     <Compile Include="day01_depthSounder.fs" />
-    <Compile Include="day01_tests.fs" />
+    <!-- <Compile Include="day01_tests.fs" /> -->
     <Compile Include="day02_helm.fs" />
-    <Compile Include="day02_tests.fs" />
+    <!-- <Compile Include="day02_tests.fs" /> -->
     <Compile Include="day03_diagnostics.fs" />
-    <Compile Include="day03_tests.fs" />
+    <!-- <Compile Include="day03_tests.fs" /> -->
     <Compile Include="day04_bingo.fs" />
-    <Compile Include="day04_tests.fs" />
+    <!-- <Compile Include="day04_tests.fs" /> -->
     <Compile Include="day05_hydrothermals.fs" />
-    <Compile Include="day05_tests.fs" />
+    <!-- <Compile Include="day05_tests.fs" /> -->
     <Compile Include="day06_lanternfish.fs" />
-    <Compile Include="day06_tests.fs" />
+    <!-- <Compile Include="day06_tests.fs" /> -->
     <Compile Include="day07_crabs.fs" />
-    <Compile Include="day07_tests.fs" />
+    <!-- <Compile Include="day07_tests.fs" /> -->
     <Compile Include="day08_broken_display.fs" />
-    <Compile Include="day08_tests.fs" />
-    <Compile Include="day09_tests.fs" />
+    <!-- <Compile Include="day08_tests.fs" /> -->
+    <!-- <Compile Include="day09_tests.fs" /> -->
     <Compile Include="day10_parser.fs" />
-    <Compile Include="day10_tests.fs" />
+    <!-- <Compile Include="day10_tests.fs" /> -->
     <Compile Include="day13_parser.fs" />
-    <Compile Include="day13_tests.fs" />
+    <!-- <Compile Include="day13_tests.fs" /> -->
     <Compile Include="day14_polymerization.fs" />
-    <Compile Include="day14_tests.fs" />
+    <!-- <Compile Include="day14_tests.fs" /> -->
     <Compile Include="day16_parser.fs" />
-    <Compile Include="day16_tests.fs" />
+    <!-- <Compile Include="day16_tests.fs" /> -->
     <Compile Include="day17_probe_launcher.fs" />
-    <Compile Include="day17_tests.fs" />
+    <!-- <Compile Include="day17_tests.fs" /> -->
     <Compile Include="day18_snailfish_math.fs" />
-    <Compile Include="day18_tests.fs" />
+    <!-- <Compile Include="day18_tests.fs" /> -->
     <Compile Include="day19_beacon_scanner.fs" />
-    <Compile Include="day19_tests.fs" />
+    <!-- <Compile Include="day19_tests.fs" /> -->
     <Compile Include="day20_trench_map.fs" />
-    <Compile Include="day20_tests.fs" />
-    -->
+    <!-- <Compile Include="day20_tests.fs" /> -->
+   
     <!-- NEXT -->
   </ItemGroup>
 

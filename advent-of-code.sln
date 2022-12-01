@@ -9,6 +9,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "2020", "2020\2020.fsproj", 
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "2015", "2015\2015.fsproj", "{72523FFE-99A6-4280-B39D-042B48E0D2D5}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "2022", "2022\2022.fsproj", "{721FA847-F93A-43AE-8289-D7B3AF29FB18}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{72523FFE-99A6-4280-B39D-042B48E0D2D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72523FFE-99A6-4280-B39D-042B48E0D2D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72523FFE-99A6-4280-B39D-042B48E0D2D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{721FA847-F93A-43AE-8289-D7B3AF29FB18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{721FA847-F93A-43AE-8289-D7B3AF29FB18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{721FA847-F93A-43AE-8289-D7B3AF29FB18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{721FA847-F93A-43AE-8289-D7B3AF29FB18}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
