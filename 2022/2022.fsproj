@@ -12,6 +12,8 @@
     <Compile Include="day00_utils.fs" />
     <Compile Include="day01_calorie_counting.fs" />
     <Compile Include="day01_tests.fs" />
+    <Compile Include="day02_rock_paper_scissors.fs" />
+    <Compile Include="day02_tests.fs" />
     <!-- NEXT -->
   </ItemGroup>
 
