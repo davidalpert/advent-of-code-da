@@ -17,15 +17,29 @@ module DayDAY_NUMBER =
 """
 
     [<Fact>]
-    let ``2015 - Day DAY_NUMBER - example`` () =
+    let ``YEAR - Day DAY_NUMBER - part 1 - example`` () =
         exampleInput
         |> fromInput
         |> Array.length
+        |> should equal 1
+
+    // [<Fact>]
+    let ``YEAR - Day DAY_NUMBER - part 1`` () =
+        puzzleInput
+        // |> fromInput
+        // |> Array.length
         |> should equal 0
 
     // [<Fact>]
-    let ``2015 - Day DAY_NUMBER - part 1`` () =
+    let ``YEAR - Day DAY_NUMBER - part 2 - example`` () =
+        exampleInput
+        // |> fromInput
+        // |> Array.length
+        |> should equal 0
+
+    // [<Fact>]
+    let ``YEAR - Day DAY_NUMBER - part 2`` () =
         puzzleInput
-        |> fromInput
-        |> Array.length
+        // |> fromInput
+        // |> Array.length
         |> should equal 0

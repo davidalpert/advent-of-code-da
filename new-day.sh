@@ -36,6 +36,6 @@ echo "- $TEST_FILE"
 echo "updating project:"
 echo "- $PROJ_FILE"
 
-sed "s/DAY_NUMBER/$DAY/g;s/MODULE_NAME/$MODULE_NAME/g" .templates/tests.fs > "$YEAR/day${DAY}_tests.fs"
-sed "s/DAY_NUMBER/$DAY/g;s/MODULE_NAME/$MODULE_NAME/g" .templates/code.fs > "$YEAR/day${DAY}_$FILE_NAME.fs"
+sed "s/YEAR/$YEAR/g;s/DAY_NUMBER/$DAY/g;s/MODULE_NAME/$MODULE_NAME/g" .templates/tests.fs > "$YEAR/day${DAY}_tests.fs"
+sed "s/YEAR/$YEAR/g;s/DAY_NUMBER/$DAY/g;s/MODULE_NAME/$MODULE_NAME/g" .templates/code.fs > "$YEAR/day${DAY}_$FILE_NAME.fs"
 sed -i '' "s/\(<!-- NEXT -->\)/<Compile Include=\"$CODE_FILE_NAME\" \/>\n    <Compile Include=\"$TEST_FILE_NAME\" \/>\n    \1/" $PROJ_FILE
