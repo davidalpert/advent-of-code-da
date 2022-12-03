@@ -13,19 +13,16 @@ module RucksackReorganization =
     
     // type Rucksack = Compartment * Compartment
     type Rucksack(s:string) =
-        let contents = s.ToCharArray()
-        let midpoint = contents.Length / 2
-        
+        let halves = s.ToCharArray() |> Array.splitInto 2
         member this.compartments =
             (
-                contents |> Array.take (midpoint),
-                contents |> Array.skip (midpoint)
+                halves[0],
+                halves[1]
             )
             
         member this.itemsInBoth =
-            let first = this.compartments |> fst |> set
-            let second = this.compartments |> snd |> set
-            Set.intersect first second
+            let (first, second) = this.compartments
+            Set.intersect (first |> set) (second |> set)
             
     let prioritiesOfItemsInBothCompartments (r: Rucksack): int[] =
         r.itemsInBoth
