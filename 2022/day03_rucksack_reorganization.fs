@@ -48,3 +48,17 @@ module RucksackReorganization =
         |> toRucksacks
         |> Array.map sumOfPrioritiesOfItemsInBothCompartments
         |> Array.sum
+        
+    let part2_find_the_sum_of_the_priorities_of_the_badges_for_each_three_elf_group (input: string) =
+        input
+        |> splitToTrimmedLines
+        |> Seq.chunkBySize 3
+        |> Seq.map (fun s ->
+               s
+               |> Array.map set
+               |> Set.intersectMany
+               |> Seq.map asPriority
+               |> Seq.sum
+            )
+        |> Seq.sum
+ 

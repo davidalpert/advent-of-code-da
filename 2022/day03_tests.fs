@@ -389,16 +389,14 @@ qvjWzzvVbZpjqllggscdchwDrCphwsdhrD
         |> part1_find_the_sum_of_the_priorities_of_the_items_in_both_rucksacks
         |> should equal 7878
 
-    // [<Fact>]
+    [<Fact>]
     let ``2022 - Day 03 - part 2 - example`` () =
         exampleInput
-        // |> fromInput
-        // |> Array.length
-        |> should equal 0
+        |> part2_find_the_sum_of_the_priorities_of_the_badges_for_each_three_elf_group
+        |> should equal 70
 
-    // [<Fact>]
+    [<Fact>]
     let ``2022 - Day 03 - part 2`` () =
         puzzleInput
-        // |> fromInput
-        // |> Array.length
-        |> should equal 0
+        |> part2_find_the_sum_of_the_priorities_of_the_badges_for_each_three_elf_group
+        |> should equal 2760
