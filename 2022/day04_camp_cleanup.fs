@@ -15,7 +15,10 @@ module CampCleanup =
         | l when l >= 2 -> (ss[0], ss[1])
         | _ -> failwithf $"firstPairFromArray requires at least 2 elements; found %d{ss |> Array.length}"
         
-    let rangeAsSet (first, last) =
+    let splitBy (sep: string) (input: string) =
+        input.Split(sep) |> firstPairFromArray
+        
+    let asSet (first, last) =
         seq { first .. last } |> Set.ofSeq
         
     let eitherOr fn (a, b) =
@@ -33,15 +36,15 @@ module CampCleanup =
     // parsing
     
     let parseRange (s: string) =
-            s.Split("-")
-            |> Array.map int
-            |> firstPairFromArray
-            |> rangeAsSet
+        s
+        |> (splitBy "-")
+        |> (spread int)
+        |> asSet
         
     let inputToPairedAssignments s =
         s
         |> splitToTrimmedLines
-        |> Seq.map (fun s -> s.Split(",") |> firstPairFromArray)
+        |> Seq.map (splitBy ",")
         |> Seq.map (spread parseRange)
         
     // part 1 ---------------
