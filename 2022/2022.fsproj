@@ -18,6 +18,8 @@
     <Compile Include="day03_tests.fs" />
     <Compile Include="day04_camp_cleanup.fs" />
     <Compile Include="day04_tests.fs" />
+    <Compile Include="day05_supply_stacks.fs" />
+    <Compile Include="day05_tests.fs" />
     <!-- NEXT -->
   </ItemGroup>
 
