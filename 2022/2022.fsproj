@@ -20,6 +20,8 @@
     <Compile Include="day04_tests.fs" />
     <Compile Include="day05_supply_stacks.fs" />
     <Compile Include="day05_tests.fs" />
+    <Compile Include="day06_tuning_trouble.fs" />
+    <Compile Include="day06_tests.fs" />
     <!-- NEXT -->
   </ItemGroup>
 
