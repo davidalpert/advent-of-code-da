@@ -22,6 +22,8 @@
     <Compile Include="day05_tests.fs" />
     <Compile Include="day06_tuning_trouble.fs" />
     <Compile Include="day06_tests.fs" />
+    <Compile Include="day07_no_space_left_on_device.fs" />
+    <Compile Include="day07_tests.fs" />
     <!-- NEXT -->
   </ItemGroup>
 
