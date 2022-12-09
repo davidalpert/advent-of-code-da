@@ -28,7 +28,7 @@ module DayDAY_NUMBER =
         puzzleInput
         // |> fromInput
         // |> Array.length
-        |> should equal 0
+        |> printfn "YEAR - Day DAY_NUMBER - Part 1: %A"
 
     // [<Fact>]
     let ``YEAR - Day DAY_NUMBER - part 2 - example`` () =
@@ -42,4 +42,4 @@ module DayDAY_NUMBER =
         puzzleInput
         // |> fromInput
         // |> Array.length
-        |> should equal 0
+        |> printfn "YEAR - Day DAY_NUMBER - Part 2: %A"
