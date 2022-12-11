@@ -24,6 +24,8 @@
     <Compile Include="day06_tests.fs" />
     <Compile Include="day07_no_space_left_on_device.fs" />
     <Compile Include="day07_tests.fs" />
+    <Compile Include="day08_treetop_tree_house.fs" />
+    <Compile Include="day08_tests.fs" />
     <!-- NEXT -->
   </ItemGroup>
 
