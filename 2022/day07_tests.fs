@@ -1085,7 +1085,7 @@ $ ls
         puzzleInput
         |> directoriesWithSizesOfAtMost 100000
         |> Seq.sumBy snd
-        |> printfn "2022 Day 07 - Part 1: %A"
+        |> printfn "2022 - Day 07 - Part 1: %A"
 
     [<Fact>]
     let ``2022 - Day 07 - part 2 - example`` () =
@@ -1097,4 +1097,4 @@ $ ls
     let ``2022 - Day 07 - part 2`` () =
         puzzleInput
         |> totalSizeOfSmallestDirectoryToFreeUpEnoughSpaceToRunUpdateOfSize 30000000
-        |> printfn "2022 Day 07 - Part 2: %A"
+        |> printfn "2022 - Day 07 - Part 2: %A"
