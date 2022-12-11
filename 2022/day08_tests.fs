@@ -162,7 +162,7 @@ module Day08 =
         |> part1_howManyTreesAreVisibleOutsideTheGrid
         |> should equal 21
 
-    [<Fact>]
+    // [<Fact>]
     let ``2022 - Day 08 - part 1`` () =
         puzzleInput
         |> part1_howManyTreesAreVisibleOutsideTheGrid
@@ -174,7 +174,7 @@ module Day08 =
         |> part2_whatIsTheHighestScenicScorePossibleForAnyTree
         |> should equal 8
 
-    [<Fact>]
+    // [<Fact>]
     let ``2022 - Day 08 - part 2`` () =
         puzzleInput
         |> part2_whatIsTheHighestScenicScorePossibleForAnyTree
