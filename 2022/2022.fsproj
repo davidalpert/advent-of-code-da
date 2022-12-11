@@ -26,6 +26,8 @@
     <Compile Include="day07_tests.fs" />
     <Compile Include="day08_treetop_tree_house.fs" />
     <Compile Include="day08_tests.fs" />
+    <Compile Include="day09_rope_bridge.fs" />
+    <Compile Include="day09_tests.fs" />
     <!-- NEXT -->
   </ItemGroup>
 
