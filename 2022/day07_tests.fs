@@ -1080,7 +1080,7 @@ $ ls
         |> Seq.sumBy snd
         |> should equal 95437
 
-    [<Fact>]
+    // [<Fact>]
     let ``2022 - Day 07 - part 1`` () =
         puzzleInput
         |> directoriesWithSizesOfAtMost 100000
@@ -1093,7 +1093,7 @@ $ ls
         |> totalSizeOfSmallestDirectoryToFreeUpEnoughSpaceToRunUpdateOfSize 30000000
         |> should equal 24933642
 
-    [<Fact>]
+    // [<Fact>]
     let ``2022 - Day 07 - part 2`` () =
         puzzleInput
         |> totalSizeOfSmallestDirectoryToFreeUpEnoughSpaceToRunUpdateOfSize 30000000
