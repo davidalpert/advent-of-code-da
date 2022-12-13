@@ -28,6 +28,8 @@
     <Compile Include="day08_tests.fs" />
     <Compile Include="day09_rope_bridge.fs" />
     <Compile Include="day09_tests.fs" />
+    <Compile Include="day10_cathode_ray_tube.fs" />
+    <Compile Include="day10_tests.fs" />
     <!-- NEXT -->
   </ItemGroup>
 
