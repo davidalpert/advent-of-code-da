@@ -14,24 +14,30 @@ module RopeBridge =
         startingPosition: Coordinate
         visited: Coordinate list
         head: Coordinate
-        tail: Coordinate
+        tail: Coordinate list
     }
     with
-        static member initialState = {
+        static member initialState numberOfKnots = {
             head = { x = 0; y = 0 }
-            tail = { x = 0; y = 0 }
+            tail = seq { 1..(numberOfKnots-1) } |> Seq.map (fun _ -> { x = 0; y = 0 }) |> List.ofSeq
             startingPosition = { x = 0; y = 0 }
             visited = [];
         }
         
         member this.allCoordinates =
-            Seq.concat [this.visited; [this.startingPosition; this.head; this.tail]]
+            Seq.concat [this.visited; [this.startingPosition; this.head]; this.tail]
             
         member this.farthestCoordinates =
             let maxX = this.allCoordinates |> Seq.maxBy (fun c -> c.x)
             let maxY = this.allCoordinates |> Seq.maxBy (fun c -> c.y)
             (maxX, maxY)
             
+    let rec lastKnot tail =
+        match tail with
+        | [c] -> c
+        | c :: rest -> lastKnot rest
+        | _ -> failwith "need at least one item"
+
     let simToString (sim:Simulation) =
         let xMax,yMax = sim.farthestCoordinates
             
@@ -45,7 +51,11 @@ module RopeBridge =
                 |> Seq.map (fun x ->
                     match { x = x; y = y } with
                     | c when c = sim.head -> 'H'
-                    | c when c = sim.tail -> 'T'
+                    | c when sim.tail |> List.contains c ->
+                        let i = sim.tail |> List.findIndex (fun x -> x = c)
+                        match i with
+                        | x when x = (sim.tail.Length - 1) -> 'T'
+                        | _ -> char (i + int '0' + 1)
                     | c when c = sim.startingPosition -> 's'
                     | _ when wasVisited x y -> '#'
                     | _ -> '.'
@@ -95,18 +105,32 @@ module RopeBridge =
                 | _ -> failwithf $"'%s{direction}' is not a recognized direction"
                 
             let moveTail head tail =
-                let d = absDistanceBetween head tail
-                // if head.x = tail.x && head.y > tail.y && d.y > 1 then
-                match (head,tail) with
-                | (h,t) when h |> directlyAbove t && d.y > 1 -> { tail with y = tail.y + 1 }
-                | (h,t) when h |> directlyBelow t && d.y > 1 -> { tail with y = tail.y - 1 }
-                | (h,t) when h |> directlyLeftOf t && d.x > 1 -> { tail with x = tail.x - 1 }
-                | (h,t) when h |> directlyRightOf t && d.x > 1 -> { tail with x = tail.x + 1 }
-                | (h,t) when h |> diagonallyAboveAndRightOf t && h |> notTouching t -> { x = tail.x + 1; y = tail.y + 1 }
-                | (h,t) when h |> diagonallyAboveAndLeftOf t && h |> notTouching t -> { x = tail.x - 1; y = tail.y + 1 }
-                | (h,t) when h |> diagonallyBelowAndRightOf t && h |> notTouching t -> { x = tail.x + 1; y = tail.y - 1 }
-                | (h,t) when h |> diagonallyBelowAndLeftOf t && h |> notTouching t -> { x = tail.x - 1; y = tail.y - 1 }
-                | _ -> tail
+                let knots = head :: tail |> Array.ofList // create an array so we can update as we iterate
+                   
+                seq { 0 .. (knots.Length-1) }
+                |> Array.ofSeq
+                |> Array.pairwise
+                |> Array.iteri (fun i (hIndex,tIndex) ->
+                    let hh = knots[hIndex]
+                    let tt = knots[tIndex]
+                    let d = absDistanceBetween hh tt
+                    // printfn $"knot %d{i} (%d{hh.x},%d{hh.y}) <-- knot %d{i+1} (%d{tt.x},%d{tt.y}) : distance is: %d{d.x},%d{d.y}"
+                    knots[tIndex] <-
+                        match (hh,tt) with
+                        | (h,t) when h |> directlyAbove t && d.y > 1 -> { t with y = t.y + 1 }
+                        | (h,t) when h |> directlyBelow t && d.y > 1 -> { t with y = t.y - 1 }
+                        | (h,t) when h |> directlyLeftOf t && d.x > 1 -> { t with x = t.x - 1 }
+                        | (h,t) when h |> directlyRightOf t && d.x > 1 -> { t with x = t.x + 1 }
+                        | (h,t) when h |> diagonallyAboveAndRightOf t && h |> notTouching t -> { x = t.x + 1; y = t.y + 1 }
+                        | (h,t) when h |> diagonallyAboveAndLeftOf t && h |> notTouching t -> { x = t.x - 1; y = t.y + 1 }
+                        | (h,t) when h |> diagonallyBelowAndRightOf t && h |> notTouching t -> { x = t.x + 1; y = t.y - 1 }
+                        | (h,t) when h |> diagonallyBelowAndLeftOf t && h |> notTouching t -> { x = t.x - 1; y = t.y - 1 }
+                        | _ -> tt
+                )
+                
+                knots
+                |> Seq.skip 1 // the head was added temporarily to use in pairwise
+                |> List.ofSeq
                  
             let newHead = moveHead direction
             let newTail = moveTail newHead sim.tail
@@ -115,7 +139,7 @@ module RopeBridge =
                 sim with
                     head = newHead
                     tail = newTail
-                    visited = (newTail :: sim.visited)
+                    visited = ((lastKnot newTail) :: sim.visited)
             }
             
     let moveHeadNTimes (instruction: string * int) (sim:Simulation) =
@@ -134,12 +158,16 @@ module RopeBridge =
             )
         |> Array.ofSeq
         
-    let part1_howManyPositionsDidTheTailVisitOnce (input: string) =
+    let howManyPositionsDidTheLastOfNKnotsVisitOnce n (input:string) =
         let endState =
             input
             |> toInstructions
-            |> Array.fold (fun s i -> s |> moveHeadNTimes i) Simulation.initialState
+            |> Array.fold (fun s i -> s |> moveHeadNTimes i) (Simulation.initialState n)
 
-        Seq.concat [endState.visited; [endState.tail]]
+        Seq.concat [endState.visited; [lastKnot endState.tail]]
         |> Seq.distinct
         |> Seq.length
+        
+    let part1_howManyPositionsDidTheTailVisitOnce (input: string) =
+        input |> howManyPositionsDidTheLastOfNKnotsVisitOnce 2
+        

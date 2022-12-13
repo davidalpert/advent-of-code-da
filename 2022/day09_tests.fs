@@ -2026,7 +2026,7 @@ U 10
 L 19
 """
 
-    // [<Fact>]
+    [<Fact>]
     let ``2022 - Day 09 - part 1 - printing`` () =
         let sim = {
             startingPosition = { x = 0; y = 0 }
@@ -2039,7 +2039,7 @@ L 19
                 {x = 3; y = 3}
             ]
             head = { x = 3; y = 3 }
-            tail = { x = 2; y = 3 }
+            tail = [{ x = 2; y = 3 }]
         }
         
         let expected = """
@@ -2169,7 +2169,7 @@ s###.")>]
         let result =
             input
             |> toInstructions
-            |> Array.fold (fun s i -> s |> moveHeadNTimes i) Simulation.initialState
+            |> Array.fold (fun s i -> s |> moveHeadNTimes i) (Simulation.initialState 2)
             
         result |> simToString |> should equal (expected.Trim())
 
@@ -2185,7 +2185,7 @@ s###.
         let result =
             exampleInput
             |> toInstructions
-            |> Array.fold (fun s i -> s |> moveHeadNTimes i) Simulation.initialState
+            |> Array.fold (fun s i -> s |> moveHeadNTimes i) (Simulation.initialState 2)
             
         result |> simToString |> should equal (expected.Trim())
         
