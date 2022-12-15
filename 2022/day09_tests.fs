@@ -22,6 +22,18 @@ L 5
 R 2
 """
 
+    let largerExampleInput =
+        """
+R 5
+U 8
+L 8
+D 3
+R 17
+D 10
+L 25
+U 20
+"""
+
     let puzzleInput =
         """
 U 1
@@ -2208,18 +2220,101 @@ s###.
     let ``2022 - Day 09 - part 1`` () =
         puzzleInput
         |> part1_howManyPositionsDidTheTailVisitOnce
-        |> printfn "2022 - Day 09 - Part 1: %A"
+        // |> printfn "2022 - Day 09 - Part 1: %A"
+        |> should equal 6563
 
-    // [<Fact>]
-    let ``2022 - Day 09 - part 2 - example`` () =
-        exampleInput
-        // |> fromInput
-        // |> Array.length
-        |> should equal 0
+    [<Fact>]
+    let ``2022 - Day 09 - part 2 - previous example`` () =
+        let expected = """
+.1H3
+.5..
+6...
+"""
+        let result =
+            exampleInput
+            |> toInstructions
+            |> Array.fold (fun s i -> s |> moveHeadNTimes i) (Simulation.initialState 10)
+            
+        result |> simToString |> should equal (expected.Trim())
 
-    // [<Fact>]
+    [<Theory>]
+    [<InlineData("R 1", "1H")>]
+    [<InlineData("R 2", "21H")>]
+    [<InlineData("R 3", "321H")>]
+    [<InlineData("R 10", "sT87654321H")>]
+    [<InlineData("R 5", "54321H")>]
+    [<InlineData("
+ R 5
+ U 8", "
+.....H
+.....1
+.....2
+.....3
+....54
+...6..
+..7...
+.8....
+T.....")>]
+    [<InlineData("
+ R 5
+ U 8
+ L 8", "
+H1234.
+....5.
+....6.
+....7.
+....8.
+....T.
+.....#
+....#.
+...s..")>]
+    [<InlineData("
+R 5
+U 8
+L 8
+D 3
+R 17
+D 10
+L 25
+U 20", "
+H.....................
+1.....................
+2.....................
+3.....................
+4.....................
+5.....................
+6.....................
+7.....................
+8.....................
+T.....................
+#.............###.....
+#............#...#....
+.#..........#.....#...
+..#..........#.....#..
+...#........#.......#.
+....#......s.........#
+.....#..............#.
+......#............#..
+.......#..........#...
+........#........#....
+.........########.....")>]
+    let ``2022 - Day 09 - part 2 - larger example - steps`` (input:string, expected:string) =
+        let result =
+            input
+            |> toInstructions
+            |> Array.fold (fun s i -> s |> moveHeadNTimes i) (Simulation.initialState 10)
+            
+        result |> simToString |> should equal (expected.Trim())
+
+    [<Fact>]
+    let ``2022 - Day 09 - part 2 - larger example`` () =
+        largerExampleInput
+        |> part2_howManyPositionsDidTheTailVisitOnce
+        |> should equal 36
+
+    [<Fact>]
     let ``2022 - Day 09 - part 2`` () =
         puzzleInput
-        // |> fromInput
-        // |> Array.length
-        |> printfn "2022 - Day 09 - Part 2: %A"
+        |> part2_howManyPositionsDidTheTailVisitOnce
+        // |> printfn "2022 - Day 09 - Part 2: %A"
+        |> should equal 2653

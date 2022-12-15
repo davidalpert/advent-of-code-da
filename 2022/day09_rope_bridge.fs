@@ -177,3 +177,5 @@ module RopeBridge =
     let part1_howManyPositionsDidTheTailVisitOnce (input: string) =
         input |> howManyPositionsDidTheLastOfNKnotsVisitOnce 2
         
+    let part2_howManyPositionsDidTheTailVisitOnce (input: string) =
+        input |> howManyPositionsDidTheLastOfNKnotsVisitOnce 10
