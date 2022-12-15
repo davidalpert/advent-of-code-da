@@ -32,6 +32,11 @@ module RopeBridge =
             let maxY = this.allCoordinates |> Seq.maxBy (fun c -> c.y)
             (maxX, maxY)
             
+        member this.nearestCoordinates =
+            let maxX = this.allCoordinates |> Seq.minBy (fun c -> c.x)
+            let maxY = this.allCoordinates |> Seq.minBy (fun c -> c.y)
+            (maxX, maxY)
+            
     let rec lastKnot tail =
         match tail with
         | [c] -> c
@@ -40,14 +45,15 @@ module RopeBridge =
 
     let simToString (sim:Simulation) =
         let xMax,yMax = sim.farthestCoordinates
+        let xMin,yMin = sim.nearestCoordinates
             
         let wasVisited x y =
            sim.allCoordinates |> Seq.contains { x = x; y = y }
                 
         let parts =
-            seq { yMax.y .. -1 .. 0 }
+            seq { yMax.y .. -1 .. yMin.y }
             |> Seq.map (fun y ->
-                seq { 0 .. xMax.x }
+                seq { xMin.x .. xMax.x }
                 |> Seq.map (fun x ->
                     match { x = x; y = y } with
                     | c when c = sim.head -> 'H'
