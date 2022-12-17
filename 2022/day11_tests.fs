@@ -151,7 +151,7 @@ Monkey 3:""")>]
     let ``2022 - Day 11 - part 1 - example - the barrel after round n`` (n:int, expected:string) =
         exampleInput
         |> parser.parse
-        |> afterRound n
+        |> afterRound part1_adjustLevel n 
         |> toString
         |> should equal (expected.Trim())
         
@@ -164,7 +164,7 @@ Monkey 3 inspected items 105 times.""")>]
     let ``2022 - Day 11 - part 1 - example - activity chart after round n`` (n:int, expected:string) =
         exampleInput
         |> parser.parse
-        |> afterRound n
+        |> afterRound part1_adjustLevel n
         |> toActivityChart
         |> should equal (expected.Trim())
 

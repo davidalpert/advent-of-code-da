@@ -94,7 +94,10 @@ module MonkeyInTheMiddle =
     let addToEnd item ll =
         (item :: (ll |> List.rev)) |> List.rev
         
-    let afterOneRound (barrel:Monkey[]) =
+    // your relief that the monkey's inspection didn't damage the item causes your worry level to be divided by three and rounded down to the nearest integer
+    let part1_adjustLevel w = w / 3
+        
+    let afterOneRound (adjustWorryLevel: int -> int) (barrel:Monkey[]) =
         let throwTo m item =
             barrel[m] <- {
                 barrel[m] with
@@ -116,7 +119,7 @@ module MonkeyInTheMiddle =
                             | Square -> item.worryLevel * item.worryLevel
                         // printfn $"    worry level is '%A{monkey.operation}' to %d{inspectionLevel}"
                             
-                        let relievedLevel = inspectionLevel / 3
+                        let relievedLevel = adjustWorryLevel inspectionLevel
                         // printfn $"    monkey gets bored with item; worry level is / 3 to %d{relievedLevel}"
                         
                         let toMonkey = monkey.throwsTo relievedLevel
@@ -136,10 +139,10 @@ module MonkeyInTheMiddle =
             
         barrel
         
-    let rec afterRound n (barrel: Monkey[]) =
+    let rec afterRound (adjustWorryLevel: int -> int) n (barrel: Monkey[]) =
         match n with
         | 0 -> barrel
-        | _ -> afterRound (n-1) (afterOneRound barrel)
+        | _ -> afterRound adjustWorryLevel (n-1) (afterOneRound adjustWorryLevel barrel)
         
     let shenanigans (barrel: Monkey[]) =
         barrel
@@ -151,5 +154,5 @@ module MonkeyInTheMiddle =
     let part1_what_is_the_level_of_monkey_business_after_n_rounds_of_simian_shenanigans n (input:string) =
         input
         |> parser.parse
-        |> afterRound n
+        |> afterRound part1_adjustLevel n
         |> shenanigans
