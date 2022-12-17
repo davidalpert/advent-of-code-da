@@ -32,6 +32,8 @@
     <Compile Include="day10_tests.fs" />
     <Compile Include="day11_monkey_in_the_middle.fs" />
     <Compile Include="day11_tests.fs" />
+    <Compile Include="day13_distress_signal.fs" />
+    <Compile Include="day13_tests.fs" />
     <!-- NEXT -->
   </ItemGroup>
 
