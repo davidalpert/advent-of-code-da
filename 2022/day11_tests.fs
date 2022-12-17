@@ -174,7 +174,7 @@ Monkey 3 inspected items 105 times.""")>]
         |> part1_what_is_the_level_of_monkey_business_after_n_rounds_of_simian_shenanigans 20
         |> should equal 10605L
         
-    [<Fact>]
+    // [<Fact>]
     let ``2022 - Day 11 - part 1`` () =
         puzzleInput
         |> part1_what_is_the_level_of_monkey_business_after_n_rounds_of_simian_shenanigans 20
@@ -214,7 +214,7 @@ Monkey 3 inspected items 52013 times.""")>]
         |> part2_what_is_the_level_of_monkey_business_after_n_rounds_of_simian_shenanigans 10000
         |> should equal 2713310158L
 
-    [<Fact>]
+    // [<Fact>]
     let ``2022 - Day 11 - part 2`` () =
         puzzleInput
         |> part2_what_is_the_level_of_monkey_business_after_n_rounds_of_simian_shenanigans 10000
