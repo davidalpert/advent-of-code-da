@@ -378,22 +378,100 @@ noop
         |> part1_whatIsTheSumOfNSampledSignalStrengths 6
         |> should equal 13140
         
-    [<Fact>]
+    // [<Fact>]
     let ``2022 - Day 10 - part 1`` () =
         puzzleInput
         |> part1_whatIsTheSumOfNSampledSignalStrengths 6
         |> printfn "2022 - Day 10 - Part 1: %A"
 
-    // [<Fact>]
+(*
+
+Start cycle   1: begin executing addx 15
+                 pixel 0 (cycle - 1) overlaps with sprite position (x-1) <= (cycle-1) <= (x+1)
+Sprite position: ###.....................................
+During cycle  1: ^ CRT draws pixel in position 0
+Current CRT row: #
+End of cycle  1: addx 15 is pending
+
+Start cycle   1: addx 15 is pending
+Sprite position: ###.....................................
+During cycle  2:  ^ CRT draws pixel in position 1
+Current CRT row: ##
+End of cycle  2: finish executing addx 15 (Register X is now 16)
+
+Start cycle   3: begin executing addx -11
+Sprite position: ...............###......................
+During cycle  3:   ^ CRT draws pixel in position 2
+Current CRT row: ##.
+End of cycle  3: addx -11 is pending
+
+Start cycle   4: addx -11 is pending
+Sprite position: ...............###......................
+During cycle  4:    ^ CRT draws pixel in position 3
+Current CRT row: ##..
+End of cycle  4: finish executing addx -11 (Register X is now 5)
+
+Start cycle   5: begin executing addx 6
+Sprite position: ....###.................................
+During cycle  5:     ^ CRT draws pixel in position 4
+Current CRT row: ##..#
+End of cycle  5: addx 6 is pending
+    *)
+    
+    [<Theory>]
+    [<InlineData(1, "#")>]
+    [<InlineData(2, "##")>]
+    [<InlineData(3, "##.")>]
+    [<InlineData(4, "##..")>]
+    [<InlineData(21, "##..##..##..##..##..#")>]
+    [<InlineData(40, "##..##..##..##..##..##..##..##..##..##..")>]
+    [<InlineData(80, """
+##..##..##..##..##..##..##..##..##..##..
+###...###...###...###...###...###...###.""")>]
+    [<InlineData(240, """
+##..##..##..##..##..##..##..##..##..##..
+###...###...###...###...###...###...###.
+####....####....####....####....####....
+#####.....#####.....#####.....#####.....
+######......######......######......####
+#######.......#######.......#######.....""")>]
+    let ``2022 - Day 10 - part 2 - example - in pieces`` (n:int, expectedCRTImage:string) =
+            
+        largerExampleInput
+        |> parser.parseInstructions
+        |> apply
+        |> Seq.take n
+        |> Seq.map (fun c ->
+                let position = (c.number - 1) % 40
+                let x = c.valueDuring
+                // printfn $"%s{printSpriteAt x}\n%s{pickingChar position}\nduring cycle %d{c.number} position is %d{position}, x is %d{x}"
+                
+                match position with
+                | p when overlapsSpriteAtPosition x p -> '#'
+                | _ -> '.'
+            )
+        |> Seq.chunkBySize 40
+        |> Seq.map (fun line -> line |> Array.ofSeq |> System.String)
+        |> joinBy "\n"
+        |> should equal (expectedCRTImage.Trim())
+        
+    [<Fact>]
     let ``2022 - Day 10 - part 2 - example`` () =
-        smallExampleInput
-        // |> fromInput
-        // |> Array.length
-        |> should equal 0
+        let expected =
+            """
+##..##..##..##..##..##..##..##..##..##..
+###...###...###...###...###...###...###.
+####....####....####....####....####....
+#####.....#####.....#####.....#####.....
+######......######......######......####
+#######.......#######.......#######.....""".Trim() // trim allows me to start with a newline and left-align all the lines I care about
+
+        largerExampleInput
+        |> part2_renderTheCRT
+        |> should equal expected
 
     // [<Fact>]
     let ``2022 - Day 10 - part 2`` () =
         puzzleInput
-        // |> fromInput
-        // |> Array.length
-        |> printfn "2022 - Day 10 - Part 2: %A"
+        |> part2_renderTheCRT
+        |> printfn "2022 - Day 10 - Part 2: \n%A\n" // --> RLEZFLGE

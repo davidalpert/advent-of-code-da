@@ -94,3 +94,43 @@ module CathodeRayTube =
         |> Array.map (fun cc -> cc[0])
         |> Array.sumBy signalStrength
             
+    // part 2 ------------------------------------------
+    
+    let joinBy (sep:string) (strings:string seq) =
+        System.String.Join(sep, strings)
+            
+    let overlapsSpriteAtPosition x p =
+        (x-1) <= p && p <= (x+1)
+        
+    let printSpriteAt x =
+        [
+            seq { 1..(x-1) } |> Seq.map (fun _ -> '.') |> Array.ofSeq;
+            "###".ToCharArray();
+            seq { (x+1)..39  } |> Seq.map (fun _ -> '.') |> Array.ofSeq;
+        ]
+        |> Array.concat |> System.String
+                
+    let pickingChar p =
+        [
+            seq { 1..p } |> Seq.map (fun _ -> ' ') |> Array.ofSeq;
+            "^".ToCharArray();
+        ]
+        |> Array.concat |> System.String
+
+    let part2_renderTheCRT (input:string) =
+        input
+        |> parser.parseInstructions
+        |> apply
+        |> Seq.take 240
+        |> Seq.map (fun c ->
+                let position = (c.number - 1) % 40
+                let x = c.valueDuring
+                
+                match position with
+                | p when overlapsSpriteAtPosition x p -> '#'
+                | _ -> '.'
+            )
+        |> Seq.chunkBySize 40
+        |> Seq.map (fun line -> line |> Array.ofSeq |> System.String)
+        |> joinBy "\n"
+        
