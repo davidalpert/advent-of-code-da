@@ -6,23 +6,24 @@ module MonkeyInTheMiddle =
     open FParsec
     open FParsec.Pipes
 
-    type Item = { worryLevel: int }
+    type Item = { worryLevel: int64 }
         with
             static member fromInt i = { worryLevel = i }
     
     type Operation =
-    | Add of int
-    | MultiplyBy of int
+    | Add of int64
+    | MultiplyBy of int64
     | Square
     
-    type Test = int -> int // when divisible by int where do we throw the item?
+    type Test = int64 -> int // when divisible by int where do we throw the item?
     
     type Monkey = {
         name: string
         items: Item list
         operation: Operation
+        worryQuotient: int64
         throwsTo: Test
-        inspectionCount: int
+        inspectionCount: int64
     }
     
     module parser =
@@ -36,14 +37,14 @@ module MonkeyInTheMiddle =
             %% ws -- %"Starting items:" -- ws -- +.(pint32 * (qty[0..] / ", "))
             -|> fun items -> items |> Seq.map Item.fromInt |> List.ofSeq
             
-        let pAdd = %% ws -- %"new = old + " -? +.pint -%> Add
+        let pAdd = %% ws -- %"new = old + " -? +.pint64 -%> Add
         let pSquare = %% ws -- %"new = old * " -? %"old" -|> Square
-        let pMultiply = %% ws -- %"new = old * " -? +.pint -%> MultiplyBy
+        let pMultiply = %% ws -- %"new = old * " -? +.pint64 -%> MultiplyBy
         let pOperation =
             %% ws -- %"Operation:" -- ws -- +.(%[pSquare;pMultiply;pAdd]) -%> auto
             
         let pTest : Parser<Test,unit> =
-            %% ws -- %"Test: divisible by" -- ws -- +.pint
+            %% ws -- %"Test: divisible by" -- ws -- +.pint64
             -- ws -- %"If true: throw to monkey " -- +.pint
             -- ws -- %"If false: throw to monkey " -- +.pint
             -|> fun divisibleBy whenTrue whenFalse ->
@@ -95,9 +96,12 @@ module MonkeyInTheMiddle =
         (item :: (ll |> List.rev)) |> List.rev
         
     // your relief that the monkey's inspection didn't damage the item causes your worry level to be divided by three and rounded down to the nearest integer
-    let part1_adjustLevel w = w / 3
-        
-    let afterOneRound (adjustWorryLevel: int -> int) (barrel:Monkey[]) =
+    let part1_adjustLevel w = w / 3L
+
+    // You're worried you might not ever get your items back.
+    let part2_adjustLevel w = w
+    
+    let afterOneRound adjustWorryLevel (barrel:Monkey[]) =
         let throwTo m item =
             barrel[m] <- {
                 barrel[m] with
@@ -114,13 +118,13 @@ module MonkeyInTheMiddle =
                         
                         let inspectionLevel =
                             match monkey.operation with
-                            | Add(n) -> item.worryLevel + n
-                            | MultiplyBy(n) -> item.worryLevel * n
+                            | Add(n) -> item.worryLevel + (n |> int64)
+                            | MultiplyBy(n) -> item.worryLevel * (n |> int64)
                             | Square -> item.worryLevel * item.worryLevel
                         // printfn $"    worry level is '%A{monkey.operation}' to %d{inspectionLevel}"
                             
                         let relievedLevel = adjustWorryLevel inspectionLevel
-                        // printfn $"    monkey gets bored with item; worry level is / 3 to %d{relievedLevel}"
+                        // printfn $"    monkey gets bored with item; worry level is adjusted to %d{relievedLevel}"
                         
                         let toMonkey = monkey.throwsTo relievedLevel
                         // printfn $"    item with worry level %d{relievedLevel} is thrown to monkey %d{toMonkey}"
@@ -132,14 +136,15 @@ module MonkeyInTheMiddle =
                 barrel[m] <- {
                     monkey with
                         items = []
-                        inspectionCount = monkey.inspectionCount + monkey.items.Length
+                        inspectionCount = monkey.inspectionCount + (monkey.items.Length |> int64)
                 }
                 // printfn $"%s{(barrel |> toString)}"
+                // printfn $"%s{(barrel |> toActivityChart)}"
             )
             
         barrel
         
-    let rec afterRound (adjustWorryLevel: int -> int) n (barrel: Monkey[]) =
+    let rec afterRound adjustWorryLevel n (barrel: Monkey[]) =
         match n with
         | 0 -> barrel
         | _ -> afterRound adjustWorryLevel (n-1) (afterOneRound adjustWorryLevel barrel)
@@ -149,10 +154,16 @@ module MonkeyInTheMiddle =
         |> Array.map (fun m -> m.inspectionCount)
         |> Array.sortDescending
         |> Array.take 2
-        |> Array.fold (*) 1
+        |> Array.fold (*) 1L
         
     let part1_what_is_the_level_of_monkey_business_after_n_rounds_of_simian_shenanigans n (input:string) =
         input
         |> parser.parse
         |> afterRound part1_adjustLevel n
+        |> shenanigans
+        
+    let part2_what_is_the_level_of_monkey_business_after_n_rounds_of_simian_shenanigans n (input:string) =
+        input
+        |> parser.parse
+        |> afterRound part2_adjustLevel n
         |> shenanigans

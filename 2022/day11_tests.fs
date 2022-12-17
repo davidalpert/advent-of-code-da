@@ -172,7 +172,7 @@ Monkey 3 inspected items 105 times.""")>]
     let ``2022 - Day 11 - part 1 - example`` () =
         exampleInput
         |> part1_what_is_the_level_of_monkey_business_after_n_rounds_of_simian_shenanigans 20
-        |> should equal 10605
+        |> should equal 10605L
         
     [<Fact>]
     let ``2022 - Day 11 - part 1`` () =
@@ -180,12 +180,34 @@ Monkey 3 inspected items 105 times.""")>]
         |> part1_what_is_the_level_of_monkey_business_after_n_rounds_of_simian_shenanigans 20
         |> printfn "2022 - Day 11 - Part 1: %A"
 
+    [<Theory>]
+//     [<InlineData(1, """
+// Monkey 0 inspected items 2 times.
+// Monkey 1 inspected items 4 times.
+// Monkey 2 inspected items 3 times.
+// Monkey 3 inspected items 6 times.""")>]
+//     [<InlineData(20, """
+// Monkey 0 inspected items 99 times.
+// Monkey 1 inspected items 97 times.
+// Monkey 2 inspected items 8 times.
+// Monkey 3 inspected items 103 times.""")>]
+    [<InlineData(1000, """
+Monkey 0 inspected items 5204 times.
+Monkey 1 inspected items 4792 times.
+Monkey 2 inspected items 199 times.
+Monkey 3 inspected items 5192 times.""")>]
+    let ``2022 - Day 11 - part 2 - example - activity chart after round n`` (n:int, expected:string) =
+        exampleInput
+        |> parser.parse
+        |> afterRound part2_adjustLevel n
+        |> toActivityChart
+        |> should equal (expected.Trim())
+        
     // [<Fact>]
     let ``2022 - Day 11 - part 2 - example`` () =
         exampleInput
-        // |> fromInput
-        // |> Array.length
-        |> should equal 0
+        |> part2_what_is_the_level_of_monkey_business_after_n_rounds_of_simian_shenanigans 10000
+        |> should equal 2713310158L
 
     // [<Fact>]
     let ``2022 - Day 11 - part 2`` () =
