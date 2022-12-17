@@ -11,6 +11,10 @@ module utils =
         :: transpose (List.map List.tail M)
     | _ -> []
 
+  // borrowed from Kirk
+  let log transformer value =
+    printfn $"%A{transformer value}"
+    value
 
   // trace helper to assist with debugging misbehaving parsers
   let (<!>) (p: Parser<_,_>) (label) : Parser<_,_> =
