@@ -43,12 +43,12 @@ module MonkeyInTheMiddle =
         let pOperation =
             %% ws -- %"Operation:" -- ws -- +.(%[pSquare;pMultiply;pAdd]) -%> auto
             
-        let pTest : Parser<Test,unit> =
+        let pTest : Parser<int64 * Test,unit> =
             %% ws -- %"Test: divisible by" -- ws -- +.pint64
             -- ws -- %"If true: throw to monkey " -- +.pint
             -- ws -- %"If false: throw to monkey " -- +.pint
-            -|> fun divisibleBy whenTrue whenFalse ->
-                fun n -> if n % divisibleBy = 0 then whenTrue else whenFalse
+            -|> fun worryQuotient whenTrue whenFalse ->
+                (worryQuotient, fun n -> if n % worryQuotient = 0 then whenTrue else whenFalse)
                 
         let pMonkey =
             %% ws -? +.pName
@@ -58,8 +58,9 @@ module MonkeyInTheMiddle =
             -|> fun number startingItems operation test -> {
                 name = (sprintf $"Monkey %d{number}");
                 items = startingItems;
-                operation = operation;
-                throwsTo = test;
+                operation = operation
+                worryQuotient = test |> fst;
+                throwsTo = test |> snd;
                 inspectionCount = 0;
             }
             
@@ -101,12 +102,20 @@ module MonkeyInTheMiddle =
     // You're worried you might not ever get your items back.
     let part2_adjustLevel w = w
     
+    // (but you can't be bothered to keep track of exactly how worried you are)
+    let maxWorryQuotient (barrel:Monkey[]) =
+        barrel
+        |> Array.map (fun m -> m.worryQuotient)
+        |> Array.fold (*) 1L
+    
     let afterOneRound adjustWorryLevel (barrel:Monkey[]) =
         let throwTo m item =
             barrel[m] <- {
                 barrel[m] with
                     items = barrel[m].items |> addToEnd item
             }
+            
+        let maxQ = barrel |> maxWorryQuotient
             
         seq { 0 .. (barrel.Length - 1) }
         |> Seq.iter (fun m ->
@@ -118,9 +127,9 @@ module MonkeyInTheMiddle =
                         
                         let inspectionLevel =
                             match monkey.operation with
-                            | Add(n) -> item.worryLevel + (n |> int64)
-                            | MultiplyBy(n) -> item.worryLevel * (n |> int64)
-                            | Square -> item.worryLevel * item.worryLevel
+                            | Add(n) -> (item.worryLevel + (n |> int64)) % maxQ
+                            | MultiplyBy(n) -> (item.worryLevel * (n |> int64)) % maxQ
+                            | Square -> (item.worryLevel * item.worryLevel) % maxQ
                         // printfn $"    worry level is '%A{monkey.operation}' to %d{inspectionLevel}"
                             
                         let relievedLevel = adjustWorryLevel inspectionLevel
