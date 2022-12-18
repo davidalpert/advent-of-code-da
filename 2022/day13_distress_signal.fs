@@ -1,5 +1,7 @@
 namespace AdventOfCode
 
+open System.Runtime.InteropServices
+
 module DistressSignal =
 
     open System
@@ -104,3 +106,29 @@ module DistressSignal =
         |> indicesOfPairsOfPocketsInTheCorrectOrder
         |> Array.sum
         
+    let dividerPackets =
+        let txt = """
+[[2]]
+[[6]]
+"""
+        txt.Trim() |> parser.mustParse parser.pPairOfPackets
+     
+    let insertDividersAndSort (input:string) =
+        [| Array.singleton dividerPackets; input |> parser.parse |]
+        |> Array.concat
+        |> flattenPairsArray
+        |> Array.map (toSortableData isInCorrectOrder)
+        |> Array.sort
+        
+    let chooseIndexOfDividers i sp =
+        match sp.data with
+        | x when x = fst dividerPackets -> Some(i+1)
+        | x when x = snd dividerPackets -> Some(i+1)
+        | _ -> None
+        
+    let part2_calculate_decoder_key (input:string) =
+        input
+        |> insertDividersAndSort
+        |> Array.mapi chooseIndexOfDividers
+        |> Array.choose id
+        |> Array.fold (*) 1

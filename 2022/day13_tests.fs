@@ -595,16 +595,48 @@ module Day13 =
         |> part1_what_is_the_sum_of_indices_of_pairs_of_packets_which_are_already_in_the_right_order
         |> printfn "2022 - Day 13 - Part 1: %A"
 
-    // [<Fact>]
+    let rec packetToString packet =
+        match packet with
+        | PList(data) -> "[" + (data |> Array.map packetToString |> joinBy ",") + "]"
+        | PValue(data) -> sprintf $"%d{data}"
+        
+    [<Fact>]
+    let ``2022 - Day 13 - part 2 - example - sorting packets with dividers`` () =
+        let expected =
+            """
+[]
+[[]]
+[[[]]]
+[1,1,3,1,1]
+[1,1,5,1,1]
+[[1],[2,3,4]]
+[1,[2,[3,[4,[5,6,0]]]],8,9]
+[1,[2,[3,[4,[5,6,7]]]],8,9]
+[[1],4]
+[[2]]
+[3]
+[[4,4],4,4]
+[[4,4],4,4,4]
+[[6]]
+[7,7,7]
+[7,7,7,7]
+[[8,7,6]]
+[9]
+"""
+        exampleInput
+        |> insertDividersAndSort
+        |> Array.map (fun sp -> sp.data |> packetToString)
+        |> joinBy "\n"
+        |> should equal (expected.Trim())
+
+    [<Fact>]
     let ``2022 - Day 13 - part 2 - example`` () =
         exampleInput
-        // |> fromInput
-        // |> Array.length
-        |> should equal 0
+        |> part2_calculate_decoder_key
+        |> should equal 140
 
-    // [<Fact>]
+    [<Fact>]
     let ``2022 - Day 13 - part 2`` () =
         puzzleInput
-        // |> fromInput
-        // |> Array.length
+        |> part2_calculate_decoder_key
         |> printfn "2022 - Day 13 - Part 2: %A"
