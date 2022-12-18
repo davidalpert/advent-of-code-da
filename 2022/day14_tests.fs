@@ -209,7 +209,7 @@ module Day14 =
             |> parser.parseScan
             
         scan
-        |> pathOfSandFrom scan.sandAppearsAt
+        |> pathOfSandFrom part1SandStrategy scan.sandAppearsAt
         |> should equal [|
             (500, 0)
             (500, 1)
@@ -223,7 +223,7 @@ module Day14 =
         |]
         
         { scan with sand = [(500, 8)] }
-        |> pathOfSandFrom scan.sandAppearsAt
+        |> pathOfSandFrom part1SandStrategy scan.sandAppearsAt
         |> should equal [|
             (500, 0)
             (500, 1)
@@ -237,7 +237,7 @@ module Day14 =
         |]
         
         { scan with sand = [(500, 8); (499, 8)] }
-        |> pathOfSandFrom scan.sandAppearsAt
+        |> pathOfSandFrom part1SandStrategy scan.sandAppearsAt
         |> should equal [|
             (500, 0)
             (500, 1)
@@ -251,7 +251,7 @@ module Day14 =
         |]
         
         scan
-        |> pathOfSandFrom (493,0)
+        |> pathOfSandFrom part1SandStrategy (493,0)
         |> should equal [|
             (493, 0)
             (493, 1)
@@ -314,7 +314,7 @@ module Day14 =
     let ``2022 - Day 14 - part 1 - example - after pouring n grains of sand`` (n, expected:string) =
         exampleInput
         |> parser.parseScan
-        |> pourSandUntilItFallsBelowTheRock
+        |> pourSandUntilItStops part1SandStrategy
         |> Seq.skip (n-1)
         |> Seq.head |> drawIt
         |> should equal (expected.Trim())

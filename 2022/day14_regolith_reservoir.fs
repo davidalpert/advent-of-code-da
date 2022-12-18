@@ -69,34 +69,45 @@ module RegolithReservoir =
     let contains item collection = collection |> Seq.contains item
     let doesNotContain item collection = (collection |> Seq.contains item) |> not
     
-    let sandMayFallTo p = [|directlyBelow p; diagonallyDownAndLeft p; diagonallyDownAndRight p|]
+    let sandMightFalTo p = [|directlyBelow p; diagonallyDownAndLeft p; diagonallyDownAndRight p|]
     
-    let sandFallsNextAfter (from:Point) (scan:Scan) =
-        sandMayFallTo from
+    let sandFallsNextFrom (from:Point) (scan:Scan) =
+        sandMightFalTo from
         |> Array.tryFind (fun newSpot ->
             (scan.rock |> doesNotContain newSpot) && (scan.sand |> doesNotContain newSpot)
         )
     
-    let pathOfSandFrom p (scan:Scan) =
-        Array.concat [|
-            Array.singleton p; // include p in the list; allows our sequence to end after the sand falls below the rock
-            Array.unfold (fun (prev) ->
+    type SandStrategy = {
+        fallingPath : Scan -> Point -> (Point * Point) option
+        stopPouringWhen : Scan -> Point -> bool
+    }
+    
+    let part1SandStrategy = {
+        fallingPath =
+            fun scan prev ->
                 if (y prev) > scan.maxY then
                     None // we've fallen below the lowest rock
                 else
-                  match scan |> sandFallsNextAfter prev with
-                  | Some next -> Some (next,next)
-                  | None -> None // we can't any open space
-            ) p
+                    match scan |> sandFallsNextFrom prev with
+                    | Some next -> Some (next,next)
+                    | None -> None // we can't any open space
+                   
+        stopPouringWhen = fun scan p -> y p > scan.maxY
+    }
+    
+    let pathOfSandFrom strategy p (scan:Scan) =
+        Array.concat [|
+            Array.singleton p; // include p in the list; allows our sequence to end after the sand falls below the rock
+            Array.unfold (strategy.fallingPath scan) p
         |]
         
-    let pourSandUntilItFallsBelowTheRock (scan:Scan) =
+    let pourSandUntilItStops strategy (scan:Scan) =
         Seq.unfold (fun s ->
             let grainFallsTo =
-                s |> pathOfSandFrom s.sandAppearsAt |> Seq.last
+                s |> pathOfSandFrom strategy s.sandAppearsAt |> Seq.last
             
             match grainFallsTo with
-            | p when y p > scan.maxY -> None
+            | p when strategy.stopPouringWhen scan p -> None
             | p ->
                 let nextScan = { s with sand = p :: s.sand }
                 Some(nextScan,nextScan)
@@ -106,10 +117,7 @@ module RegolithReservoir =
         let finalScan =
             input
             |> parser.parseScan
-            |> pourSandUntilItFallsBelowTheRock
+            |> pourSandUntilItStops part1SandStrategy
             |> Seq.last
                    
         finalScan.sand.Length
-        
-        
-        
