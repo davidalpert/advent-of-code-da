@@ -589,7 +589,7 @@ module Day13 =
         |> part1_what_is_the_sum_of_indices_of_pairs_of_packets_which_are_already_in_the_right_order
         |> should equal 13
     
-    [<Fact>]
+    // [<Fact>]
     let ``2022 - Day 13 - part 1`` () =
         puzzleInput
         |> part1_what_is_the_sum_of_indices_of_pairs_of_packets_which_are_already_in_the_right_order
@@ -635,7 +635,7 @@ module Day13 =
         |> part2_calculate_decoder_key
         |> should equal 140
 
-    [<Fact>]
+    // [<Fact>]
     let ``2022 - Day 13 - part 2`` () =
         puzzleInput
         |> part2_calculate_decoder_key
