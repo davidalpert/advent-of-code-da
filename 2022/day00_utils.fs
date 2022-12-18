@@ -18,6 +18,13 @@ module utils =
     printfn $"%A{transformer value}"
     value
 
+  let ws = spaces
+
+  let mustParse p (input:string) =
+    match run p (input.Trim()) with
+    | Success(r, _, _) -> r
+    | Failure(errorMsg, _, _) -> failwith errorMsg
+
   // trace helper to assist with debugging misbehaving parsers
   let (<!>) (p: Parser<_,_>) (label) : Parser<_,_> =
     fun stream ->
@@ -46,12 +53,22 @@ module utils =
   let overlaps a b =
     (Set.intersect a b) <> Set.empty
 
+  // minTuple creates a new tuple with the min fst and snd values
+  let minTuple pair =
+    pair |> Seq.minBy fst |> fst, pair |> Seq.minBy snd |> snd
+    
+  // maxTuple creates a new tuple with the max fst and snd values
+  let maxTuple pair =
+    pair |> Seq.maxBy fst |> fst, pair |> Seq.maxBy snd |> snd
+    
   let splitBy (sep: string) (input: string) =
     input.Split(sep)
         
   let joinBy (sep:string) (values:string[]) =
-     System.String.Join(sep, values)
-     
+     String.Join(sep, values)
+
+  let trim (s:string) = s.Trim()
+
   let flattenPairsArray pairs =
     pairs |> Array.collect (fun pair -> [|fst pair; snd pair|])
      
