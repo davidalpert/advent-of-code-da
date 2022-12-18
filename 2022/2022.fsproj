@@ -34,6 +34,8 @@
     <Compile Include="day11_tests.fs" />
     <Compile Include="day13_distress_signal.fs" />
     <Compile Include="day13_tests.fs" />
+    <Compile Include="day14_regolith_reservoir.fs" />
+    <Compile Include="day14_tests.fs" />
     <!-- NEXT -->
   </ItemGroup>
 
