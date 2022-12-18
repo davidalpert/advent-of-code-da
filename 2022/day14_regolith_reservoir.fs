@@ -95,6 +95,24 @@ module RegolithReservoir =
         stopPouringWhen = fun scan p -> y p > scan.maxY
     }
     
+    // You realize you misread the scan. There isn't an endless void at the bottom of
+    // the scan - there's floor, and you're standing on it! You don't have time to
+    // scan the floor, so assume the floor is an infinite horizontal line with a y
+    // coordinate equal to two plus the highest y coordinate of any point in your
+    // scan.
+    let part2SandStrategy = {
+        fallingPath =
+            fun scan prev ->
+                if (y prev) = (scan.maxY + 1) then
+                    None // we've landed to the floor
+                else
+                    match scan |> sandFallsNextFrom prev with
+                    | Some next -> Some (next,next)
+                    | None -> None // we can't find any open space
+                    
+        stopPouringWhen = fun scan p -> p = scan.sandAppearsAt
+    }
+                
     let pathOfSandFrom strategy p (scan:Scan) =
         Array.concat [|
             Array.singleton p; // include p in the list; allows our sequence to end after the sand falls below the rock
@@ -121,3 +139,12 @@ module RegolithReservoir =
             |> Seq.last
                    
         finalScan.sand.Length
+        
+    let part2_how_many_units_of_sand_come_to_rest_before_sand_starts_flowing_into_the_abyss_below (input:string) =
+        let finalScan =
+            input
+            |> parser.parseScan
+            |> pourSandUntilItStops part2SandStrategy
+            |> Seq.last
+                   
+        finalScan.sand.Length + 1 // the last one blocks the flow

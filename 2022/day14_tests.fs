@@ -1,5 +1,7 @@
 namespace AdventOfCode
 
+open System.Globalization
+
 module Day14 =
 
     open FSharp.Data.UnitSystems.SI.UnitNames
@@ -333,15 +335,23 @@ module Day14 =
         |> should equal 757
 
     // [<Fact>]
+    let ``2022 - Day 14 - part 2 - example - drawn out`` () =
+        exampleInput
+        |> parser.parseScan
+        |> pourSandUntilItStops part2SandStrategy
+        |> Seq.last
+        |> log (fun s -> sprintf $"%A{s.maxY}")
+        |> drawIt
+        |> printfn "2022 - Day 14 - Part 2:\n%A\n"
+        
+    [<Fact>]
     let ``2022 - Day 14 - part 2 - example`` () =
         exampleInput
-        // |> fromInput
-        // |> Array.length
-        |> should equal 0
+        |> part2_how_many_units_of_sand_come_to_rest_before_sand_starts_flowing_into_the_abyss_below
+        |> should equal 93
 
-    // [<Fact>]
+    [<Fact>]
     let ``2022 - Day 14 - part 2`` () =
         puzzleInput
-        // |> fromInput
-        // |> Array.length
+        |> part2_how_many_units_of_sand_come_to_rest_before_sand_starts_flowing_into_the_abyss_below
         |> printfn "2022 - Day 14 - Part 2: %A"
