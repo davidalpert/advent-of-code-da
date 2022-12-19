@@ -1,7 +1,5 @@
 namespace AdventOfCode
 
-open System.Globalization
-
 module Day14 =
 
     open FSharp.Data.UnitSystems.SI.UnitNames
@@ -211,7 +209,7 @@ module Day14 =
             |> parser.parseScan
             
         scan
-        |> pathOfSandFrom part1SandStrategy scan.sandAppearsAt
+        |> pathOfSandFrom scan.sandAppearsAt
         |> should equal [|
             (500, 0)
             (500, 1)
@@ -225,7 +223,7 @@ module Day14 =
         |]
         
         { scan with sand = [(500, 8)] }
-        |> pathOfSandFrom part1SandStrategy scan.sandAppearsAt
+        |> pathOfSandFrom scan.sandAppearsAt
         |> should equal [|
             (500, 0)
             (500, 1)
@@ -239,7 +237,7 @@ module Day14 =
         |]
         
         { scan with sand = [(500, 8); (499, 8)] }
-        |> pathOfSandFrom part1SandStrategy scan.sandAppearsAt
+        |> pathOfSandFrom scan.sandAppearsAt
         |> should equal [|
             (500, 0)
             (500, 1)
@@ -253,7 +251,7 @@ module Day14 =
         |]
         
         scan
-        |> pathOfSandFrom part1SandStrategy (493,0)
+        |> pathOfSandFrom (493,0)
         |> should equal [|
             (493, 0)
             (493, 1)
@@ -316,7 +314,7 @@ module Day14 =
     let ``2022 - Day 14 - part 1 - example - after pouring n grains of sand`` (n, expected:string) =
         exampleInput
         |> parser.parseScan
-        |> pourSandUntilItStops part1SandStrategy
+        |> pourSandUntilItFallsBelowTheRock
         |> Seq.skip (n-1)
         |> Seq.head |> drawIt
         |> should equal (expected.Trim())
@@ -335,23 +333,15 @@ module Day14 =
         |> should equal 757
 
     // [<Fact>]
-    let ``2022 - Day 14 - part 2 - example - drawn out`` () =
-        exampleInput
-        |> parser.parseScan
-        |> pourSandUntilItStops part2SandStrategy
-        |> Seq.last
-        |> log (fun s -> sprintf $"%A{s.maxY}")
-        |> drawIt
-        |> printfn "2022 - Day 14 - Part 2:\n%A\n"
-        
-    [<Fact>]
     let ``2022 - Day 14 - part 2 - example`` () =
         exampleInput
-        |> part2_how_many_units_of_sand_come_to_rest_before_sand_starts_flowing_into_the_abyss_below
-        |> should equal 93
+        // |> fromInput
+        // |> Array.length
+        |> should equal 0
 
-    [<Fact>]
+    // [<Fact>]
     let ``2022 - Day 14 - part 2`` () =
         puzzleInput
-        |> part2_how_many_units_of_sand_come_to_rest_before_sand_starts_flowing_into_the_abyss_below
+        // |> fromInput
+        // |> Array.length
         |> printfn "2022 - Day 14 - Part 2: %A"

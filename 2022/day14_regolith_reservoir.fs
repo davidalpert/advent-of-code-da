@@ -69,63 +69,34 @@ module RegolithReservoir =
     let contains item collection = collection |> Seq.contains item
     let doesNotContain item collection = (collection |> Seq.contains item) |> not
     
-    let sandMightFalTo p = [|directlyBelow p; diagonallyDownAndLeft p; diagonallyDownAndRight p|]
+    let sandMayFallTo p = [|directlyBelow p; diagonallyDownAndLeft p; diagonallyDownAndRight p|]
     
-    let sandFallsNextFrom (from:Point) (scan:Scan) =
-        sandMightFalTo from
+    let sandFallsNextAfter (from:Point) (scan:Scan) =
+        sandMayFallTo from
         |> Array.tryFind (fun newSpot ->
             (scan.rock |> doesNotContain newSpot) && (scan.sand |> doesNotContain newSpot)
         )
     
-    type SandStrategy = {
-        fallingPath : Scan -> Point -> (Point * Point) option
-        stopPouringWhen : Scan -> Point -> bool
-    }
-    
-    let part1SandStrategy = {
-        fallingPath =
-            fun scan prev ->
+    let pathOfSandFrom p (scan:Scan) =
+        Array.concat [|
+            Array.singleton p; // include p in the list; allows our sequence to end after the sand falls below the rock
+            Array.unfold (fun (prev) ->
                 if (y prev) > scan.maxY then
                     None // we've fallen below the lowest rock
                 else
-                    match scan |> sandFallsNextFrom prev with
-                    | Some next -> Some (next,next)
-                    | None -> None // we can't any open space
-                   
-        stopPouringWhen = fun scan p -> y p > scan.maxY
-    }
-    
-    // You realize you misread the scan. There isn't an endless void at the bottom of
-    // the scan - there's floor, and you're standing on it! You don't have time to
-    // scan the floor, so assume the floor is an infinite horizontal line with a y
-    // coordinate equal to two plus the highest y coordinate of any point in your
-    // scan.
-    let part2SandStrategy = {
-        fallingPath =
-            fun scan prev ->
-                if (y prev) = (scan.maxY + 1) then
-                    None // we've landed to the floor
-                else
-                    match scan |> sandFallsNextFrom prev with
-                    | Some next -> Some (next,next)
-                    | None -> None // we can't find any open space
-                    
-        stopPouringWhen = fun scan p -> p = scan.sandAppearsAt
-    }
-                
-    let pathOfSandFrom strategy p (scan:Scan) =
-        Array.concat [|
-            Array.singleton p; // include p in the list; allows our sequence to end after the sand falls below the rock
-            Array.unfold (strategy.fallingPath scan) p
+                  match scan |> sandFallsNextAfter prev with
+                  | Some next -> Some (next,next)
+                  | None -> None // we can't any open space
+            ) p
         |]
         
-    let pourSandUntilItStops strategy (scan:Scan) =
+    let pourSandUntilItFallsBelowTheRock (scan:Scan) =
         Seq.unfold (fun s ->
             let grainFallsTo =
-                s |> pathOfSandFrom strategy s.sandAppearsAt |> Seq.last
+                s |> pathOfSandFrom s.sandAppearsAt |> Seq.last
             
             match grainFallsTo with
-            | p when strategy.stopPouringWhen scan p -> None
+            | p when y p > scan.maxY -> None
             | p ->
                 let nextScan = { s with sand = p :: s.sand }
                 Some(nextScan,nextScan)
@@ -135,16 +106,10 @@ module RegolithReservoir =
         let finalScan =
             input
             |> parser.parseScan
-            |> pourSandUntilItStops part1SandStrategy
+            |> pourSandUntilItFallsBelowTheRock
             |> Seq.last
                    
         finalScan.sand.Length
         
-    let part2_how_many_units_of_sand_come_to_rest_before_sand_starts_flowing_into_the_abyss_below (input:string) =
-        let finalScan =
-            input
-            |> parser.parseScan
-            |> pourSandUntilItStops part2SandStrategy
-            |> Seq.last
-                   
-        finalScan.sand.Length + 1 // the last one blocks the flow
+        
+        
