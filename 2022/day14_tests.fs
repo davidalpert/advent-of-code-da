@@ -148,27 +148,38 @@ module Day14 =
 457,106 -> 457,99 -> 457,106 -> 459,106 -> 459,98 -> 459,106 -> 461,106 -> 461,97 -> 461,106 -> 463,106 -> 463,105 -> 463,106 -> 465,106 -> 465,99 -> 465,106 -> 467,106 -> 467,103 -> 467,106 -> 469,106 -> 469,101 -> 469,106 -> 471,106 -> 471,103 -> 471,106 -> 473,106 -> 473,100 -> 473,106
 """
 
+    // let drawIt (scan:Scan) =
+    //     let allPoints = Seq.concat [scan.rock; Array.singleton scan.sandAppearsAt; scan.sand |> Array.ofList]
+    //     let min = allPoints |> minTuple
+    //     let max = allPoints |> maxTuple
+    //     
+    //     // printfn $"%d{x min},%d{y min} - %d{x max},%d{y max}"
+    //     // printfn $"%A{scan.sand |> List.sortBy x}"
+    //     
+    //     seq { y min .. y max } |> Seq.map (fun y ->
+    //         seq { x min .. x max  } |> Seq.map (fun x ->
+    //             match (x,y) with
+    //             | pair when pair = scan.sandAppearsAt -> '+'
+    //             | pair when scan.sand |> Seq.contains pair -> 'o'
+    //             | pair when scan.rock |> Seq.contains pair -> '#'
+    //             | _ -> '.'
+    //         )
+    //         |> Array.ofSeq |> System.String
+    //     )
+    //     |> Array.ofSeq |> joinBy "\n"
+    
     let drawIt (scan:Scan) =
-        let allPoints = Seq.concat [scan.rock; Array.singleton scan.sandAppearsAt; scan.sand |> Array.ofList]
-        let min = allPoints |> minTuple
-        let max = allPoints |> maxTuple
+        wrapWith "\n"
+            (seq { 0 .. (scan.grid |> Array2D.length2) - 1 } |> Seq.map (fun y ->
+                seq { 0 .. (scan.grid |> Array2D.length1) - 1 } |> Seq.map (fun x ->
+                    let px = x
+                    let py = y
+                    // printfn $"%d{x},%d{y}"
+                    scan.grid[px,py]
+                ) |> Array.ofSeq |> System.String
+            ) |> joinBy "\n")
         
-        // printfn $"%d{x min},%d{y min} - %d{x max},%d{y max}"
-        // printfn $"%A{scan.sand |> List.sortBy x}"
-        
-        seq { y min .. y max } |> Seq.map (fun y ->
-            seq { x min .. x max  } |> Seq.map (fun x ->
-                match (x,y) with
-                | pair when pair = scan.sandAppearsAt -> '+'
-                | pair when scan.sand |> Seq.contains pair -> 'o'
-                | pair when scan.rock |> Seq.contains pair -> '#'
-                | _ -> '.'
-            )
-            |> Array.ofSeq |> System.String
-        )
-        |> Array.ofSeq |> joinBy "\n"
-        
-    // [<Fact>]
+    [<Fact>]
     let ``2022 - Day 14 - part 1 - pointsConnecting`` () =
         pointsConnecting ((498,4),(498,6))
         |> should equal [|(498,4);(498,5);(498,6)|]
@@ -176,40 +187,35 @@ module Day14 =
         pointsConnecting ((498,6),(496,6))
         |> should equal [|(496,6);(497,6);(498,6)|]
         
-        "498,4 -> 498,6 -> 496,6"
-        |> parser.parseScan
-        |> drawIt |> should equal ("""
-....+
-.....
-.....
-.....
-..#..
-..#..
-###..""" |> trim)
-        
+    [<Fact>]
+    let ``2022 - Day 14 - part 1 - drawIt`` () =
+        let expected = """
+..........+..........
+.....................
+.....................
+.....................
+........#...##.......
+........#...#........
+......###...#........
+............#........
+............#........
+....#########........
+"""
         exampleInput
-        |> parser.parseScan
-        |> drawIt |> should equal ("""
-......+...
-..........
-..........
-..........
-....#...##
-....#...#.
-..###...#.
-........#.
-........#.
-#########.
-""" |> trim)
+        |> parser.parseScannerInput
+        |> Scan.fromRocks part1ScannerStrategy
+        |> drawIt
+        |> should equal expected
         
     [<Fact>]
     let ``2022 - Day 14 - part 1 - example - path of one grain of sand`` () =
         let scan =
             exampleInput
-            |> parser.parseScan
+            |> parser.parseScannerInput
+            |> Scan.fromRocks part1ScannerStrategy
             
         scan
-        |> pathOfSandFrom scan.sandAppearsAt
+        |> pathOfSandFrom sandPoursInFrom
         |> should equal [|
             (500, 0)
             (500, 1)
@@ -222,8 +228,9 @@ module Day14 =
             (500, 8) // comes to rest
         |]
         
-        { scan with sand = [(500, 8)] }
-        |> pathOfSandFrom scan.sandAppearsAt
+        scan.grid[scan.xo (500,8), 8] <- 'o'
+        scan
+        |> pathOfSandFrom sandPoursInFrom
         |> should equal [|
             (500, 0)
             (500, 1)
@@ -236,8 +243,9 @@ module Day14 =
             (499, 8) // comes to rest
         |]
         
-        { scan with sand = [(500, 8); (499, 8)] }
-        |> pathOfSandFrom scan.sandAppearsAt
+        scan.grid[scan.xo (499,8), 8] <- 'o'
+        scan
+        |> pathOfSandFrom sandPoursInFrom
         |> should equal [|
             (500, 0)
             (500, 1)
@@ -249,99 +257,90 @@ module Day14 =
             (500, 7)
             (501, 8) // comes to rest
         |]
-        
-        scan
-        |> pathOfSandFrom (493,0)
-        |> should equal [|
-            (493, 0)
-            (493, 1)
-            (493, 2)
-            (493, 3)
-            (493, 4)
-            (493, 5)
-            (493, 6)
-            (493, 7)
-            (493, 8)
-            (493, 9)
-            (493, 10) // fell below the rock
-        |]
-        
+     
     [<Theory>]
     [<InlineData(1,"""
-......+...
-..........
-..........
-..........
-....#...##
-....#...#.
-..###...#.
-........#.
-......o.#.
-#########.""")>]
+..........+..........
+.....................
+.....................
+.....................
+........#...##.......
+........#...#........
+......###...#........
+............#........
+..........o.#........
+....#########........""")>]
     [<InlineData(5,"""
-......+...
-..........
-..........
-..........
-....#...##
-....#...#.
-..###...#.
-......o.#.
-....oooo#.
-#########.""")>]
+..........+..........
+.....................
+.....................
+.....................
+........#...##.......
+........#...#........
+......###...#........
+..........o.#........
+........oooo#........
+....#########........""")>]
     [<InlineData(22,"""
-......+...
-..........
-......o...
-.....ooo..
-....#ooo##
-....#ooo#.
-..###ooo#.
-....oooo#.
-...ooooo#.
-#########.""")>]
+..........+..........
+.....................
+..........o..........
+.........ooo.........
+........#ooo##.......
+........#ooo#........
+......###ooo#........
+........oooo#........
+.......ooooo#........
+....#########........""")>]
     [<InlineData(24,"""
-......+...
-..........
-......o...
-.....ooo..
-....#ooo##
-...o#ooo#.
-..###ooo#.
-....oooo#.
-.o.ooooo#.
-#########.""")>]
+..........+..........
+.....................
+..........o..........
+.........ooo.........
+........#ooo##.......
+.......o#ooo#........
+......###ooo#........
+........oooo#........
+.....o.ooooo#........
+....#########........""")>]
     let ``2022 - Day 14 - part 1 - example - after pouring n grains of sand`` (n, expected:string) =
         exampleInput
-        |> parser.parseScan
+        |> parser.parseScannerInput
+        |> Scan.fromRocks part1ScannerStrategy
         |> pourSandUntilItFallsBelowTheRock
         |> Seq.skip (n-1)
         |> Seq.head |> drawIt
-        |> should equal (expected.Trim())
-        
+        |> should equal (expected + "\n")
+
     [<Fact>]
     let ``2022 - Day 14 - part 1 - example`` () =
         exampleInput
+        // |> parser.parseScannerInput
+        // |> Scan.fromRocks part1ScannerStrategy
+        // |> pourSandUntilItFallsBelowTheRock
+        // |> Seq.map (log drawIt)
+        // |> Seq.last
+        // |> countGrainsOfSand
         |> part1_how_many_units_of_sand_come_to_rest_before_sand_starts_flowing_into_the_abyss_below
         |> should equal 24
-
-    // [<Fact>]
+        
+    [<Fact>]
     let ``2022 - Day 14 - part 1`` () =
         puzzleInput
         |> part1_how_many_units_of_sand_come_to_rest_before_sand_starts_flowing_into_the_abyss_below
         // |> printfn "2022 - Day 14 - Part 1: %A"
         |> should equal 757
-
-    // [<Fact>]
-    let ``2022 - Day 14 - part 2 - example`` () =
-        exampleInput
-        // |> fromInput
-        // |> Array.length
-        |> should equal 0
-
-    // [<Fact>]
-    let ``2022 - Day 14 - part 2`` () =
-        puzzleInput
-        // |> fromInput
-        // |> Array.length
-        |> printfn "2022 - Day 14 - Part 2: %A"
+//
+//     // [<Fact>]
+//     let ``2022 - Day 14 - part 2 - example`` () =
+//         exampleInput
+//         // |> fromInput
+//         // |> Array.length
+//         |> should equal 0
+//
+//     // [<Fact>]
+//     let ``2022 - Day 14 - part 2`` () =
+//         puzzleInput
+//         // |> fromInput
+//         // |> Array.length
+//         |> printfn "2022 - Day 14 - Part 2: %A"

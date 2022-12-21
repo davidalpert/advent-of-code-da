@@ -1,13 +1,12 @@
 namespace AdventOfCode
 
-open System.Reflection.Metadata
-
 module RegolithReservoir =
 
     open System
     open System.Collections.Generic
     open FParsec
     open FParsec.Pipes
+    open FSharpAux
     open utils
 
     type Point = int * int // x * y lets us use fst to access x and snd to access y
@@ -26,28 +25,66 @@ module RegolithReservoir =
         )
         |> Seq.concat |> Array.ofSeq
     
-    let fillIn (shapes:Shape[]) : Point[] =
-        shapes |> Array.map (fun shape ->
+    let fillIn (shapes:Shape seq) : Point[] =
+        shapes |> Seq.map (fun shape ->
                 shape |> Seq.pairwise
                 |> Seq.map pointsConnecting
                 |> Seq.concat
             )
         |> Seq.concat |> Seq.distinct |> Array.ofSeq
         
+    let sandPoursInFrom = (500,0)
+    
+    type ScannerStrategy = {
+        maxDepth: Point seq -> int
+        stopPouring: Point seq -> Point -> bool
+    }
+    
+    let part1ScannerStrategy = {
+        maxDepth = fun rocks -> rocks |> Seq.maxBy y |> y
+        stopPouring = fun rocks p -> y p < (rocks |> Seq.maxBy y |> y)
+    }
+    
+    let part2ScannerStrategy = {
+        maxDepth = fun rocks -> (rocks |> Seq.maxBy y |> y) + 2
+        stopPouring = fun _ p -> p = sandPoursInFrom
+    }
+    
     type Scan = {
-        rock : Point[]
-        sandAppearsAt : Point
-        sand : Point list
+        grid: char[,]
+        maxDepth: int
+        xOffset: int
+        stopWhenPreviousGrainSettledAt: Point -> bool
     }
     with
-        member this.maxY = y (this.rock |> maxTuple)
+        member this.xo p = (x p) - this.xOffset
         
-        static member fromShapes (shapes:Shape seq) =
+        static member fromRocks (strategy:ScannerStrategy) rocks =
+            let maxDepth = rocks |> strategy.maxDepth
+            let lowerLimit = maxDepth + 1
+            // printfn $"lowerLimit: %d{lowerLimit}"
+            let maxWidth = (lowerLimit * 2) + 1
+            // printfn $"maxWidth: %d{maxWidth}"
+            let xOffset = (x sandPoursInFrom) - (maxWidth / 2)
+            // printfn $"xOffset: %d{xOffset}"
+            let xo p = (x p) - xOffset
+            // let ox n = n + xOffset
+            
+            let grid = Array2D.create maxWidth lowerLimit '.'
+            rocks |> Seq.iter (fun (p:Point) ->
+                // printfn $"%d{x p},%d{y p}"
+                grid[xo p, y p] <- '#')
+            grid[xo sandPoursInFrom, y sandPoursInFrom] <- '+'
+            
             {
-                rock = shapes |> Array.ofSeq |> fillIn
-                sandAppearsAt = (500,0)
-                sand = []
+                grid = grid
+                maxDepth = maxDepth
+                xOffset = xOffset
+                stopWhenPreviousGrainSettledAt = (fun p -> y p > maxDepth)
             }
+    
+    let ox scan n = n + scan.xOffset
+    let xo scan n = n - scan.xOffset
     
     module parser =
         let pPoint : Parser<Point,unit> =
@@ -57,10 +94,10 @@ module RegolithReservoir =
             %% +.(pPoint * (qty[2..] / " -> ")) -- ws
             -%> Array.ofSeq
             
-        let pScan =
-            %% +.(pShape * qty[1..]) -|> Scan.fromShapes
+        let pAllRocks =
+            %% +.(pShape * qty[1..]) -|> fillIn
             
-        let parseScan = mustParse pScan
+        let parseScannerInput = mustParse pAllRocks
 
     let directlyBelow p = (fst p, snd p + 1)
     let diagonallyDownAndLeft p = (fst p - 1, snd p + 1)
@@ -72,17 +109,22 @@ module RegolithReservoir =
     let sandMayFallTo p = [|directlyBelow p; diagonallyDownAndLeft p; diagonallyDownAndRight p|]
     
     let sandFallsNextAfter (from:Point) (scan:Scan) =
+        // (y from) < scan.maxDepth
         sandMayFallTo from
         |> Array.tryFind (fun newSpot ->
-            (scan.rock |> doesNotContain newSpot) && (scan.sand |> doesNotContain newSpot)
+            // if (y newSpot > scan.maxDepth) then
+            //     printfn $"%A{newSpot} %A{scan.maxDepth}"
+                
+            scan.stopWhenPreviousGrainSettledAt newSpot || scan.grid[scan.xo newSpot, y newSpot] = '.'
         )
     
     let pathOfSandFrom p (scan:Scan) =
         Array.concat [|
             Array.singleton p; // include p in the list; allows our sequence to end after the sand falls below the rock
             Array.unfold (fun (prev) ->
-                if (y prev) > scan.maxY then
-                    None // we've fallen below the lowest rock
+                // prev |> log (fun p -> sprintf $"%A{p}") |> ignore
+                if scan.stopWhenPreviousGrainSettledAt prev then
+                    None // done pouring
                 else
                   match scan |> sandFallsNextAfter prev with
                   | Some next -> Some (next,next)
@@ -93,23 +135,29 @@ module RegolithReservoir =
     let pourSandUntilItFallsBelowTheRock (scan:Scan) =
         Seq.unfold (fun s ->
             let grainFallsTo =
-                s |> pathOfSandFrom s.sandAppearsAt |> Seq.last
+                s |> pathOfSandFrom sandPoursInFrom |> Seq.last
             
             match grainFallsTo with
-            | p when y p > scan.maxY -> None
+            | p when scan.stopWhenPreviousGrainSettledAt p -> None
             | p ->
-                let nextScan = { s with sand = p :: s.sand }
-                Some(nextScan,nextScan)
+                s.grid[s.xo p, y p] <- 'o'
+                Some(s,s)
         ) scan
+        
+    let countGrainsOfSand (scan:Scan) =
+        scan.grid
+        |> Array2D.countDistinctBy id
+        |> Array.find (fun c -> (fst c) = 'o')
+        |> snd
         
     let part1_how_many_units_of_sand_come_to_rest_before_sand_starts_flowing_into_the_abyss_below (input:string) =
         let finalScan =
             input
-            |> parser.parseScan
+            |> parser.parseScannerInput
+            |> Scan.fromRocks part1ScannerStrategy
             |> pourSandUntilItFallsBelowTheRock
             |> Seq.last
                    
-        finalScan.sand.Length
-        
+        finalScan |> countGrainsOfSand
         
         
