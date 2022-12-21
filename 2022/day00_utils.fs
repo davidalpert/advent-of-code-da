@@ -67,6 +67,8 @@ module utils =
   let joinBy (sep:string) (values:string seq) =
      String.Join(sep, values)
 
+  let wrapWith (padding:string) (s:string) = padding + s + padding
+
   let trim (s:string) = s.Trim()
 
   let flattenPairsArray pairs =
