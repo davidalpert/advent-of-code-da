@@ -4,7 +4,7 @@ open System
 
 module utils =
   open FParsec
-  
+
   // https://rolfsuter.ch/code/f-transpose-a-list-of-lists-transpose-2d-matrix/
   let rec transpose =
     function
@@ -37,34 +37,34 @@ module utils =
     match Array.length ss with
     | l when l >= 2 -> (ss[0], ss[1])
     | _ -> failwithf $"firstPairFromArray requires at least 2 elements; found %d{ss |> Array.length}"
-        
+
   let asSet (first, last) =
     seq { first .. last } |> Set.ofSeq
-        
+
   let eitherOr fn (a, b) =
     (a |> fn b) || (b |> fn a)
-        
+
   let spread fn (a, b) =
     (fn a, fn b)
-    
+
   let contains a b =
     Set.isSubset a b
-        
+
   let overlaps a b =
     (Set.intersect a b) <> Set.empty
 
   // minTuple creates a new tuple with the min fst and snd values
   let minTuple pair =
     pair |> Seq.minBy fst |> fst, pair |> Seq.minBy snd |> snd
-    
+
   // maxTuple creates a new tuple with the max fst and snd values
   let maxTuple pair =
     pair |> Seq.maxBy fst |> fst, pair |> Seq.maxBy snd |> snd
-    
+
   let splitBy (sep: string) (input: string) =
     input.Split(sep)
-        
-  let joinBy (sep:string) (values:string[]) =
+
+  let joinBy (sep:string) (values:string seq) =
      String.Join(sep, values)
 
   let trim (s:string) = s.Trim()
