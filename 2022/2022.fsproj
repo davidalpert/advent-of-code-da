@@ -36,6 +36,8 @@
     <Compile Include="day13_tests.fs" />
     <Compile Include="day14_regolith_reservoir.fs" />
     <Compile Include="day14_tests.fs" />
+    <Compile Include="day15_beacon_exclusion_zone.fs" />
+    <Compile Include="day15_tests.fs" />
     <!-- NEXT -->
   </ItemGroup>
 
