@@ -25,6 +25,7 @@ module RegolithReservoir =
         )
         |> Seq.concat |> Array.ofSeq
     
+    // fillIn connects the points and returns all the Points with rock
     let fillIn (shapes:Shape seq) : Point[] =
         shapes |> Seq.map (fun shape ->
                 shape |> Seq.pairwise
@@ -37,16 +38,16 @@ module RegolithReservoir =
     
     type ScannerStrategy = {
         maxDepth: Point seq -> int
-        stopPouring: Point seq -> Point -> bool
+        stopPouring: int -> Point -> bool
     }
     
     let part1ScannerStrategy = {
         maxDepth = fun rocks -> rocks |> Seq.maxBy y |> y
-        stopPouring = fun rocks p -> y p < (rocks |> Seq.maxBy y |> y)
+        stopPouring = fun maxDepth p -> y p = maxDepth
     }
     
     let part2ScannerStrategy = {
-        maxDepth = fun rocks -> (rocks |> Seq.maxBy y |> y) + 2
+        maxDepth = fun rocks -> (rocks |> Seq.maxBy y |> y) + 1 // maxDepth + 2 is the implicit floor
         stopPouring = fun _ p -> p = sandPoursInFrom
     }
     
@@ -61,7 +62,7 @@ module RegolithReservoir =
         
         static member fromRocks (strategy:ScannerStrategy) rocks =
             let maxDepth = rocks |> strategy.maxDepth
-            let lowerLimit = maxDepth + 1
+            let lowerLimit = maxDepth + 2
             // printfn $"lowerLimit: %d{lowerLimit}"
             let maxWidth = (lowerLimit * 2) + 1
             // printfn $"maxWidth: %d{maxWidth}"
@@ -80,9 +81,21 @@ module RegolithReservoir =
                 grid = grid
                 maxDepth = maxDepth
                 xOffset = xOffset
-                stopWhenPreviousGrainSettledAt = (fun p -> y p > maxDepth)
+                stopWhenPreviousGrainSettledAt = (strategy.stopPouring maxDepth)
             }
-    
+            
+    let drawIt (scan:Scan) =
+        // System.Threading.Thread.Sleep 200
+        wrapWith "\n"
+            (seq { 0 .. (scan.grid |> Array2D.length2) - 1 } |> Seq.map (fun y ->
+                seq { 0 .. (scan.grid |> Array2D.length1) - 1 } |> Seq.map (fun x ->
+                    let px = x
+                    let py = y
+                    // printfn $"%d{x},%d{y}"
+                    scan.grid[px,py]
+                ) |> Array.ofSeq |> System.String
+            ) |> joinBy "\n")
+ 
     let ox scan n = n + scan.xOffset
     let xo scan n = n - scan.xOffset
     
@@ -103,43 +116,41 @@ module RegolithReservoir =
     let diagonallyDownAndLeft p = (fst p - 1, snd p + 1)
     let diagonallyDownAndRight p = (fst p + 1, snd p + 1)
     
-    let contains item collection = collection |> Seq.contains item
-    let doesNotContain item collection = (collection |> Seq.contains item) |> not
-    
     let sandMayFallTo p = [|directlyBelow p; diagonallyDownAndLeft p; diagonallyDownAndRight p|]
     
     let sandFallsNextAfter (from:Point) (scan:Scan) =
-        // (y from) < scan.maxDepth
         sandMayFallTo from
-        |> Array.tryFind (fun newSpot ->
-            // if (y newSpot > scan.maxDepth) then
-            //     printfn $"%A{newSpot} %A{scan.maxDepth}"
-                
-            scan.stopWhenPreviousGrainSettledAt newSpot || scan.grid[scan.xo newSpot, y newSpot] = '.'
-        )
+        |> Array.tryFind (fun newSpot -> scan.grid[scan.xo newSpot, y newSpot] = '.')
     
     let pathOfSandFrom p (scan:Scan) =
         Array.concat [|
             Array.singleton p; // include p in the list; allows our sequence to end after the sand falls below the rock
             Array.unfold (fun (prev) ->
-                // prev |> log (fun p -> sprintf $"%A{p}") |> ignore
-                if scan.stopWhenPreviousGrainSettledAt prev then
-                    None // done pouring
-                else
-                  match scan |> sandFallsNextAfter prev with
-                  | Some next -> Some (next,next)
-                  | None -> None // we can't any open space
+                // prev |> log id |> ignore
+                
+                match scan |> sandFallsNextAfter prev with
+                | None -> None // didn't find any open space
+                | Some next ->
+                    if y next > scan.maxDepth then
+                        None // fell off the scan
+                    else
+                        Some(next,next)
             ) p
         |]
         
     let pourSandUntilItFallsBelowTheRock (scan:Scan) =
         Seq.unfold (fun s ->
-            let grainFallsTo =
+            let nextGrainFallsTo =
                 s |> pathOfSandFrom sandPoursInFrom |> Seq.last
             
-            match grainFallsTo with
-            | p when scan.stopWhenPreviousGrainSettledAt p -> None
+            // printfn $"next falls to: %A{nextGrainFallsTo} ; %A{(s.xo nextGrainFallsTo,y nextGrainFallsTo)}"
+            
+            match nextGrainFallsTo with
+            | p when scan.stopWhenPreviousGrainSettledAt p ->
+                // printfn "here"
+                None
             | p ->
+                // printfn $"sand settled at: %A{p} ; %A{(s.xo p,y p)}"
                 s.grid[s.xo p, y p] <- 'o'
                 Some(s,s)
         ) scan
@@ -157,7 +168,18 @@ module RegolithReservoir =
             |> Scan.fromRocks part1ScannerStrategy
             |> pourSandUntilItFallsBelowTheRock
             |> Seq.last
+            // |> (log drawIt)
                    
         finalScan |> countGrainsOfSand
         
+    let part2_how_many_units_of_sand_come_to_rest_before_sand_starts_flowing_into_the_abyss_below (input:string) =
+        let finalScan =
+            input
+            |> parser.parseScannerInput
+            |> Scan.fromRocks part2ScannerStrategy
+            |> pourSandUntilItFallsBelowTheRock
+            |> Seq.last
+            // |> (log drawIt)
+                   
+        (finalScan |> countGrainsOfSand) + 1 // the grain covering the spout
         
