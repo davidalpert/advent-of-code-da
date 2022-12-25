@@ -38,6 +38,8 @@
     <Compile Include="day14_tests.fs" />
     <Compile Include="day15_beacon_exclusion_zone.fs" />
     <Compile Include="day15_tests.fs" />
+    <Compile Include="day16_proboscidea_volcanium.fs" />
+    <Compile Include="day16_tests.fs" />
     <Compile Include="day17_pyroclastic_flow.fs" />
     <Compile Include="day17_tests.fs" />
     <!-- NEXT -->
