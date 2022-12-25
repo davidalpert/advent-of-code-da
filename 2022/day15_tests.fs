@@ -2,11 +2,11 @@ namespace AdventOfCode
 
 module Day15 =
 
-    open FSharp.Data.UnitSystems.SI.UnitNames
-    open AdventOfCode.Input
     open AdventOfCode.BeaconExclusionZone
+    open AdventOfCode.utils
     open Xunit
     open FsUnit.Xunit
+    open part2
 
     let exampleInput =
         """
@@ -81,16 +81,50 @@ Sensor at x=29, y=389033: closest beacon is at x=570063, y=959065
         // |> printfn "2022 - Day 15 - Part 1: %A"
         |> should equal 5166077
 
-    // [<Fact>]
-    let ``2022 - Day 15 - part 2 - example`` () =
-        exampleInput
-        // |> fromInput
-        // |> Array.length
-        |> should equal 0
+    [<Theory>]
+    [<InlineData(0L, 0L, 20L, 20L, -2L, 7L, false)>]
+    [<InlineData(0L, 0L, 20L, 20L, 2L, 7L, true)>]
+    [<InlineData(0L, 0L, 20L, 20L, 20L, 20L, true)>]
+    [<InlineData(0L, 0L, 20L, 20L, 21L, 20L, false)>]
+    let ``2022 - Day 15 - part 2 - pointIsInSearchGrid`` (minX, minY, maxX, maxY, x, y, expected) =
+        let grid =
+            { min = { x = minX; y = minY }
+              max = { x = maxX; y = maxY } }
 
-    // [<Fact>]
+        { x = x; y = y }
+        |> pointIsInSearchGrid grid
+        |> should equal expected
+
+    [<Fact>]
+    let ``2022 - Day 15 - part 2 - example - bounded edges`` () =
+        let r = exampleInput |> parser.parseScanReport
+
+        r.sensors
+        |> Array.find (fun s -> s.pos = { x = 8L; y = 7L })
+        |> (part2.outsideEdgeOfSensorRangeToSearch part2.exampleSearchGrid r.sensors)
+        |> should equal [| { x = 14L; y = 11L } |]
+
+    [<Fact>]
+    let ``2022 - Day 15 - part 2 - example`` () =
+        let b =
+            exampleInput
+            |> findLocationOfBeacon2 exampleSearchGrid
+
+        b |> should equal { x = 14L; y = 11L }
+
+        b
+        |> part2.tuningFrequency
+        |> should equal 56000011L
+
+    // [<Fact>] // takes ~20s
     let ``2022 - Day 15 - part 2`` () =
-        puzzleInput
-        // |> fromInput
-        // |> Array.length
-        |> printfn "2022 - Day 15 - Part 2: %A"
+        let b =
+            puzzleInput
+            |> findLocationOfBeacon2 puzzleSearchGrid
+
+        b |> should equal { x = 3267801L; y = 2703981L }
+
+        b
+        |> part2.tuningFrequency
+        |> should equal 13071206703981L
+        // |> (printfn "2022 - Day 15 - Part 2: %A -> %A" b)
