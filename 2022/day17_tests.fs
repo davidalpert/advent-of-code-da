@@ -161,8 +161,9 @@ module Day17 =
 |..####.|
 +-------+""")>]
     let ``2022 - Day 17 - part 1 - drop`` (n, expected) =
+        let rocks = shapeSource |> Seq.take n
         exampleInput
-        |> dropShapes n
+        |> dropShapes rocks
         |> fst
         |> drawStopped
         |> should equal (expected + "\n")
@@ -173,7 +174,7 @@ module Day17 =
         |> part1_how_many_units_tall_will_the_tower_be_after_n_rocks_have_stopped_falling 2022
         |> should equal 3068
 
-    [<Fact>]
+    // [<Fact>]
     let ``2022 - Day 17 - part 1`` () =
         puzzleInput
         |> part1_how_many_units_tall_will_the_tower_be_after_n_rocks_have_stopped_falling 2022

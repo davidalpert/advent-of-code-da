@@ -35,7 +35,8 @@ module PyroclasticFlow =
 """
     type RockShape = | HLine | Plus | RightAngle | VLine | Square
     
-    let shapeSource = repeatingSequenceOf [|HLine; Plus; RightAngle; VLine; Square|]
+    let shapeSequence = [|HLine; Plus; RightAngle; VLine; Square|]
+    let shapeSource = repeatingSequenceOf shapeSequence
     
     type Position = {
         x: int // 0-indexed
@@ -172,13 +173,11 @@ module PyroclasticFlow =
                     Some((nextShape,i), (nextShape,i))
         ) (initialShape, pushIndex)
     
-    let dropShapes n (input:string) =
+    let dropShapes rocks (input:string) =
         let pushPattern = parser.parseInput input
         
         let initialJetPushIndex = -1 // haven't started yet
         let emptyChamber = Set.empty<Position>
-        
-        let rocks = shapeSource |> Seq.take n |> Array.ofSeq
         
         rocks
         |> Seq.fold (fun (stopped, pushIndex) shape ->
@@ -187,7 +186,8 @@ module PyroclasticFlow =
             ) (emptyChamber,initialJetPushIndex)
 
     let part1_how_many_units_tall_will_the_tower_be_after_n_rocks_have_stopped_falling n (input:string) =
-        let stopped,_ = input |> dropShapes n
+        let rocks = shapeSource |> Seq.take n |> Array.ofSeq
+        let stopped,_ = input |> dropShapes rocks
         stopped |> maxYOfPositions
         
     let fromInput (s: string) =
