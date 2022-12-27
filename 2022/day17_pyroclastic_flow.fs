@@ -39,8 +39,8 @@ module PyroclasticFlow =
     let shapeSource = repeatingSequenceOf shapeSequence
     
     type Position = {
-        x: int // 0-indexed
-        y: int // 1-indexed
+        x: int64 // 0-indexed
+        y: int64 // 1-indexed
     }
     
     let positionModsByShape s =
@@ -73,7 +73,7 @@ module PyroclasticFlow =
     
     let highestY (s:Set<Position>) =
         if s.IsEmpty then
-            0
+            0L
         else
             (s |> Set.toSeq |> Seq.maxBy (fun p -> p.y)).y
     
@@ -82,8 +82,8 @@ module PyroclasticFlow =
     // highest rock in the room (or the floor, if there isn't one).
     let nextStartingPosition stopped =
         {
-            x = 2
-            y = (stopped |> highestY) + 4
+            x = 2L
+            y = (stopped |> highestY) + 4L
         }
     
     let initialShapeAsSet stopped s =
@@ -91,8 +91,8 @@ module PyroclasticFlow =
         
         s |> positionModsByShape |> Seq.map (fun m ->
             {
-                x = pos.x + (fst m)
-                y = pos.y + (snd m)
+                x = pos.x + (fst m |> int64)
+                y = pos.y + (snd m |> int64)
             }
         )
         |> Set.ofSeq
@@ -102,11 +102,11 @@ module PyroclasticFlow =
     let drawIt (occupied:Set<Position>) (falling:Set<Position>) =
         let maxY = if falling.IsEmpty then maxYOfPositions occupied else maxYOfPositions falling
         
-        wrapWith "\n" (seq { maxY .. -1 .. 0 } |> Seq.map (fun y ->
-                let w = if y = 0 then "+" else "|"
-                wrapWith w (seq { 0 .. 6 } |> Seq.map (fun x ->
+        wrapWith "\n" (seq { maxY .. -1L .. 0L } |> Seq.map (fun y ->
+                let w = if y = 0L then "+" else "|"
+                wrapWith w (seq { 0L .. 6L } |> Seq.map (fun x ->
                         let p = { x = x; y = y }
-                        if y = 0 then
+                        if y = 0L then
                             '-'
                         else if falling |> Set.contains p then
                             '@'
@@ -132,8 +132,8 @@ module PyroclasticFlow =
     let push dir shape =
         let newShape = shape |> Set.map (fun p ->
             match dir with
-            | Left -> { p with x = p.x - 1 }
-            | Right -> { p with x = p.x + 1 }
+            | Left -> { p with x = p.x - 1L }
+            | Right -> { p with x = p.x + 1L }
         )
         
         if newShape |> Set.exists (fun p -> p.x < 0 || p.x > 6) then
@@ -141,7 +141,7 @@ module PyroclasticFlow =
         else
             newShape
             
-    let fallOne shape = shape |> Set.map (fun p -> { p with y = p.y - 1 })
+    let fallOne shape = shape |> Set.map (fun p -> { p with y = p.y - 1L })
     
     let intersectsWithGround s = s |> Set.exists (fun p -> p.y <= 0)
     let intersectsWithStopped stopped s = (s |> Set.intersect stopped).IsEmpty |> not
@@ -173,22 +173,29 @@ module PyroclasticFlow =
                     Some((nextShape,i), (nextShape,i))
         ) (initialShape, pushIndex)
     
-    let dropShapes rocks (input:string) =
+    let dropShapes (n:int64) (input:string) =
         let pushPattern = parser.parseInput input
         
         let initialJetPushIndex = -1 // haven't started yet
         let emptyChamber = Set.empty<Position>
         
-        rocks
-        |> Seq.fold (fun (stopped, pushIndex) shape ->
-                let stoppedShape,nextPushIndex = dropUntilStopsAmong stopped pushPattern pushIndex shape |> Seq.last
-                (Set.union stopped stoppedShape, nextPushIndex)
-            ) (emptyChamber,initialJetPushIndex)
+        Seq.unfold (fun (stopped, shapeNumber, pushIndex) ->
+                if shapeNumber = n then
+                    None
+                else
+                    let n = (shapeNumber % (shapeSequence.Length |> int64)) |> int32
+                    let nextShape = shapeSequence[n]
+                    let stoppedShape,nextPushIndex = dropUntilStopsAmong stopped pushPattern pushIndex nextShape |> Seq.last
+                    let nextStopped = Set.union stopped stoppedShape
+                    Some(nextStopped, (nextStopped, shapeNumber + 1L, nextPushIndex))
+            ) (emptyChamber, 0L ,initialJetPushIndex)
 
     let part1_how_many_units_tall_will_the_tower_be_after_n_rocks_have_stopped_falling n (input:string) =
-        let rocks = shapeSource |> Seq.take n |> Array.ofSeq
-        let stopped,_ = input |> dropShapes rocks
-        stopped |> maxYOfPositions
+        let stopped = input |> dropShapes n
+        stopped |> Seq.last |> maxYOfPositions
+        
+    let part2_how_many_units_tall_will_the_tower_be_after_lots_of_rocks_have_stopped_falling n (input:string) =
+        part1_how_many_units_tall_will_the_tower_be_after_n_rocks_have_stopped_falling n input
         
     let fromInput (s: string) =
         s

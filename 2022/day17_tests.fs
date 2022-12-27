@@ -1,5 +1,6 @@
 namespace AdventOfCode
 
+open AdventOfCode.BeaconExclusionZone
 open AdventOfCode.PyroclasticFlow
 
 module Day17 =
@@ -161,10 +162,9 @@ module Day17 =
 |..####.|
 +-------+""")>]
     let ``2022 - Day 17 - part 1 - drop`` (n, expected) =
-        let rocks = shapeSource |> Seq.take n
         exampleInput
-        |> dropShapes rocks
-        |> fst
+        |> dropShapes n
+        |> Seq.last
         |> drawStopped
         |> should equal (expected + "\n")
 
@@ -172,6 +172,7 @@ module Day17 =
     let ``2022 - Day 17 - part 1 - example`` () =
         exampleInput
         |> part1_how_many_units_tall_will_the_tower_be_after_n_rocks_have_stopped_falling 2022
+        |> int32
         |> should equal 3068
 
     // [<Fact>]
@@ -179,14 +180,16 @@ module Day17 =
         puzzleInput
         |> part1_how_many_units_tall_will_the_tower_be_after_n_rocks_have_stopped_falling 2022
         // |> printfn "2022 - Day 17 - Part 1: %A"
+        |> int32
         |> should equal 3153
 
-    // [<Fact>]
+    [<Fact>]
     let ``2022 - Day 17 - part 2 - example`` () =
+        let numberOfRocks = 1000000000000L
+        
         exampleInput
-        // |> fromInput
-        // |> Array.length
-        |> should equal 0
+        |> part2_how_many_units_tall_will_the_tower_be_after_lots_of_rocks_have_stopped_falling numberOfRocks
+        |> should equal 1514285714288L
 
     // [<Fact>]
     let ``2022 - Day 17 - part 2`` () =
