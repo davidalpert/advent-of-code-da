@@ -73,6 +73,14 @@ module utils =
 
   let flattenPairsArray pairs =
     pairs |> Array.collect (fun pair -> [|fst pair; snd pair|])
+    
+  // unfolds an infinitely repeating sequence of pattern, wrapping
+  // around to the beginning once the end has been reached
+  let repeatingSequenceOf (pattern:'a[]) =
+    let fn index =
+      let nextIndex = (index + 1) % pattern.Length
+      Some(pattern[index], nextIndex)
+    Seq.unfold fn 0
      
   // a generic type to wrap some data together with a custom comparer
   [<CustomEquality; CustomComparison>]
