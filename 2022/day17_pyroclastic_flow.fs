@@ -172,23 +172,35 @@ module PyroclasticFlow =
                 else
                     Some((nextShape,i), (nextShape,i))
         ) (initialShape, pushIndex)
-    
+
+    let minSetKeepHighestStoppedOnly stopped =
+        seq { 0 .. 6 } |> Seq.collect (fun i ->
+            let stoppedInColumnI = stopped |> Set.filter (fun p -> p.x = i)
+            if stoppedInColumnI.IsEmpty then
+                []
+            else
+                let maxY = stoppedInColumnI |> maxYOfPositions
+                stoppedInColumnI |> Set.filter (fun p -> p.y > maxY - 6L) |> Set.toList
+        ) |> Set.ofSeq
+
     let dropShapes (n:int64) (input:string) =
         let pushPattern = parser.parseInput input
         
         let initialJetPushIndex = -1 // haven't started yet
         let emptyChamber = Set.empty<Position>
+        let emptyHighest = Set.empty<Position>
         
-        Seq.unfold (fun (stopped, shapeNumber, pushIndex) ->
+        Seq.unfold (fun (stopped, emptyHighest, shapeNumber, pushIndex) ->
                 if shapeNumber = n then
                     None
                 else
                     let n = (shapeNumber % (shapeSequence.Length |> int64)) |> int32
                     let nextShape = shapeSequence[n]
-                    let stoppedShape,nextPushIndex = dropUntilStopsAmong stopped pushPattern pushIndex nextShape |> Seq.last
+                    let stoppedShape,nextPushIndex = dropUntilStopsAmong emptyHighest pushPattern pushIndex nextShape |> Seq.last
                     let nextStopped = Set.union stopped stoppedShape
-                    Some(nextStopped, (nextStopped, shapeNumber + 1L, nextPushIndex))
-            ) (emptyChamber, 0L ,initialJetPushIndex)
+                    let minSet = nextStopped |> minSetKeepHighestStoppedOnly
+                    Some(nextStopped, (nextStopped, minSet, shapeNumber + 1L, nextPushIndex))
+            ) (emptyChamber, emptyHighest, 0L ,initialJetPushIndex)
 
     let part1_how_many_units_tall_will_the_tower_be_after_n_rocks_have_stopped_falling n (input:string) =
         let stopped = input |> dropShapes n

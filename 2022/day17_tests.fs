@@ -168,14 +168,14 @@ module Day17 =
         |> drawStopped
         |> should equal (expected + "\n")
 
-    // [<Fact>]
+    [<Fact>]
     let ``2022 - Day 17 - part 1 - example`` () =
         exampleInput
         |> part1_how_many_units_tall_will_the_tower_be_after_n_rocks_have_stopped_falling 2022
         |> int32
         |> should equal 3068
 
-    // [<Fact>]
+    [<Fact>]
     let ``2022 - Day 17 - part 1`` () =
         puzzleInput
         |> part1_how_many_units_tall_will_the_tower_be_after_n_rocks_have_stopped_falling 2022
@@ -184,6 +184,32 @@ module Day17 =
         |> should equal 3153
 
     [<Fact>]
+    let ``2022 - Day 17 - part 2 - minSetKeepHighestStoppedOnly``() =
+        // after dropping 2 rocks
+        [
+                             { x = 3; y = 8 };
+            { x = 2; y = 7 };{ x = 3; y = 7 };{ x = 4; y = 7 };
+                             { x = 3; y = 6 };
+            { x = 2; y = 5 };{ x = 3; y = 5 };{ x = 4; y = 5 };{ x = 5; y = 5 };
+            { x = 2; y = 4 };{ x = 3; y = 4 };{ x = 4; y = 4 };{ x = 5; y = 4 };
+            { x = 2; y = 3 };{ x = 3; y = 3 };{ x = 4; y = 3 };{ x = 5; y = 3 };
+            { x = 2; y = 2 };{ x = 3; y = 2 };{ x = 4; y = 2 };{ x = 5; y = 2 };
+            { x = 2; y = 1 };{ x = 3; y = 1 };{ x = 4; y = 1 };{ x = 5; y = 1 };
+        ] |> Set.ofList
+        |> minSetKeepHighestStoppedOnly
+        |> Set.toList
+        |> should matchList [
+                             { x = 3; y = 8 };
+            { x = 2; y = 7 };{ x = 3; y = 7 };{ x = 4; y = 7 };
+                             { x = 3; y = 6 };
+            { x = 2; y = 5 };{ x = 3; y = 5 };{ x = 4; y = 5 };{ x = 5; y = 5 };
+            { x = 2; y = 4 };{ x = 3; y = 4 };{ x = 4; y = 4 };{ x = 5; y = 4 };
+            { x = 2; y = 3 };{ x = 3; y = 3 };{ x = 4; y = 3 };{ x = 5; y = 3 };
+            { x = 2; y = 2 };                 { x = 4; y = 2 };{ x = 5; y = 2 };
+                                                               { x = 5; y = 1 };
+        ]
+
+    // [<Fact>]
     let ``2022 - Day 17 - part 2 - example`` () =
         let numberOfRocks = 1000000000000L
         
