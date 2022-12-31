@@ -168,20 +168,30 @@ module Day17 =
         |> drawStopped
         |> should equal (expected + "\n")
 
-    [<Fact>]
+    // [<Fact>]
     let ``2022 - Day 17 - part 1 - example`` () =
         exampleInput
         |> part1_how_many_units_tall_will_the_tower_be_after_n_rocks_have_stopped_falling 2022
         |> int32
         |> should equal 3068
 
-    [<Fact>]
+    // [<Fact>]
     let ``2022 - Day 17 - part 1`` () =
         puzzleInput
         |> part1_how_many_units_tall_will_the_tower_be_after_n_rocks_have_stopped_falling 2022
         // |> printfn "2022 - Day 17 - Part 1: %A"
         |> int32
         |> should equal 3153
+
+    // [<Fact>]
+    let ``2022 - Day 17 - part 2 - least common denominator``() =
+        // puzzleInput.Length |> should equal shapeSequence.Length
+
+        puzzleInput
+        |> dropShapes ((puzzleInput.Length * shapeSequence.Length) |> int64)
+        |> Seq.last
+        |> drawStopped
+        |> should equal ""
 
     [<Fact>]
     let ``2022 - Day 17 - part 2 - minSetKeepHighestStoppedOnly``() =
