@@ -91,6 +91,18 @@ Valve TO has flow rate=19; tunnels lead to valves NZ, IG, BC, CV
         |> Array.length
         |> should equal 1
 
+    [<Theory>]
+    [<InlineData("BB", 2, 13, 364)>]
+    [<InlineData("CC", 4, 2, 52)>]
+    let ``2022 - Day 16 - part 1 - totalFlowFromOpeningValveAt`` (name, openedAt, flowRate, expectedTotalFlow) =
+        let valve =
+            { name = name
+              flowRate = flowRate
+              neighbors = Array.empty<string> }
+
+        totalFlowFromOpeningValveAt valve openedAt
+        |> should equal expectedTotalFlow
+
     // [<Fact>]
     let ``2022 - Day 16 - part 1`` () =
         puzzleInput

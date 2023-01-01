@@ -17,11 +17,17 @@ module ProboscideaVolcanium =
     }
     
     let totalFlowFromOpeningValveAt v valveOpenedAtMinute =
-        (valveOpenedAtMinute - 1) * v.flowRate
+        (30 - valveOpenedAtMinute) * v.flowRate
         
-    let allFlowRates v =
-        seq { 30 .. -1 .. 1 }
+    let totalFlowForOneValveByMinuteOpened v =
+        seq { 1 .. 30 }
         |> Seq.map (fun i -> (i, (i |> totalFlowFromOpeningValveAt v)))
+        |> Map.ofSeq
+
+    let totalFlowByMinuteOpenedByValve m =
+        m
+        |> Map.values
+        |> Seq.map (fun v -> v, totalFlowForOneValveByMinuteOpened v)
         |> Map.ofSeq
         
     let maxFlowRate m =
@@ -32,8 +38,7 @@ module ProboscideaVolcanium =
         
     let costOfEdge m a b =
         (maxFlowRate m) - m[a].flowRate
-        
-        
+
     module parser =
         let pValveName = anyString 2
         
@@ -49,6 +54,19 @@ module ProboscideaVolcanium =
             -|> fun results -> results |> Map.ofSeq
         
         let parseInput (input:string) = mustParse pScanOutput input
+
+    type Action =
+    | Move of string * string // from * to
+    | Open of string
+
+    type DecisionTree = Tree<Action,Action>
+
+    let rec buildDecisionTree maxM (allValves:Map<Valve,Map<int,int>>) m v =
+        if m < maxM then
+            
+            buildDecisionTree maxM allValves (m - 1)
+        else
+
 
     let fromInput (s: string) =
         s
