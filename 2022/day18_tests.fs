@@ -3052,6 +3052,63 @@ module Day18 =
         // |> printfn "2022 - Day 18 - Part 1: %A"
         |> should equal 4300
 
+    let rectangleWithTwoInnerCubesMissing = """
+1,1,1
+2,1,1
+3,1,1
+4,1,1
+
+1,2,1
+2,2,1
+3,2,1
+4,2,1
+
+1,3,1
+2,3,1
+3,3,1
+4,3,1
+
+1,1,2
+2,1,2
+3,1,2
+4,1,2
+
+1,2,2
+4,2,2
+
+1,3,2
+2,3,2
+3,3,2
+4,3,2
+
+1,1,3
+2,1,3
+3,1,3
+4,1,3
+
+1,2,3
+2,2,3
+3,2,3
+4,2,3
+
+1,3,3
+2,3,3
+3,3,3
+4,3,3
+"""
+
+    [<Fact>]
+    let ``2022 - Day 18 - part 1 - simple example 34`` () =
+        rectangleWithTwoInnerCubesMissing
+        |> part1_what_is_the_surface_area_of_the_lava_droplet_defined_by
+        |> should equal 76
+
+    [<Fact>]
+    let ``2022 - Day 18 - part 2 - simple example 34`` () =
+        rectangleWithTwoInnerCubesMissing
+        |> part2_what_is_the_external_surface_area_of_the_lava_droplet_defined_by
+        |> should equal 66
+
     // [<Fact>]
     let ``2022 - Day 18 - part 2 - example`` () =
         exampleInput

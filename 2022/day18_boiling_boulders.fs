@@ -59,8 +59,6 @@ module BoilingBoulders =
 
     let doesNotContain s item = not (contains s item)
 
-
-
     let emptyFacesImpliedBy occupied =
         let allDirectNeighbors =
             occupied |> Set.toSeq |> Seq.collect neighborsOf
@@ -75,6 +73,50 @@ module BoilingBoulders =
         emptyFacesImpliedBy occupied
         |> Seq.length
 
+    let xof p = p.x
+    let yof p = p.y
+    let zof p = p.z
+
+    let extremesOf s =
+        let positions = s |> Set.toArray
+
+        let allX = positions |> Array.map xof
+        let xmin = allX |> Array.min
+        let xmax = allX |> Array.max
+
+        let allY = positions |> Array.map yof
+        let ymin = allY |> Array.min
+        let ymax = allY |> Array.max
+
+        let allZ = positions |> Array.map zof
+        let zmin = allZ |> Array.min
+        let zmax = allZ |> Array.max
+
+        { x = xmin; y = ymin; z = zmin },{ x = xmax; y = ymax; z = zmax }
+
+    let isSurrounded s (min,max) p =
+        let x1 = seq { (p.x - 1) .. -1 .. min.x }
+        let x2 = seq { (p.x + 1) .. max.x }
+        let y1 = seq { (p.y - 1) .. -1 .. min.y }
+        let y2 = seq { (p.y + 1) .. max.y }
+        let z1 = seq { (p.z - 1) .. -1 .. min.z }
+        let z2 = seq { (p.z + 1) .. max.z }
+
+        x1 
+        // let neighborsOfP = neighborsOf p |>
+
+        false
+
+    let isNotSurrounded s m p = not (isSurrounded s m p)
+
+    let part2_what_is_the_external_surface_area_of_the_lava_droplet_defined_by (input:string) =
+        let occupied = input |> toSetOfPositions
+        let impliedEmptyFaces = emptyFacesImpliedBy occupied
+        let mm = extremesOf occupied
+
+
+
+        mm
 
     let fromInput (s: string) =
         s
