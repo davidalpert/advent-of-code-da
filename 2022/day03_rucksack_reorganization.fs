@@ -4,7 +4,7 @@ module RucksackReorganization =
 
     open System
     open System.Collections.Generic
-    open AdventOfCode.Input
+    open AdventOfCode.utils
 
     let asPriority (c:char) =
         match c |> Char.IsLower with
