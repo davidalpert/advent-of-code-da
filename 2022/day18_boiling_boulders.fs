@@ -50,6 +50,7 @@ module BoilingBoulders =
     let toSetOfPositions (input:string) =
         input.Trim()
         |> splitToTrimmedLines
+        |> Seq.filter (fun s -> s <> "")
         |> Seq.map toPosition
         |> Set.ofSeq
 
