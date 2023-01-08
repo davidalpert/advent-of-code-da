@@ -59,18 +59,22 @@ module BoilingBoulders =
 
     let doesNotContain s item = not (contains s item)
 
-    let part1_what_is_the_surface_area_of_the_lava_droplet_defined_by (input:string) =
-        let occupied = input |> toSetOfPositions
 
+
+    let emptyFacesImpliedBy occupied =
         let allDirectNeighbors =
             occupied |> Set.toSeq |> Seq.collect neighborsOf
             // |> log positionsAsString
 
-        let emptyFaces =
-            allDirectNeighbors
-            |> Seq.filter (doesNotContain occupied)
+        allDirectNeighbors
+        |> Seq.filter (doesNotContain occupied)
 
-        emptyFaces |> Seq.length
+    let part1_what_is_the_surface_area_of_the_lava_droplet_defined_by (input:string) =
+        let occupied = input |> toSetOfPositions
+
+        emptyFacesImpliedBy occupied
+        |> Seq.length
+
 
     let fromInput (s: string) =
         s
