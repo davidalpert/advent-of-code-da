@@ -14,7 +14,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".tools", ".tools", "{EBE115D9-2808-4A87-B570-2AB49A5CB4EB}"
 	ProjectSection(SolutionItems) = preProject
 		new-day.sh = new-day.sh
-		Makefile = Makefile
+		Taskfile.yaml = Taskfile.yaml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".templates", ".templates", "{C578DF7D-F122-47BA-8619-03EB2F98545B}"
