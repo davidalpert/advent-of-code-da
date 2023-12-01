@@ -10,6 +10,8 @@
   <ItemGroup>
     <Compile Include="day00_input.fs" />
     <Compile Include="day00_utils.fs" />
+    <Compile Include="day01_calibration.fs" />
+    <Compile Include="day01_calibration_tests.fs" />
     <!-- NEXT -->
   </ItemGroup>
 
