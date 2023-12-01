@@ -13,6 +13,17 @@ pqr3stu8vwx
 a1b2c3d4e5f
 treb7uchet
 """
+    
+    let examplePart2Input =
+        """
+two1nine
+eightwothree
+abcone2threexyz
+xtwone3four
+4nineeightseven2
+zoneight234
+7pqrstsixteen
+"""
 
     let puzzleInput =
         """
@@ -1031,7 +1042,7 @@ rphtbkncs4nznsix
         |> Seq.head
         |> Calibration.valueForLine
         |> should equal expectedCalibrationValue
-        
+
     [<Fact>]
     let ``2023 - Day 01 - part 1 - example`` () =
         exampleInput
@@ -1043,4 +1054,39 @@ rphtbkncs4nznsix
         puzzleInput
         |> Calibration.valueForInput
         |> should equal 55538
+        
+    [<Theory>]
+    [<InlineData("eightwothree", "8wo3")>]
+    let ``2023 - Day 01 - part 2 - preprocess`` (line, expected) =
+        line
+        |> Calibration.preProcessLine
+        |> should equal expected
     
+    [<Theory>]
+    [<InlineData(1, 29)>]
+    // [<InlineData(2, 83)>]
+    // [<InlineData(3, 13)>]
+    // [<InlineData(4, 24)>]
+    // [<InlineData(5, 42)>]
+    // [<InlineData(6, 14)>]
+    // [<InlineData(7, 76)>]
+    let ``2023 - Day 01 - part 2 - example - calibration values`` (lineNo, expectedCalibrationValue) =
+        examplePart2Input
+        |> splitToTrimmedLines
+        |> Seq.skip (lineNo - 1)
+        |> Seq.head
+        |> Calibration.valueForLine2
+        |> should equal expectedCalibrationValue
+
+    // [<Fact>]
+    let ``2023 - Day 01 - part 2 - example`` () =
+        exampleInput
+        |> Calibration.valueForInput
+        |> should equal 281
+
+    // [<Fact>]
+    let ``2022 - Day 01 - part 2`` () =
+        puzzleInput
+        |> Calibration.valueForInput
+        |> should equal 55538
+ 
