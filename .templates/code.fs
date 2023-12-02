@@ -7,6 +7,8 @@ module MODULE_NAME =
     open AdventOfCode.Input
     open AdventOfCode.utils
     open FSharp.Data.UnitSystems.SI.UnitNames
+    open FParsec
+    open FParsec.Pipes
 
     let fromInput (s: string) =
         s
