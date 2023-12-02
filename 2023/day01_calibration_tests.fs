@@ -14,7 +14,7 @@ a1b2c3d4e5f
 treb7uchet
 """
     
-    let examplePart2Input =
+    let exampleInput2 =
         """
 two1nine
 eightwothree
@@ -1054,39 +1054,33 @@ rphtbkncs4nznsix
         puzzleInput
         |> Calibration.valueForInput
         |> should equal 55538
-        
+ 
     [<Theory>]
-    [<InlineData("eightwothree", "8wo3")>]
-    let ``2023 - Day 01 - part 2 - preprocess`` (line, expected) =
+    [<InlineData("two1nine", "2wo19ine", 29)>]
+    [<InlineData("eightwothree", "8igh2wo3hree", 83)>]
+    [<InlineData("abcone2threexyz", "abc1ne23hreexyz", 13)>]
+    [<InlineData("xtwone3four", "x2w1ne34our", 24)>]
+    [<InlineData("4nineeightseven2", "49ine8ight7even2", 42)>]
+    [<InlineData("zoneight234", "z1n8ight234", 14)>]
+    [<InlineData("7pqrstsixteen", "7pqrst6ixteen", 76)>]
+    let ``2023 - Day 01 - part 2 - preprocess`` (line, expectedPreprocess, expectedValue) =
         line
-        |> Calibration.preProcessLine
-        |> should equal expected
-    
-    [<Theory>]
-    [<InlineData(1, 29)>]
-    // [<InlineData(2, 83)>]
-    // [<InlineData(3, 13)>]
-    // [<InlineData(4, 24)>]
-    // [<InlineData(5, 42)>]
-    // [<InlineData(6, 14)>]
-    // [<InlineData(7, 76)>]
-    let ``2023 - Day 01 - part 2 - example - calibration values`` (lineNo, expectedCalibrationValue) =
-        examplePart2Input
-        |> splitToTrimmedLines
-        |> Seq.skip (lineNo - 1)
-        |> Seq.head
+        |> Calibration.preProcessLine2
+        |> should equal expectedPreprocess
+        
+        line
         |> Calibration.valueForLine2
-        |> should equal expectedCalibrationValue
-
-    // [<Fact>]
+        |> should equal expectedValue
+    
+    [<Fact>]
     let ``2023 - Day 01 - part 2 - example`` () =
-        exampleInput
-        |> Calibration.valueForInput
+        exampleInput2
+        |> Calibration.valueForInput2
         |> should equal 281
-
-    // [<Fact>]
+        
+    [<Fact>]
     let ``2022 - Day 01 - part 2`` () =
         puzzleInput
-        |> Calibration.valueForInput
-        |> should equal 55538
+        |> Calibration.valueForInput2
+        |> should equal 54875
  

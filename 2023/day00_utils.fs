@@ -2,6 +2,12 @@ namespace AdventOfCode
 
 open System
 
+module DummyModuleOnWhichToAttachAssemblyAttribute =
+    open ApprovalTests.Reporters;
+
+    [<assembly: UseReporter(typeof<DiffReporter>)>]
+    do ()
+    
 module utils =
   open FParsec
 

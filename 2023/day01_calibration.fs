@@ -1,9 +1,11 @@
 namespace AdventOfCode
 
-open System
-open Input
-
 module Calibration =
+    open System
+    open Input
+    open FParsec
+    open FParsec.Pipes
+
     let valueForLine (s:string) =
         let digits =
             s.ToCharArray()
@@ -23,53 +25,56 @@ module Calibration =
                 line |> valueForLine
             )
 
-    let numberWordValues = dict [
-        ("one", "1");
-        ("two", "2");
-        ("three", "3");
-        ("four", "4");
-        ("five", "5");
-        ("six", "6");
-        ("seven", "7");
-        ("eight", "8");
-        ("nine", "9");
-    ]
-    
-    let preProcessLine (s:string) =
+    module parser2 =
+        let ws = spaces
         
-        
-        let preProcessedString =
-            numberWordValues.Keys
-            |> Seq.fold (fun (state:string) word ->
-                    state.Replace(word, numberWordValues[word])
-                ) s
+        let pLiteralNumber (word:string) c =
+            let wordChars = word.ToCharArray()
+            let firstChar = wordChars |> Array.head
+            let rest = wordChars |> Array.tail |> String
+            let pMatchOnFirstCharOnlyIfRestMatches =
+                // consume firstChar; only if rest matches (without consuming)
+                pchar firstChar .>>? followedByString rest
             
-        preProcessedString
+            %% ws -? pMatchOnFirstCharOnlyIfRestMatches -|> c // and return c
+            
+        let pCalibrationChar : Parser<char,unit> =
+            choice [
+                pLiteralNumber "one" '1';
+                pLiteralNumber "two" '2';
+                pLiteralNumber "three" '3';
+                pLiteralNumber "four" '4';
+                pLiteralNumber "five" '5';
+                pLiteralNumber "six" '6';
+                pLiteralNumber "seven" '7';
+                pLiteralNumber "eight" '8';
+                pLiteralNumber "nine" '9';
+                anyChar;
+            ]
+            
+        let pCalibrationLine =
+            %% +.(pCalibrationChar * qty.[1..])
+            -|> fun cc -> cc |> Array.ofSeq |> String
+
+        let mustParse p (input:string) =
+            match run p input with
+            | Success(r, _, _) -> r
+            | Failure(errorMsg, _, _) -> failwith errorMsg
+            
+        let parseCalibrationInput (input:string) =
+            mustParse pCalibrationLine input
+    
+    let preProcessLine2 (s:string) =
+        s |> parser2.parseCalibrationInput
     
     let valueForLine2 (s:string) =
-        let preProcessedString =
-            numberWordValues.Keys
-            |> Seq.fold (fun (state:string) word ->
-                    state.Replace(word, numberWordValues[word])
-                ) s
-        
-        // printf $"%s{s}\n"
-        // printf $"%s{preProcessedString}\n"
-        
-        let digits =
-            (s |> preProcessLine).ToCharArray()
-            |> Array.filter Char.IsNumber
-            
-        let firstDigit = digits |> Array.head
-        let lastDigit = digits |> Array.rev |> Array.head
-        
-        [|firstDigit; lastDigit|]
-        |> String
-        |> Int32.Parse
+        s
+        |> preProcessLine2
+        |> valueForLine
         
     let valueForInput2 (s:string) =
         s
         |> splitToTrimmedLines
         |> Seq.sumBy (fun line ->
-                line |> valueForLine
+                line |> valueForLine2
             )
