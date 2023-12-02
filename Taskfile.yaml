@@ -6,13 +6,23 @@ vars:
   REPO_NAME: advent-of-code-da
   REPO_OWNER: davidalpert
   SLN_FILE: advent-of-code.sln
-  YEAR: 2023
+  THIS_YEAR:
+    sh: date +%Y
+  THIS_DAY:
+    sh: date +%d
+  YEAR: '{{.YEAR | default .THIS_YEAR}}'
+  DAY: '{{.DAY | default .THIS_DAY}}'
 
 tasks:
   default:
     deps:
       - help
     silent: true
+
+  gen:
+    desc: generate a new F# module and test file for today
+    cmds:
+      - ./new-day.sh {{.YEAR}} {{.DAY}} {{.CLI_ARGS}}
 
   restore:
     desc: restore packages
