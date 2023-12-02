@@ -44,6 +44,18 @@ module cubeconundrum =
         static member fromIdAndReveals id rev =
             { ID = id; reveals = rev |> Array.ofSeq }
 
+        member this.minimumNumberOfCubes =
+            {
+                red = this.reveals |> Seq.map (fun h -> h.red) |> Seq.max;
+                blue = this.reveals |> Seq.map (fun h -> h.blue) |> Seq.max;
+                green = this.reveals |> Seq.map (fun h -> h.green) |> Seq.max;
+            }
+
+        // The power of a set of cubes is equal to the numbers of red, green, and blue cubes multiplied together.
+        member this.power =
+            let min = this.minimumNumberOfCubes
+            min.red * min.green * min.blue
+
     module parser =
         let ws = spaces
 
@@ -90,3 +102,8 @@ module cubeconundrum =
         input
         |> possibleGamesGiven h
         |> Seq.sumBy (fun g -> g.ID)
+
+    let sumOfPowers (input:string) =
+        input
+        |> parser.parseInput
+        |> Array.sumBy (fun g -> g.power)

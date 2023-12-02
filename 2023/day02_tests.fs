@@ -151,16 +151,41 @@ Game 100: 1 red, 5 blue, 2 green; 3 red, 1 blue; 1 green, 1 blue, 1 red
         |> sumOfIDsOfPossibleGamesGiven { red = 12; green = 13; blue = 14 }
         |> should equal 2776
 
-    // [<Fact>]
+    [<Fact>]
+    let ``2023 - Day 02 - part 2 - minimumNumberOfCubes`` () =
+        exampleInput
+        |> parser.parseInput
+        |> Array.map (fun g -> (g.ID, g.minimumNumberOfCubes))
+        |> should equal [|
+            (1, { red = 4 ; green = 2 ; blue = 6 });
+            (2, { red = 1 ; green = 3; blue = 4 });
+            (3, { red = 20 ; green = 13; blue = 6 });
+            (4, { red = 14 ; green = 3; blue = 15 });
+            (5, { red = 6 ; green = 3; blue = 2 });
+        |]
+
+    [<Fact>]
+    let ``2023 - Day 02 - part 2 - power`` () =
+        exampleInput
+        |> parser.parseInput
+        |> Array.map (fun g -> (g.ID, g.power))
+        |> should equal [|
+            (1, 48);
+            (2, 12);
+            (3, 1560);
+            (4, 630);
+            (5, 36);
+        |]
+
+    [<Fact>]
     let ``2023 - Day 02 - part 2 - example`` () =
         exampleInput
-        // |> fromInput
-        // |> Array.length
-        |> should equal 0
+        |> sumOfPowers
+        |> should equal 2286
 
-    // [<Fact>]
+    [<Fact>]
     let ``2023 - Day 02 - part 2`` () =
         puzzleInput
-        // |> fromInput
-        // |> Array.length
-        |> printfn "2023 - Day 02 - Part 2: %A"
+        |> sumOfPowers
+        |> should equal 68638
+        // |> printfn "2023 - Day 02 - Part 2: %A"
