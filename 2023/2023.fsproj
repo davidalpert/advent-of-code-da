@@ -12,6 +12,8 @@
     <Compile Include="day00_utils.fs" />
     <Compile Include="day01_calibration.fs" />
     <Compile Include="day01_calibration_tests.fs" />
+    <Compile Include="day02_cube_conundrum.fs" />
+    <Compile Include="day02_tests.fs" />
     <!-- NEXT -->
   </ItemGroup>
 

@@ -1,0 +1,38 @@
+﻿[|{ ID = 1
+    reveals = [|{ red = 4
+                  blue = 3
+                  green = 0 }; { red = 1
+                                 blue = 6
+                                 green = 2 }; { red = 0
+                                                blue = 0
+                                                green = 2 }|] };
+  { ID = 2
+    reveals = [|{ red = 0
+                  blue = 1
+                  green = 2 }; { red = 1
+                                 blue = 4
+                                 green = 3 }; { red = 0
+                                                blue = 1
+                                                green = 1 }|] };
+  { ID = 3
+    reveals = [|{ red = 20
+                  blue = 6
+                  green = 8 }; { red = 4
+                                 blue = 5
+                                 green = 13 }; { red = 1
+                                                 blue = 0
+                                                 green = 5 }|] };
+  { ID = 4
+    reveals = [|{ red = 3
+                  blue = 6
+                  green = 1 }; { red = 6
+                                 blue = 0
+                                 green = 3 }; { red = 14
+                                                blue = 15
+                                                green = 3 }|] };
+  { ID = 5
+    reveals = [|{ red = 6
+                  blue = 1
+                  green = 3 }; { red = 1
+                                 blue = 2
+                                 green = 2 }|] }|]
