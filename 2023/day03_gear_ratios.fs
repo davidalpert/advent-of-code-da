@@ -42,12 +42,28 @@ module day03_Gear_Ratios =
             }
             |> Seq.choose id
             |> Array.ofSeq
+        
+        member this.isAdjacentTo (p:Pos) =
+            this.adjacentPositions |> Array.contains p
 
     type Symbol =
         {
             p: Pos;
             c: char
         }
+
+    (*
+    A gear is any * symbol that is adjacent to exactly two part numbers.
+    Its gear ratio is the result of multiplying those two numbers together.
+    *)
+    type Gear =
+        {
+            p: Pos
+            numbers: int * int
+        }
+        member this.gearRatio =
+            let (a,b) = this.numbers
+            a * b
 
     type Schematic =
         {
@@ -62,7 +78,33 @@ module day03_Gear_Ratios =
                     )
                 )
         member this.sumOfPartNumbers = this.partNumbers |> Array.sumBy (fun p -> p.v)
+        
+        (*
+        A gear is any * symbol that is adjacent to exactly two part numbers.
+        Its gear ratio is the result of multiplying those two numbers together.
+        *)
+        member this.gears =
+            this.symbols
+            |> Seq.choose (fun s ->
+                match s.c with
+                | '*' -> Some(s.p)
+                | _ -> None
+            )
+            |> Seq.choose (fun p ->
+                    let adjacentNumbers = 
+                        this.numbers
+                        |> Array.where (fun n -> n.adjacentPositions |> Array.contains p )
 
+                    if adjacentNumbers.Length = 2 then
+                        Some({p = p; numbers = adjacentNumbers.[0].v, adjacentNumbers.[1].v })
+                    else
+                        None
+                )
+            
+        member this.sumOfGearRatios =
+            this.gears
+            |> Seq.sumBy (fun g -> g.gearRatio)
+            
     let sumOfPartNumbers (s:Schematic) =
         s.sumOfPartNumbers
 
