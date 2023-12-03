@@ -19,7 +19,7 @@ tasks:
       - help
     silent: true
 
-  gen:
+  new-day:
     desc: generate a new F# module and test file for today
     cmds:
       - ./new-day.sh {{.YEAR}} {{.DAY}} {{.CLI_ARGS}}
