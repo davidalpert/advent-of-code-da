@@ -69,7 +69,8 @@ module Day03 =
         |> parser.parseInput
         |> sumOfPartNumbers
         // |> should equal 521927 // too low
-        |> printfn "2023 - Day 03 - Part 1: %A"
+        |> should equal 525181
+        // |> printfn "2023 - Day 03 - Part 1: %A"
 
     // [<Fact>]
     let ``2023 - Day 03 - part 2 - example`` () =

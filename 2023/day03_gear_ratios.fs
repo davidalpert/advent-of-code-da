@@ -86,8 +86,9 @@ module day03_Gear_Ratios =
         let pPeriod =
             %% ws -- ch '.' -|> ParsedPeriod
         
+        let pSymbolChar = satisfy (isNoneOf "0123456789.")
         let pSymbol =
-            %% ws -- +.(getPosition) -- +.anyChar
+            %% ws -- +.(getPosition) -- +.pSymbolChar
             -|> fun p c -> ParsedSymbol({
                 p = p |> Pos.fromPosition;
                 c = c;
@@ -96,9 +97,9 @@ module day03_Gear_Ratios =
         let pSchematic =
             %% ws
             -- +.(%[
-                      attempt pNumber;
                       attempt pPeriod;
                       attempt pSymbol;
+                      attempt pNumber;
                    ] * qty[1..])
             -- ws
             -|> fun atoms ->
