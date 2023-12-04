@@ -33,8 +33,37 @@ module day04_Scratchcards =
             |> Array.fold (fun p _ -> registerMatch p) 0
 
     let sumOfPoints (cards:Card seq) =
-        cards |> Seq.sumBy (fun c -> c.points) 
+        cards |> Seq.sumBy (fun c -> c.points)
+
+    let countsByCardPart2 (cards:Card array) =
+        let countsByCard = System.Linq.Enumerable.ToDictionary(cards |> Array.map (fun c -> c.id, 1), fst, snd)
+        let maxCount = cards.Length
         
+        let min (x:int) (y:int) = System.Math.Min(x,y)
+        
+        cards
+        |> Seq.sortBy (fun c -> c.id)
+        |> Seq.takeWhile (fun c -> c.id < maxCount)
+        |> Seq.iter (fun c ->
+               let copiesOfThisCard = countsByCard[c.id]
+               let numberOfCardsWon = c.matches.Length
+               let firstCardWon = c.id + 1
+               let lastCardWon = c.id + numberOfCardsWon
+               // printfn "-- card id: %d [%d matches; won %d .. %d]" c.id numberOfCardsWon firstCardWon lastCardWon
+               seq { firstCardWon .. lastCardWon }
+               |> Seq.iter (fun nid ->
+                   if nid <= maxCount then
+                       countsByCard[nid] <- countsByCard[nid] + copiesOfThisCard
+               )
+            )
+        
+        countsByCard
+        
+    let countOfTotalCards2 (cards:Card array) =
+        cards
+        |> countsByCardPart2
+        |> Seq.sumBy (fun pair -> pair.Value)
+
     module parser =
         let ws = spaces
         let ch = pchar

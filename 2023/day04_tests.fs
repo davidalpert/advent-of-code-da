@@ -73,17 +73,35 @@ So, in this example, the Elf's pile of scratchcards is worth 13 points.
         |> sumOfPoints
         // |> printfn "2023 - Day 04 - Part 1: %A"
         |> should equal 21485
-
-    // [<Fact>]
+        
+    [<Theory>]
+    [<InlineData(1,  1)>]
+    [<InlineData(2,  2)>]
+    [<InlineData(3,  4)>]
+    [<InlineData(4,  8)>]
+    [<InlineData(5, 14)>]
+    [<InlineData(6,  1)>]
+    let ``2023 - Day 04 - part 2 - final copies per card`` (id, expectedNumberOfCopies) =
+        let c =
+            exampleInput
+            |> parser.parseInput
+            |> countsByCardPart2
+            
+        c[id]
+        |> should equal expectedNumberOfCopies
+        
+    [<Fact>]
     let ``2023 - Day 04 - part 2 - example`` () =
         exampleInput
-        // |> fromInput
-        // |> Array.length
-        |> should equal 0
+        |> parser.parseInput
+        |> countOfTotalCards2
+        // |> sprintf "%A"
+        |> should equal 30
 
-    // [<Fact>]
+    [<Fact>]
     let ``2023 - Day 04 - part 2`` () =
         day04input
-        // |> fromInput
-        // |> Array.length
-        |> printfn "2023 - Day 04 - Part 2: %A"
+        |> parser.parseInput
+        |> countOfTotalCards2
+        // |> printfn "2023 - Day 04 - Part 2: %A"
+        |> should equal 11024379
