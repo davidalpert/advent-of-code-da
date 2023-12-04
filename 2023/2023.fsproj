@@ -16,6 +16,8 @@
     <Compile Include="day02_tests.fs" />
     <Compile Include="day03_gear_ratios.fs" />
     <Compile Include="day03_tests.fs" />
+    <Compile Include="day04_scratchcards.fs" />
+    <Compile Include="day04_tests.fs" />
     <!-- NEXT -->
   </ItemGroup>
 
