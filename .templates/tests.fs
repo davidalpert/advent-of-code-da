@@ -12,20 +12,15 @@ module DayDAY_NUMBER =
         """
 """
 
-    let puzzleInput =
-        """
-"""
-
     [<Fact>]
     let ``YEAR - Day DAY_NUMBER - part 1 - example`` () =
         exampleInput
-        |> fromInput
-        |> Array.length
-        |> should equal 1
+        |> parser.parseInput
+        |> should equal null
 
     // [<Fact>]
     let ``YEAR - Day DAY_NUMBER - part 1`` () =
-        puzzleInput
+        dayDAY_NUMBERinput
         // |> fromInput
         // |> Array.length
         |> printfn "YEAR - Day DAY_NUMBER - Part 1: %A"
@@ -39,7 +34,7 @@ module DayDAY_NUMBER =
 
     // [<Fact>]
     let ``YEAR - Day DAY_NUMBER - part 2`` () =
-        puzzleInput
+        dayDAY_NUMBERinput
         // |> fromInput
         // |> Array.length
         |> printfn "YEAR - Day DAY_NUMBER - Part 2: %A"
