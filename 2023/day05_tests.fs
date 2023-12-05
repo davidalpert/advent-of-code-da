@@ -69,6 +69,17 @@ humidity-to-location map:
         |> should equal 107430936L
 
     [<Fact>]
+    let ``2023 - Day 05 - part 2 - expandedSeedList`` () =
+        exampleInput
+        |> parser.parseInput
+        |> (fun a -> a.expandedSeedList)
+        |> Array.map (fun s -> s.number)
+        |> should equal [|
+            79L; 80L; 81L; 82L; 83L; 84L; 85L; 86L; 87L; 88L; 89L; 90L; 91L; 92L
+            55L; 56L; 57L; 58L; 59L; 60L; 61L; 62L; 63L; 64L; 65L; 66L; 67L
+        |]
+
+    [<Fact>]
     let ``2023 - Day 05 - part 2 - example`` () =
         exampleInput
         |> parser.parseInput
@@ -77,9 +88,9 @@ humidity-to-location map:
             number = 82; soil = 84; fertilizer = 84; water = 84; light = 77; temperature = 45; humidity = 46; location = 46;
         }
 
-    // [<Fact>]
+    [<Fact>]
     let ``2023 - Day 05 - part 2`` () =
-        day04input
-        // |> fromInput
-        // |> Array.length
+        day05input
+        |> parser.parseInput
+        |> (fun a -> a.part2SeedWithLowestLocation)
         |> printfn "2023 - Day 05 - Part 2: %A"

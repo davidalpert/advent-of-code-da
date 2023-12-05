@@ -124,6 +124,18 @@ module day05_If_You_Give_A_Seed_A_Fertilizer =
             |> Array.minBy (fun s -> s.location)
             |> (fun s -> s.location)
 
+        member this.expandedSeedList =
+            this.seeds
+            |> Array.chunkBySize 2
+            |> Seq.collect (fun pair ->
+                let rangeStart = pair[0].number
+                let rangeLength = pair[1].number
+                let rangeEndInclusive = rangeStart + rangeLength - 1L
+                seq { rangeStart .. rangeEndInclusive}
+                |> Seq.map (fun n -> {Seed.zero with number = n })
+            )
+            |> Array.ofSeq
+            
         member this.part2Calculations =
             let folder (state:Seed array) (block:ConversionMap) =
                 match block.name with
@@ -136,14 +148,8 @@ module day05_If_You_Give_A_Seed_A_Fertilizer =
                 | HumidityToLocationMap    -> state |> Array.map(fun s -> { s with location = block.applyMapping s.humidity })
                 | UnknownMap               -> state
 
-            let expandedSeeds =
-                this.seeds
-                |> Array.pairwise
-                |> Seq.collect (fun (left,right) -> seq {left.number .. right.number} |> Seq.map (fun n -> {Seed.zero with number = n }))
-                |> Array.ofSeq
-
             this.mappingBlocks
-            |> Array.fold folder expandedSeeds
+            |> Array.fold folder this.expandedSeedList
 
         member this.part2SeedWithLowestLocation =
             this.part2Calculations
