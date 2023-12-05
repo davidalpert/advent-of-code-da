@@ -68,12 +68,14 @@ humidity-to-location map:
         // |> printfn "2023 - Day 05 - Part 1: %A"
         |> should equal 107430936L
 
-    // [<Fact>]
+    [<Fact>]
     let ``2023 - Day 05 - part 2 - example`` () =
         exampleInput
-        // |> fromInput
-        // |> Array.length
-        |> should equal 0
+        |> parser.parseInput
+        |> (fun a -> a.part2SeedWithLowestLocation)
+        |> should equal {
+            number = 82; soil = 84; fertilizer = 84; water = 84; light = 77; temperature = 45; humidity = 46; location = 46;
+        }
 
     // [<Fact>]
     let ``2023 - Day 05 - part 2`` () =

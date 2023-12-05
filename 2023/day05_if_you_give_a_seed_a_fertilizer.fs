@@ -124,6 +124,34 @@ module day05_If_You_Give_A_Seed_A_Fertilizer =
             |> Array.minBy (fun s -> s.location)
             |> (fun s -> s.location)
 
+        member this.part2Calculations =
+            let folder (state:Seed array) (block:ConversionMap) =
+                match block.name with
+                | SeedToSoilMap            -> state |> Array.map(fun s -> { s with soil = block.applyMapping s.number })
+                | SoilToFertilizerMap      -> state |> Array.map(fun s -> { s with fertilizer = block.applyMapping s.soil })
+                | FertilizerToWaterMap     -> state |> Array.map(fun s -> { s with water = block.applyMapping s.fertilizer })
+                | WaterToLightMap          -> state |> Array.map(fun s -> { s with light = block.applyMapping s.water })
+                | LightToTemperatureMap    -> state |> Array.map(fun s -> { s with temperature = block.applyMapping s.light })
+                | TemperatureToHumidityMap -> state |> Array.map(fun s -> { s with humidity = block.applyMapping s.temperature })
+                | HumidityToLocationMap    -> state |> Array.map(fun s -> { s with location = block.applyMapping s.humidity })
+                | UnknownMap               -> state
+
+            let expandedSeeds =
+                this.seeds
+                |> Array.pairwise
+                |> Seq.collect (fun (left,right) -> seq {left.number .. right.number} |> Seq.map (fun n -> {Seed.zero with number = n }))
+                |> Array.ofSeq
+
+            this.mappingBlocks
+            |> Array.fold folder expandedSeeds
+
+        member this.part2SeedWithLowestLocation =
+            this.part2Calculations
+            |> Array.minBy (fun s -> s.location)
+
+        member this.part2LowestLocation =
+            this.part2SeedWithLowestLocation |> (fun s -> s.location)
+
     module parser =
         let ws = spaces
         let ch = pchar
