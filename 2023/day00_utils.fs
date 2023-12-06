@@ -1,6 +1,7 @@
 namespace AdventOfCode
 
 open System
+open System.Threading.Tasks
 
 module DummyModuleOnWhichToAttachAssemblyAttribute =
     open ApprovalTests.Reporters;
@@ -8,6 +9,22 @@ module DummyModuleOnWhichToAttachAssemblyAttribute =
     [<assembly: UseReporter(typeof<DiffReporter>)>]
     do ()
     
+// https://fssnip.net/pa
+module ArrayP =
+  let reduceParallel<'a> f (ie :'a array) =
+    let rec reduceRec f (ie :'a array) = function
+      | 1 -> ie.[0]
+      | 2 -> f ie.[0] ie.[1]
+      | len ->
+        let h = len / 2
+        let o1 = Task.Run(fun _ -> reduceRec f (ie |> Array.take h) h)
+        let o2 = Task.Run(fun _ -> reduceRec f (ie |> Array.skip h) (len-h))
+        Task.WaitAll(o1, o2)
+        f o1.Result o2.Result
+    match ie.Length with
+    | 0 -> failwith "Sequence contains no elements"
+    | c -> reduceRec f ie c
+
 module utils =
   open FParsec
 
