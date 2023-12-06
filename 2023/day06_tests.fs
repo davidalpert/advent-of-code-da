@@ -79,14 +79,17 @@ Distance:   241   1549   1074   1091
 
     // [<Fact>]
     let ``2023 - Day 06 - part 2 - example`` () =
-        exampleInput
-        // |> fromInput
-        // |> Array.length
-        |> should equal 0
+        let r =
+            exampleInput
+            |> parser.part2MustParse
+            
+        r |> should equal { t = 71530L; d = 940200L }
+        r.winningRaces |> Seq.length |> should equal 71503
 
     // [<Fact>]
     let ``2023 - Day 06 - part 2`` () =
         day06input
-        // |> fromInput
-        // |> Array.length
-        |> printfn "2023 - Day 06 - Part 2: %A"
+        |> parser.part2MustParse
+        |> (fun r -> r.winningRaces |> Seq.length)
+        // |> printfn "2023 - Day 06 - Part 2: %A"
+        |> should equal 23501589

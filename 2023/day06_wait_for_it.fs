@@ -11,10 +11,10 @@ module day06_Wait_For_It =
     open FParsec.Pipes
 
     type RaceRecord =
-        { t : int32; d : int32 }
+        { t : int64; d : int64 }
 
         member this.allStartingOptions =
-            seq { 0 .. this.t }
+            seq { 0L .. this.t }
             |> Seq.map (fun t ->
                     let speed = t
                     let remainingTime = this.t - t
@@ -35,7 +35,7 @@ module day06_Wait_For_It =
         member this.part1ProductOfNumberOfWaysToWin =
             this.part1NumberOfWaysToWin
             |> Seq.fold (*) 1
-
+ 
     module parser =
         let ws = spaces
         let ch = pchar
@@ -63,7 +63,21 @@ module day06_Wait_For_It =
 
         let parseInput (input:string) =
             mustParse pInput input
-        
+
+        let part2ParseInput =
+            %% ws -- "Time:" -- +.(restOfLine true)
+            -- ws -- "Distance:" -- +.(restOfLine true)
+            -|> (fun ts ds ->
+                let t = ts.Replace(" ", "") |> Int64.Parse
+                let d = ds.Replace(" ", "") |> Int64.Parse
+                { t = t; d = d }
+            )
+            
+        let part2MustParse (input:string) =
+            match run part2ParseInput input with
+            | Success(r, _, _) -> r
+            | Failure(errorMsg, _, _) -> failwith errorMsg
+
     let fromInput (s: string) =
         s
         |> splitToTrimmedLines
