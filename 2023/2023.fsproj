@@ -20,6 +20,8 @@
     <Compile Include="day04_tests.fs" />
     <Compile Include="day05_if_you_give_a_seed_a_fertilizer.fs" />
     <Compile Include="day05_tests.fs" />
+    <Compile Include="day06_wait_for_it.fs" />
+    <Compile Include="day06_tests.fs" />
     <!-- NEXT -->
   </ItemGroup>
 
