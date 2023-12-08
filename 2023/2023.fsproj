@@ -24,6 +24,8 @@
     <Compile Include="day06_tests.fs" />
     <Compile Include="day07_camel_cards.fs" />
     <Compile Include="day07_tests.fs" />
+    <Compile Include="day08_haunted_wasteland.fs" />
+    <Compile Include="day08_tests.fs" />
     <!-- NEXT -->
   </ItemGroup>
 
