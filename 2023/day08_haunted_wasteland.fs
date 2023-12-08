@@ -46,6 +46,36 @@ module day08_Haunted_Wasteland =
                 let nextStep = (s+1, nextNode)
                 Some(thisStep, nextStep)
         )
+        
+    let part2Follow (m:Map) =
+        let isStartingName (n:string) = n.EndsWith("A")
+        let isEndingName (n:string) = n.EndsWith("Z")
+        let isEndingNode (n:Node) = n.name |> isEndingName
+
+        let startingNodes =
+            m.nodes_by_name.Keys
+            |> Seq.where isStartingName
+            |> Seq.map (fun n -> m.nodes_by_name[n])
+            |> Array.ofSeq
+
+        (0, startingNodes)
+        |> Seq.unfold (fun (s,nn) ->
+            let thisStep = (s,nn)
+            let allFinished = Array.TrueForAll(nn, isEndingNode)
+            if allFinished then
+                None
+            else
+                let nextNodes = 
+                    nn
+                    |> Array.map (fun n ->
+                        let nextNodeName =
+                            m.instructionForStep s |> m.nodes_by_name[n.name].nextElement
+                        let nextNode = m.nodes_by_name[nextNodeName]
+                        nextNode
+                    )
+                let nextStep = (s + 1, nextNodes)
+                Some(thisStep, nextStep)
+        )
 
     module parser =
         let ws = spaces

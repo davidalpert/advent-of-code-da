@@ -85,16 +85,32 @@ ZZZ = (ZZZ, ZZZ)
         // |> printfn "2023 - Day 08 - Part 1: %A"
         |> should equal 18023
 
-    // [<Fact>]
-    let ``2023 - Day 08 - part 2 - example`` () =
-        example1input
-        // |> fromInput
-        // |> Array.length
-        |> should equal 0
+    let example3input =
+        """
+LR
 
-    // [<Fact>]
+11A = (11B, XXX)
+11B = (XXX, 11Z)
+11Z = (11B, XXX)
+22A = (22B, XXX)
+22B = (22C, 22C)
+22C = (22Z, 22Z)
+22Z = (22B, 22B)
+XXX = (XXX, XXX)
+"""
+
+    [<Fact>]
+    let ``2023 - Day 08 - part 2 - example`` () =
+        example3input
+        |> parser.parseInput
+        |> part2Follow
+        |> Seq.length
+        |> should equal 6
+
+    [<Fact>]
     let ``2023 - Day 08 - part 2`` () =
         day08input
-        // |> fromInput
-        // |> Array.length
+        |> parser.parseInput
+        |> part2Follow
+        |> Seq.length
         |> printfn "2023 - Day 08 - Part 2: %A"
