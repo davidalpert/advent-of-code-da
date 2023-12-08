@@ -21,7 +21,7 @@ QQQJA 483
 
     [<Fact>]
     let ``2023 - Day 07 - part 1 - example`` () =
-        let set = exampleInput |> parser.parseInput
+        let set = exampleInput |> parser.parseInput parser.Part1
         
         set |> Array.skip 0 |> Array.head |> should equal {
               cards = [|CardValue.Three; CardValue.Two; CardValue.Ten; CardValue.Three; CardValue.King|];
@@ -77,21 +77,40 @@ QQQJA 483
     // [<Fact>]
     let ``2023 - Day 07 - part 1`` () =
         day07input
-        |> parser.parseInput
+        |> parser.parseInput parser.Part1
         |> totalWinnings
         // |> printfn "2023 - Day 07 - Part 1: %A"
         |> should equal 251216224
 
-    // [<Fact>]
+    [<Fact>]
     let ``2023 - Day 07 - part 2 - example`` () =
-        exampleInput
-        // |> fromInput
-        // |> Array.length
-        |> should equal 0
+        let ex1a = (Hand.part2build "QJJQ2" 0)
+        let ex1b = (Hand.part2build "QQQQ2" 0)
+
+        ex1a.Type |> should equal HandType.FourOfAKind
+        ex1a.isStrongerThan ex1b |> should equal false
+
+        (Hand.part2build "32T3K" 0).Type |> should equal HandType.OnePair
+        (Hand.part2build "KK677" 0).Type |> should equal HandType.TwoPair
+        (Hand.part2build "T55J5" 0).Type |> should equal HandType.FourOfAKind
+        (Hand.part2build "KTJJT" 0).Type |> should equal HandType.FourOfAKind
+        (Hand.part2build "QQQJA" 0).Type |> should equal HandType.FourOfAKind
+
+        let set = exampleInput |> parser.parseInput parser.Part2
+
+        // rank reversed to read top-to-bottom as high-to-low
+        rank set |> Array.map (fun c -> c.str) |> Array.rev |> should equal [|
+            (* 5 *) "KTJJT FourOfAKind 220"
+            (* 4 *) "QQQJA FourOfAKind 483"
+            (* 3 *) "T55J5 FourOfAKind 684"
+            (* 2 *) "KK677 TwoPair 28"
+            (* 1 *) "32T3K OnePair 765"
+        |]
 
     // [<Fact>]
     let ``2023 - Day 07 - part 2`` () =
         day07input
-        // |> fromInput
-        // |> Array.length
-        |> printfn "2023 - Day 07 - Part 2: %A"
+        |> parser.parseInput parser.Part2
+        |> totalWinnings
+        // |> printfn "2023 - Day 07 - Part 2: %A"
+        |> should equal 250825971

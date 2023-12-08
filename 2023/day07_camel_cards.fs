@@ -10,6 +10,8 @@ module day07_Camel_Cards =
     open FParsec
     open FParsec.Pipes
 
+    exception InvalidHand of string
+
     // The relative strength of each card follows this order,
     // where A is the highest and 2 is the lowest.
     type CardValue =
@@ -26,6 +28,7 @@ module day07_Camel_Cards =
     | Four  = 4
     | Three = 3
     | Two   = 2
+    | Joker = 1
     | Unrecognized = 0
    
     let cardValueFromChar c =
@@ -45,6 +48,23 @@ module day07_Camel_Cards =
         | '2' -> CardValue.Two
         | _   -> CardValue.Unrecognized
 
+    let part2CardValueFromChar c =
+        match c with
+        | 'A' -> CardValue.Ace
+        | 'K' -> CardValue.King
+        | 'Q' -> CardValue.Queen
+        | 'J' -> CardValue.Joker
+        | 'T' -> CardValue.Ten
+        | '9' -> CardValue.Nine
+        | '8' -> CardValue.Eight
+        | '7' -> CardValue.Seven
+        | '6' -> CardValue.Six
+        | '5' -> CardValue.Five
+        | '4' -> CardValue.Four
+        | '3' -> CardValue.Three
+        | '2' -> CardValue.Two
+        | _   -> CardValue.Unrecognized
+
     // convenience function for printing
     let cardValueToChar c =
         match c with
@@ -52,6 +72,7 @@ module day07_Camel_Cards =
         | CardValue.King  -> 'K'
         | CardValue.Queen -> 'Q'
         | CardValue.Jack  -> 'J'
+        | CardValue.Joker -> 'J'
         | CardValue.Ten   -> 'T'
         | CardValue.Nine  -> '9'
         | CardValue.Eight -> '8'
@@ -73,6 +94,7 @@ module day07_Camel_Cards =
     | TwoPair      = 2
     | OnePair      = 1
     | HighCard     = 0
+    | Impossible   = -1
  
     // A hand consists of five cards labeled one
     // of A, K, Q, J, T, 9, 8, 7, 6, 5, 4, 3, or 2.
@@ -87,32 +109,69 @@ module day07_Camel_Cards =
         member this.str = sprintf "%s %A %d" (this.cards |> Array.map cardValueToChar |> String) this.Type this.bid
 
         static member handType (cc:CardValue array) =
-            let cardsByType = cc |> Array.groupBy id |> Array.map (fun (c,cc) -> (c,cc.Length))
+            let isJoker c = c = CardValue.Joker
+            let isNotJoker c = not (isJoker c)
+            let numberOfJokers = cc |> Seq.filter isJoker |> Seq.length
+            let cardsByType = cc |> Array.filter isNotJoker |> Array.groupBy id |> Array.map (fun (c,cc) -> (c,cc.Length))
             // printfn "handType: %A - %A" cc cardsByType
             
-            match cardsByType.Length with
-            | 1 -> HandType.FiveOfAKind
-            | 2 -> match (snd cardsByType[0]),(snd cardsByType[1]) with
-                   | (1,4) -> HandType.FourOfAKind
-                   | (4,1) -> HandType.FourOfAKind
-                   | (3,2) -> HandType.FullHouse
-                   | (2,3) -> HandType.FullHouse
-                   | (_,_) -> HandType.HighCard
-            | 3 -> match (snd cardsByType[0]),(snd cardsByType[1]),(snd cardsByType[2]) with
-                   | (3,1,1) -> HandType.ThreeOfAKind
-                   | (1,3,1) -> HandType.ThreeOfAKind
-                   | (1,1,3) -> HandType.ThreeOfAKind
-                   | (2,2,1) -> HandType.TwoPair
-                   | (2,1,2) -> HandType.TwoPair
-                   | (1,2,2) -> HandType.TwoPair
-                   | (_,_,_) -> HandType.HighCard
-            | 4 -> match (snd cardsByType[0]),(snd cardsByType[1]),(snd cardsByType[2]),(snd cardsByType[3]) with
-                   | (2,1,1,1) -> HandType.OnePair
-                   | (1,2,1,1) -> HandType.OnePair
-                   | (1,1,2,1) -> HandType.OnePair
-                   | (1,1,1,2) -> HandType.OnePair
-                   | (_,_,_,_) -> HandType.HighCard
-            | _ -> HandType.HighCard
+            match numberOfJokers with
+            | 0 ->
+                match cardsByType.Length with
+                | 1 -> HandType.FiveOfAKind
+                | 2 -> match (snd cardsByType[0]),(snd cardsByType[1]) with
+                       | (1,4) -> HandType.FourOfAKind
+                       | (4,1) -> HandType.FourOfAKind
+                       | (3,2) -> HandType.FullHouse
+                       | (2,3) -> HandType.FullHouse
+                       | (_,_) -> raise (InvalidHand $"%A{cc}")
+                | 3 -> match (snd cardsByType[0]),(snd cardsByType[1]),(snd cardsByType[2]) with
+                       | (3,1,1) -> HandType.ThreeOfAKind
+                       | (1,3,1) -> HandType.ThreeOfAKind
+                       | (1,1,3) -> HandType.ThreeOfAKind
+                       | (2,2,1) -> HandType.TwoPair
+                       | (2,1,2) -> HandType.TwoPair
+                       | (1,2,2) -> HandType.TwoPair
+                       | (_,_,_) -> raise (InvalidHand $"%A{cc}")
+                | 4 -> match (snd cardsByType[0]),(snd cardsByType[1]),(snd cardsByType[2]),(snd cardsByType[3]) with
+                       | (2,1,1,1) -> HandType.OnePair
+                       | (1,2,1,1) -> HandType.OnePair
+                       | (1,1,2,1) -> HandType.OnePair
+                       | (1,1,1,2) -> HandType.OnePair
+                       | (_,_,_,_) -> raise (InvalidHand $"%A{cc}")
+                | _ -> HandType.HighCard
+            | 1 ->
+                match cardsByType.Length with
+                | 1 -> HandType.FiveOfAKind
+                | 2 -> match (snd cardsByType[0]),(snd cardsByType[1]) with
+                       | (1,3) -> HandType.FourOfAKind
+                       | (3,1) -> HandType.FourOfAKind
+                       | (2,2) -> HandType.FullHouse
+                       | (_,_) -> raise (InvalidHand $"%A{cc}")
+                | 3 -> match (snd cardsByType[0]),(snd cardsByType[1]),(snd cardsByType[2]) with
+                       | (2,1,1) -> HandType.ThreeOfAKind
+                       | (1,2,1) -> HandType.ThreeOfAKind
+                       | (1,1,2) -> HandType.ThreeOfAKind
+                       | (_,_,_) -> raise (InvalidHand(sprintf "%A" cc))
+                | 4 -> HandType.OnePair
+                | _ -> raise (InvalidHand $"%A{cc}")
+            | 2 ->
+                match cardsByType.Length with
+                | 1 -> HandType.FiveOfAKind
+                | 2 -> match (snd cardsByType[0]),(snd cardsByType[1]) with
+                       | (1,2) -> HandType.FourOfAKind
+                       | (2,1) -> HandType.FourOfAKind
+                       | (_,_) -> raise (InvalidHand $"%A{cc}")
+                | 3 -> HandType.ThreeOfAKind
+                | _ -> raise (InvalidHand $"%A{cc}")
+            | 3 ->
+                match cardsByType.Length with
+                | 1 -> HandType.FiveOfAKind
+                | 2 -> HandType.FourOfAKind
+                | _ -> raise (InvalidHand $"%A{cc}")
+            | 4 -> HandType.FiveOfAKind
+            | 5 -> HandType.FiveOfAKind // <-- what happens if all 5 cards are jokers?
+            | _ -> raise (InvalidHand $"%A{cc}")
 
         // needed to implement custom comparers
         override this.Equals other =
@@ -164,6 +223,14 @@ module day07_Camel_Cards =
                 bid = b
             }
 
+        static member part2build (c:string) b =
+            let cards = c.ToCharArray() |> Array.map part2CardValueFromChar
+            {
+                cards = cards
+                Type = Hand.handType cards
+                bid = b
+            }
+
     let rank (set:Hand array) =
         set |> Array.sort
         
@@ -173,15 +240,21 @@ module day07_Camel_Cards =
         |> Seq.sum
 
     module parser =
+        type Part =
+        | Part1
+        | Part2
+
         let ws = spaces
         let ch = pchar
         
-        let pHand =
+        let pHand p =
             %% ws -? +.(anyString 5) -- ws -- +.pint32
-            -|> Hand.build
+            -|> match p with
+                | Part1 -> Hand.build
+                | Part2 -> Hand.part2build
         
-        let pListOfHands =
-            %% ws -- +.(pHand * qty[1..])
+        let pListOfHands p =
+            %% ws -- +.((pHand p) * qty[1..])
             -|> fun cc -> cc |> Array.ofSeq
 
         let mustParse p (input:string) =
@@ -189,8 +262,8 @@ module day07_Camel_Cards =
             | Success(r, _, _) -> r
             | Failure(errorMsg, _, _) -> failwith errorMsg
 
-        let parseInput (input:string) =
-            mustParse pListOfHands input
+        let parseInput (p:Part) (input:string) =
+            mustParse (pListOfHands p) input
 
     let fromInput (s: string) =
         s
