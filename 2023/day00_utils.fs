@@ -139,3 +139,49 @@ module utils =
       data = data
       comparer = comparer
     }
+
+  // https://gist.github.com/krishnabhargav/da6686e295638d000aab
+  let rec gcd a b =
+    match (a,b) with
+    | (x,y) when x = y -> x
+    | (x,y) when x > y -> gcd (x-y) y
+    | (x,y)            -> gcd x (y-x)
+
+  // https://gist.github.com/krishnabhargav/da6686e295638d000aab
+  let lcm a b = a*b/(gcd a b)
+
+  // https://stackoverflow.com/a/7267104/8997
+  module Prime =
+    let isPrime n = 
+        let bound = int (sqrt(float n))
+        seq{2..bound}
+        |> Seq.exists (fun x -> n % x = 0) 
+        |> not
+    let rec nextPrime n = 
+        if isPrime (n + 1) then n + 1
+        else nextPrime (n+1)
+    let sequence = 
+        Seq.unfold(fun n -> Some(n, nextPrime n)) 1
+    
+  // folding the recursive nextPrime into a where filter
+  // against the infinite sequence of positive integers
+  let allPrimes =
+      Seq.unfold (fun n -> Some(n, n+1)) 1
+      |> Seq.where Prime.isPrime
+  
+  let primeFactorsOf n =
+      allPrimes
+      |> Seq.takeWhile (fun p -> p <= n)
+      |> Seq.where (fun p -> n % p = 0)
+
+  // https://www.calculatorsoup.com/calculators/math/lcm.php
+  let lcmByVennDiagram(aa:int seq) =
+    // printfn "lcmByVennDiagram: %A" aa
+    aa
+    |> Seq.map (fun a -> Set(primeFactorsOf a))
+    // |> Seq.map (fun a ->
+    //     printfn $"- %A{a}"
+    //     a
+    //   )
+    |> Set.unionMany
+    |> Seq.fold (*) 1

@@ -101,16 +101,22 @@ XXX = (XXX, XXX)
 
     [<Fact>]
     let ``2023 - Day 08 - part 2 - example`` () =
+        2 |> utils.primeFactorsOf |> Set |> should equal ([1;2] |> Set)
+        [|2;3|] |> utils.lcmByVennDiagram |> should equal 6
+        
         example3input
         |> parser.parseInput
-        |> part2Follow
-        |> Seq.length
+        |> part2FollowByMath
+        |> Seq.map (fun (i,n) -> $"\n%d{i} %s{n.str}") |> utils.joinBy ""
+        // |> Seq.map (fun x -> x |> Seq.map (fun (i,n,_) -> $"\n%d{i} %s{n.str}") |> utils.joinBy "")
         |> should equal 6
 
     [<Fact>]
     let ``2023 - Day 08 - part 2`` () =
         day08input
         |> parser.parseInput
-        |> part2Follow
-        |> Seq.length
+        |> part2FollowByMath
+        |> Seq.map (fun (i,n) -> $"%d{i} %s{n.str}") |> utils.joinBy "\n"
+        // |> Seq.map (fun x -> x |> Seq.map (fun (i,n,_) -> $"\n%d{i} %s{n.str}") |> utils.joinBy "")
         |> printfn "2023 - Day 08 - Part 2: %A"
+        // |> should equal 1175949435 // too low

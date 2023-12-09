@@ -23,7 +23,14 @@ module day08_Haunted_Wasteland =
             match i with
             | L -> this.neighbors |> fst
             | R -> this.neighbors |> snd
+        member this.str = $"%s{this.name}"
 
+    type Step =
+        {
+            number:int
+            node:Node
+            instruction:Instruction
+        }
     type Map =
         {
             instruction_seed: Instruction array
@@ -32,13 +39,13 @@ module day08_Haunted_Wasteland =
         member this.instructionForStep (i:int) =
             this.instruction_seed[i % this.instruction_seed.Length]
 
-    let follow (m:Map) =
-        let startNode = m.nodes_by_name["AAA"]
+    let followFrom startingNodeName isEndingName (m:Map) =
+        let startNode = m.nodes_by_name[startingNodeName]
         (0,  startNode)
         |> Seq.unfold (fun (s,n) ->
             let thisStep = (s,n)
             match n.name with
-            | "ZZZ" -> None
+            | s when s |> isEndingName -> None
             | _     ->
                 let nextNodeName =
                     m.instructionForStep s |> m.nodes_by_name[n.name].nextElement
@@ -46,6 +53,31 @@ module day08_Haunted_Wasteland =
                 let nextStep = (s+1, nextNode)
                 Some(thisStep, nextStep)
         )
+    
+    let follow (m:Map) =
+        let isEndingName (s:String) = s = "ZZZ"
+        followFrom "AAA" isEndingName m
+        
+    let part2FollowByMath (m:Map) =
+        let isStartingName (n:string) = n.EndsWith("A")
+        let isEndingName (n:string) = n.EndsWith("Z")
+        let isEndingNode (n:Node) = n.name |> isEndingName
+
+        let startingNodes =
+            m.nodes_by_name.Keys
+            |> Seq.where isStartingName
+            |> Seq.map (fun n -> m.nodes_by_name[n])
+            |> Array.ofSeq
+
+        let cycles =
+            startingNodes
+            |> Array.map (fun n -> m |> followFrom n.name isEndingName)
+
+        // to look at one at a time
+        cycles |> Array.skip 0 |> Array.head
+        // cycles
+        // let lengthOfCycles = cycles |> Array.map (fun n -> n |> Seq.length)
+        // lengthOfCycles |> lcmByVennDiagram
         
     let part2Follow (m:Map) =
         let isStartingName (n:string) = n.EndsWith("A")
