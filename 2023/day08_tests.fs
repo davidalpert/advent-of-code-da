@@ -102,21 +102,20 @@ XXX = (XXX, XXX)
     [<Fact>]
     let ``2023 - Day 08 - part 2 - example`` () =
         2 |> utils.primeFactorsOf |> Set |> should equal ([1;2] |> Set)
-        [|2;3|] |> utils.lcmByVennDiagram |> should equal 6
+        [|2;3|] |> utils.lcmByVennDiagram |> should equal 6L
         
-        example3input
-        |> parser.parseInput
+        let mp = example3input |> parser.parseInput
+        mp
         |> part2FollowByMath
-        |> Seq.map (fun (i,n) -> $"\n%d{i} %s{n.str}") |> utils.joinBy ""
-        // |> Seq.map (fun x -> x |> Seq.map (fun (i,n,_) -> $"\n%d{i} %s{n.str}") |> utils.joinBy "")
-        |> should equal 6
+        |> should equal 6L
 
     [<Fact>]
     let ``2023 - Day 08 - part 2`` () =
-        day08input
-        |> parser.parseInput
+        let mp = day08input |> parser.parseInput
+        
+        mp
         |> part2FollowByMath
-        |> Seq.map (fun (i,n) -> $"%d{i} %s{n.str}") |> utils.joinBy "\n"
-        // |> Seq.map (fun x -> x |> Seq.map (fun (i,n,_) -> $"\n%d{i} %s{n.str}") |> utils.joinBy "")
-        |> printfn "2023 - Day 08 - Part 2: %A"
+        // |> printfn "2023 - Day 08 - Part 2: %A"
         // |> should equal 1175949435 // too low
+        |> should equal 14449445933179L
+        

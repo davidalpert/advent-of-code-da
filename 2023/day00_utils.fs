@@ -184,4 +184,5 @@ module utils =
     //     a
     //   )
     |> Set.unionMany
-    |> Seq.fold (*) 1
+    |> Seq.map int64 // make sure we don't overflow while reducing
+    |> Seq.reduce (*)
