@@ -14,7 +14,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".tools", ".tools", "{EBE115D9-2808-4A87-B570-2AB49A5CB4EB}"
 	ProjectSection(SolutionItems) = preProject
 		new-day.sh = new-day.sh
-		Makefile = Makefile
+		Taskfile.yaml = Taskfile.yaml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".templates", ".templates", "{C578DF7D-F122-47BA-8619-03EB2F98545B}"
@@ -22,6 +22,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".templates", ".templates", 
 		.templates\code.fs = .templates\code.fs
 		.templates\tests.fs = .templates\tests.fs
 	EndProjectSection
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "2023", "2023\2023.fsproj", "{A26B0B8D-7A54-43F1-AE63-B7B0A37BA5D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,6 +50,10 @@ Global
 		{721FA847-F93A-43AE-8289-D7B3AF29FB18}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{721FA847-F93A-43AE-8289-D7B3AF29FB18}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{721FA847-F93A-43AE-8289-D7B3AF29FB18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A26B0B8D-7A54-43F1-AE63-B7B0A37BA5D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A26B0B8D-7A54-43F1-AE63-B7B0A37BA5D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A26B0B8D-7A54-43F1-AE63-B7B0A37BA5D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A26B0B8D-7A54-43F1-AE63-B7B0A37BA5D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection

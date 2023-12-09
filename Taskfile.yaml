@@ -1,0 +1,65 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  REPO_NAME: advent-of-code-da
+  REPO_OWNER: davidalpert
+  SLN_FILE: advent-of-code.sln
+  THIS_YEAR:
+    sh: date +%Y
+  THIS_DAY:
+    sh: date +%d
+  YEAR: '{{.YEAR | default .THIS_YEAR}}'
+  DAY: '{{.DAY | default .THIS_DAY}}'
+
+tasks:
+  default:
+    deps:
+      - help
+    silent: true
+
+  new-day:
+    desc: generate a new F# module and test file for today
+    cmds:
+      - ./new-day.sh {{.YEAR}} {{.DAY}} {{.CLI_ARGS}}
+
+  restore:
+    desc: restore packages
+    run: once
+    cmds:
+      - dotnet restore {{.SLN_FILE}}
+    silent: true
+
+  build:
+    desc: builds something
+    run: once
+    cmds:
+      - dotnet build {{.SLN_FILE}}
+    silent: true
+    
+  test:
+    desc: run tests
+    run: once
+    deps:
+      - restore
+    cmds:
+      - dotnet test {{.SLN_FILE}}
+    silent: true
+    
+  autotest:
+    desc: run tests continuously
+    deps:
+      - restore
+    cmds:
+      - dotnet watch test --project {{.YEAR}}/{{.YEAR}}.fsproj
+    silent: true
+
+  help:
+    desc: list targets
+    cmds:
+      - echo "Advent of Code - {{ .YEAR }}"
+      - echo ""
+      - task --list
+    silent: true
+

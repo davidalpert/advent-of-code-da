@@ -1,0 +1,48 @@
+﻿{ numbers =
+   [|{ p = { y = 1L
+             x = 1L }
+       len = 3L
+       v = 467 }; { p = { y = 1L
+                          x = 6L }
+                    len = 3L
+                    v = 114 }; { p = { y = 3L
+                                       x = 3L }
+                                 len = 2L
+                                 v = 35 }; { p = { y = 3L
+                                                   x = 7L }
+                                             len = 3L
+                                             v = 633 }; { p = { y = 5L
+                                                                x = 1L }
+                                                          len = 3L
+                                                          v = 617 };
+     { p = { y = 6L
+             x = 8L }
+       len = 2L
+       v = 58 }; { p = { y = 7L
+                         x = 3L }
+                   len = 3L
+                   v = 592 }; { p = { y = 8L
+                                      x = 7L }
+                                len = 3L
+                                v = 755 }; { p = { y = 10L
+                                                   x = 2L }
+                                             len = 3L
+                                             v = 664 }; { p = { y = 10L
+                                                                x = 6L }
+                                                          len = 3L
+                                                          v = 598 }|]
+  symbols =
+   [|{ p = { y = 2L
+             x = 4L }
+       c = '*' }; { p = { y = 4L
+                          x = 7L }
+                    c = '#' }; { p = { y = 5L
+                                       x = 4L }
+                                 c = '*' }; { p = { y = 6L
+                                                    x = 6L }
+                                              c = '+' }; { p = { y = 9L
+                                                                 x = 4L }
+                                                           c = '$' };
+     { p = { y = 9L
+             x = 6L }
+       c = '*' }|] }

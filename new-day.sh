@@ -14,7 +14,7 @@ if [ -z "$YEAR" ] || [ -z $DAY ]; then
   exit 1
 fi
 
-MODULE_NAME="${REST// /}"
+MODULE_NAME="day${DAY}_${REST// /_}"
 FILE_NAME=$(echo "${REST// /_}" | tr “[:upper:]” “[:lower:]”)
 
 # echo "year: $YEAR"
