@@ -26,6 +26,8 @@
     <Compile Include="day07_tests.fs" />
     <Compile Include="day08_haunted_wasteland.fs" />
     <Compile Include="day08_tests.fs" />
+    <Compile Include="day09_mirage_maintenance.fs" />
+    <Compile Include="day09_tests.fs" />
     <!-- NEXT -->
   </ItemGroup>
 
