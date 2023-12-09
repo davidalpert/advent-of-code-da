@@ -162,7 +162,28 @@ module utils =
         else nextPrime (n+1)
     let sequence = 
         Seq.unfold(fun n -> Some(n, nextPrime n)) 1
-    
+
+  // https://blog.mikaellundin.name/2011/08/13/infinite-sequence-of-primes-by-sequence-expressions.html
+  module Prime2 =
+    let rec primes =
+      let isPrime number primes =
+        let sqrtn = float >> sqrt >> int
+        primes
+         |> Seq.takeWhile (fun n -> n <= (sqrtn number))
+         |> Seq.exists (fun n -> number % n = 0)
+       |> not
+
+      let rec primes' current =
+        seq {
+         if primes |> isPrime current then
+           yield current
+           yield! primes' (current + 2)
+        }
+      seq {
+        yield 2
+        yield! primes' 3
+      } |> Seq.cache
+
   // folding the recursive nextPrime into a where filter
   // against the infinite sequence of positive integers
   let allPrimes =
