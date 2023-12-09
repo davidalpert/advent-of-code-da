@@ -19,6 +19,9 @@ module day09_Mirage_Maintenance =
         else
             lastV + (nextValueFor diffs)
 
+    let nextValueForRev (vv:int32 array) =
+        vv |> Array.rev |> nextValueFor
+
     type OASISReport =
         {
             historicalValuesByIndex: Map<int,int32 array>
@@ -29,6 +32,14 @@ module day09_Mirage_Maintenance =
         member this.sumOfNextValues =
             this.historicalValuesByIndex.Values
             |> Seq.map nextValueFor
+            |> Seq.reduce (+)
+
+        member this.firstPrevValueForIndex (index: int) =
+            this.historicalValuesByIndex[index] |> nextValueForRev
+
+        member this.sumOfFirstPrevValues =
+            this.historicalValuesByIndex.Values
+            |> Seq.map nextValueForRev
             |> Seq.reduce (+)
 
     module parser =

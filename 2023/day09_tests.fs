@@ -41,16 +41,19 @@ module Day09 =
         // |> printfn "2023 - Day 09 - Part 1: %A"
         |> should equal 1980437560
 
-    // [<Fact>]
+    [<Fact>]
     let ``2023 - Day 09 - part 2 - example`` () =
-        exampleInput
-        // |> fromInput
-        // |> Array.length
-        |> should equal 0
+        let report = exampleInput |> parser.parseInput
 
-    // [<Fact>]
+        report.firstPrevValueForIndex 0 |> should equal -3
+        report.firstPrevValueForIndex 1 |> should equal  0
+        report.firstPrevValueForIndex 2 |> should equal  5
+
+        report.sumOfFirstPrevValues |> should equal 2
+
+    [<Fact>]
     let ``2023 - Day 09 - part 2`` () =
-        day09input
-        // |> fromInput
-        // |> Array.length
-        |> printfn "2023 - Day 09 - Part 2: %A"
+        let report = day09input |> parser.parseInput
+        report.sumOfFirstPrevValues
+        // |> printfn "2023 - Day 09 - Part 2: %A"
+        |> should equal 977
