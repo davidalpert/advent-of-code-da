@@ -1,10 +1,6 @@
 namespace AdventOfCode
 
 module Input =
-  let splitToTrimmedLines (input:string) =
-    input.Trim().Split("\n")
-    |> Seq.map (fun s -> s.Trim())
-
   let splitToTrimmedLinesVerbose (input:string) =
     printfn "input: %A" input
     printfn "input.trimmed: %A" (input.Trim())

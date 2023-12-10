@@ -3,6 +3,7 @@ namespace AdventOfCode
 module Day01 =
 
     open Input
+    open AdventOfCode.utils
     open Xunit
     open FsUnit.Xunit
     

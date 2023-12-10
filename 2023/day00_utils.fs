@@ -61,6 +61,26 @@ module utils =
     | l when l >= 2 -> (ss[0], ss[1])
     | _ -> failwithf $"firstPairFromArray requires at least 2 elements; found %d{ss |> Array.length}"
 
+  let splitToTrimmedLines (input:string) =
+    input.Trim().Split("\n")
+    |> Seq.map (fun s -> s.Trim())
+
+  let splitTo2DArray (transformer: char -> _) (str:string) =
+      str
+      |> splitToTrimmedLines
+      |> Array.ofSeq |> Seq.map (fun line -> line.ToCharArray())
+      |> array2D
+      |> Array2D.map transformer
+
+  // adapted from https://stackoverflow.com/a/49891028/8997 for array[row,col] i.e. array[y,x]
+  let find2D needle (arr: _ [,]) =
+    let rec go col row =
+          if   row >= arr.GetLength 0 then None
+          elif col >= arr.GetLength 1 then go 0 (row+1)
+          elif arr.[row,col] = needle   then Some (col, row)
+          else go (col+1) row
+    go 0 0
+
   let asSet (first, last) =
     seq { first .. last } |> Set.ofSeq
 
