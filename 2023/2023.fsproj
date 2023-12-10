@@ -28,6 +28,8 @@
     <Compile Include="day08_tests.fs" />
     <Compile Include="day09_mirage_maintenance.fs" />
     <Compile Include="day09_tests.fs" />
+    <Compile Include="day10_pipe_maze.fs" />
+    <Compile Include="day10_tests.fs" />
     <!-- NEXT -->
   </ItemGroup>
 
