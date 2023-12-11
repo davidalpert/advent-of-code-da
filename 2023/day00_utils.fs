@@ -81,6 +81,13 @@ module utils =
           else go (col+1) row
     go 0 0
 
+  let allPossiblePositions (arr: _ [,]) =
+      seq {
+        for row in 0 .. arr.GetLength 0 do
+          for col in 0 .. arr.GetLength 1 do
+            yield (row,col)
+      }
+
   let asSet (first, last) =
     seq { first .. last } |> Set.ofSeq
 

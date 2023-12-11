@@ -102,12 +102,141 @@ LJ.LJ
         // |> printfn "2023 - Day 10 - Part 1: %A"
         |> should equal 6897
 
-    // [<Fact>]
+    let part2example1input = """
+...........
+.S-------7.
+.|F-----7|.
+.||.....||.
+.||.....||.
+.|L-7.F-J|.
+.|..|.|..|.
+.L--J.L--J.
+...........
+"""
+
+    let part2example1Expected = ("""
+...........
+.S-------7.
+.|F-----7|.
+.||.....||.
+.||.....||.
+.|L-7.F-J|.
+.|II|.|II|.
+.L--J.L--J.
+...........
+""".Trim())
+
+    let part2example2input = """
+..........
+.S------7.
+.|F----7|.
+.||....||.
+.||....||.
+.|L-7F-J|.
+.|..||..|.
+.L--JL--J.
+..........
+"""
+
+    let part2example2expected = ("""
+..........
+.S------7.
+.|F----7|.
+.||....||.
+.||....||.
+.|L-7F-J|.
+.|II||II|.
+.L--JL--J.
+..........
+""".Trim())
+
+    let part2example3input = """
+.F----7F7F7F7F-7....
+.|F--7||||||||FJ....
+.||.FJ||||||||L7....
+FJL7L7LJLJ||LJ.L-7..
+L--J.L7...LJS7F-7L7.
+....F-J..F7FJ|L7L7L7
+....L7.F7||L7|.L7L7|
+.....|FJLJ|FJ|F7|.LJ
+....FJL-7.||.||||...
+....L---J.LJ.LJLJ...
+"""
+
+    let part2example3expected = ("""
+.F----7F7F7F7F-7....
+.|F--7||||||||FJ....
+.||.FJ||||||||L7....
+FJL7L7LJLJ||LJIL-7..
+L--J.L7IIILJS7F-7L7.
+....F-JIIF7FJ|L7L7L7
+....L7IF7||L7|IL7L7|
+.....|FJLJ|FJ|F7|.LJ
+....FJL-7.||.||||...
+....L---J.LJ.LJLJ...
+""".Trim())
+
+    let part2example4input = """
+FF7FSF7F7F7F7F7F---7
+L|LJ||||||||||||F--J
+FL-7LJLJ||||||LJL-77
+F--JF--7||LJLJ7F7FJ-
+L---JF-JLJ.||-FJLJJ7
+|F|F-JF---7F7-L7L|7|
+|FFJF7L7F-JF7|JL---7
+7-L-JL7||F7|L7F-7F7|
+L.L7LFJ|||||FJL7||LJ
+L7JLJL-JLJLJL--JLJ.L
+"""
+
+    let part2example4expected = ("""
+FF7FSF7F7F7F7F7F---7
+L|LJ||||||||||||F--J
+FL-7LJLJ||||||LJL-77
+F--JF--7||LJLJIF7FJ-
+L---JF-JLJIIIIFJLJJ7
+|F|F-JF---7IIIL7L|7|
+|FFJF7L7F-JF7IIL---7
+7-L-JL7||F7|L7F-7F7|
+L.L7LFJ|||||FJL7||LJ
+L7JLJL-JLJLJL--JLJ.L
+""".Trim())
+
+    [<Fact>]
     let ``2023 - Day 10 - part 2 - example`` () =
-        example1input
+        let map = part2example1input |> parser.parseInput
         // |> fromInput
         // |> Array.length
-        |> should equal 0
+        // map.walkHalfway
+        // |> Seq.map (fun (a,b) -> $"%s{a.ToString()}, %s{b.ToString()}") |> joinBy "\n"
+        // |> should equal null
+
+        map.walkToEdge westFrom map.startingPosition
+        |> Seq.map (fun p -> p.ToString()) |> joinBy "\n"
+        |> should equal ("""
+(1,1)
+(0,1)
+""".Trim())
+
+        map.walkToEdge eastFrom map.startingPosition
+        |> Seq.map (fun p -> p.ToString()) |> joinBy "\n"
+        |> should equal ("""
+(1,1)
+(2,1)
+(3,1)
+(4,1)
+(5,1)
+(6,1)
+(7,1)
+(8,1)
+(9,1)
+(10,1)
+""".Trim())
+
+        map.loopPositions
+        // |> Seq.map (fun p -> p.ToString())
+        // |> joinBy "\n"
+        // |> should equal null
 
     // [<Fact>]
     let ``2023 - Day 10 - part 2`` () =

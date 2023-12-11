@@ -42,6 +42,13 @@ module day10_Pipe_Maze =
             surroundingPositions (this.x, this.y)
             |> List.map Pos.fromTuple
 
+    // helper functions for use in compositions
+    type NextPosFn = Pos -> Pos
+    let northFrom (p:Pos) = p.north
+    let southFrom (p:Pos) = p.south
+    let eastFrom (p:Pos) = p.east
+    let westFrom (p:Pos) = p.west
+
     type Tile =
     | VerticalPipe     // | is a vertical pipe connecting north and south.
     | HorizontalPipe   // - is a horizontal pipe connecting east and west.
@@ -138,6 +145,34 @@ module day10_Pipe_Maze =
         
         member this.numberOfStepsToFarthestPoint =
             (this.walkHalfway |> Seq.length) - 1 // the walk is 0-indexed
+
+        member this.loopPositions =
+            let parts = this.walkHalfway |> List.ofSeq
+            List.concat [
+                parts |> List.map fst
+                parts |> List.map snd |> List.skip 1 |> List.rev |> List.skip 1
+            ]
+            |> Set
+
+        member this.possibleNestPositions =
+            Array2D.init (this.tiles.GetLength 0) (this.tiles.GetLength 1) (fun _ _ -> Ground)
+            |> allPossiblePositions |> Seq.map (fun (y,x) -> Pos.fromTuple(x,y)) |> Set
+            |> Set.difference (this.loopPositions)
+
+        member this.walkToEdge (nextStepFn:Pos -> Pos) (from:Pos) =
+            Seq.unfold (fun prev ->
+                if not (this.contains prev) then
+                    None
+                else
+                    let next = prev |> nextStepFn
+                    Some(prev, next)
+            ) (from)
+            |> Set
+
+        member this.numberOfTimesCrossingTheLoopWhileWalkingToEdge (nextStep:Pos -> Pos) (from:Pos) =
+            from |> this.walkToEdge nextStep
+            |> Set.intersect this.loopPositions
+            |> Set.count
 
     module parser =
         exception InvalidCharacterException of string
