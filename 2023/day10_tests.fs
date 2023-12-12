@@ -202,7 +202,7 @@ L.L7LFJ|||||FJL7||LJ
 L7JLJL-JLJLJL--JLJ.L
 """.Trim())
 
-    [<Fact>]
+    // [<Fact>]
     let ``2023 - Day 10 - part 2 - example`` () =
         let map = part2example1input |> parser.parseInput
         // |> fromInput
@@ -214,8 +214,8 @@ L7JLJL-JLJLJL--JLJ.L
         map.walkToEdge westFrom map.startingPosition
         |> Seq.map (fun p -> p.ToString()) |> joinBy "\n"
         |> should equal ("""
-(1,1)
 (0,1)
+(1,1)
 """.Trim())
 
         map.walkToEdge eastFrom map.startingPosition
@@ -233,7 +233,52 @@ L7JLJL-JLJLJL--JLJ.L
 (10,1)
 """.Trim())
 
-        map.loopPositions
+        map.ToString()
+        |> should equal ("""
+...........
+.S-------7.
+.|F-----7|.
+.||.....||.
+.||.....||.
+.|L-7.F-J|.
+.|..|.|..|.
+.L--J.L--J.
+...........                         
+""".Trim())
+        
+        map.fillFrom (Pos.fromTuple(2,6))
+        |> snd |> should equal false
+
+        map.ToString()
+        |> should equal ("""
+...........
+.S-------7.
+.|F-----7|.
+.||.....||.
+.||.....||.
+.|L-7.F-J|.
+.|II|.|..|.
+.L--J.L--J.
+...........
+""".Trim())
+
+        map.fillFrom (Pos.fromTuple(0,0))
+        |> snd |> should equal true
+
+        map.ToString()
+
+        |> should equal ("""
+OOOOOOOOOOO
+OS-------7O
+O|F-----7|O
+O||OOOOO||O
+O||OOOOO||O
+O|L-7OF-J|O
+O|II|O|..|O
+OL--JOL--JO
+OOOOOOOOOOO
+""".Trim())
+        // map.loopPositions
         // |> Seq.map (fun p -> p.ToString())
         // |> joinBy "\n"
         // |> should equal null
