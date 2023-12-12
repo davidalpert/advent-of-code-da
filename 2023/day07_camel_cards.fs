@@ -180,6 +180,8 @@ module day07_Camel_Cards =
             | :? Hand as h -> this.cards = h.cards && this.bid = h.bid
             | _ -> false
             
+        override this.GetHashCode() = this.str.GetHashCode()
+            
         interface IComparable with
             member this.CompareTo other =
                 match other with
