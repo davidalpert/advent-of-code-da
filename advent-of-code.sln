@@ -21,6 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".templates", ".templates", 
 	ProjectSection(SolutionItems) = preProject
 		.templates\code.fs = .templates\code.fs
 		.templates\tests.fs = .templates\tests.fs
+		.templates\input.fs = .templates\input.fs
 	EndProjectSection
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "2023", "2023\2023.fsproj", "{A26B0B8D-7A54-43F1-AE63-B7B0A37BA5D4}"
