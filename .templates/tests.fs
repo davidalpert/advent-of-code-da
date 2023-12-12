@@ -3,8 +3,8 @@ namespace AdventOfCode
 module DayDAY_NUMBER =
 
     open FSharp.Data.UnitSystems.SI.UnitNames
-    open AdventOfCode.Input
     open AdventOfCode.MODULE_NAME
+    open AdventOfCode.DayDAY_NUMBERInput
     open Xunit
     open FsUnit.Xunit
 

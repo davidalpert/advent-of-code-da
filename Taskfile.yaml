@@ -23,6 +23,7 @@ tasks:
     desc: generate a new F# module and test file for today
     cmds:
       - ./new-day.sh {{.YEAR}} {{.DAY}} {{.CLI_ARGS}}
+      - task: autotest
 
   restore:
     desc: restore packages

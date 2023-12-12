@@ -1,5 +1,5 @@
 namespace AdventOfCode
 
-module Input =
+module DayDAY_NUMBERInput =
   let dayDAY_NUMBERinput = """
 """
