@@ -3,6 +3,8 @@ namespace AdventOfCode
 open System
 open System.Threading.Tasks
 
+#nowarn "40"
+
 module DummyModuleOnWhichToAttachAssemblyAttribute =
     open ApprovalTests.Reporters;
 
