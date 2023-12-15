@@ -236,3 +236,37 @@ module utils =
     |> Set.unionMany
     |> Seq.map int64 // make sure we don't overflow while reducing
     |> Seq.reduce (*)
+
+module Grid2D =
+    let north y = y - 1 // towards the top of the map
+    let south y = y + 1 // towards the bottom of the map
+    let east  x = x + 1 // to the right
+    let west  x = x - 1 // to the left
+
+    let surroundingPositions (x,y) =
+        [
+            west x,north y; x,north y; east x,north y;
+            west x,      y;            east x,      y;
+            west x,south y; x,south y; east x,south y;
+        ]
+
+    type Pos = { x:int; y:int }
+    with
+        override this.ToString() = $"(%d{this.x},%d{this.y})"
+        static member fromTuple (p:int*int) = { x = fst p; y = snd p }
+
+        member this.north = { this with y = north this.y }
+        member this.south = { this with y = south this.y }
+        member this.east  = { this with x = east  this.x }
+        member this.west  = { this with x = west  this.x }
+
+        member this.surroundingPos =
+            surroundingPositions (this.x, this.y)
+            |> List.map Pos.fromTuple
+
+    // helper functions for use in compositions
+    type NextPosFn = Pos -> Pos
+    let northFrom (p:Pos) = p.north
+    let southFrom (p:Pos) = p.south
+    let eastFrom (p:Pos) = p.east
+    let westFrom (p:Pos) = p.west

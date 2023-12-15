@@ -10,45 +10,10 @@ module day10_Pipe_Maze =
     open System.Collections.Generic
     open AdventOfCode.Input
     open AdventOfCode.utils
+    open AdventOfCode.Grid2D
     open FSharp.Data.UnitSystems.SI.UnitNames
     open FParsec
     open FParsec.Pipes
-
-    let surroundingPositions (x,y) =
-        [
-            x-1,y-1; x,y-1; x+1,y-1;
-            x-1,y  ;        x+1,y  ;
-            x-1,y+1; x,y+1; x+1,y+1;
-        ]
-    
-    let north y = y - 1 // towards the top of the map
-    let south y = y + 1 // towards the bottom of the map
-    let east  x = x + 1 // to the right
-    let west  x = x - 1 // to the left
-
-    type Pos = {
-        x: int
-        y: int
-    }
-    with
-        override this.ToString() = $"(%d{this.x},%d{this.y})"
-        static member fromTuple (p:int*int) = { x = fst p; y = snd p }
-
-        member this.north = { this with y = north this.y }
-        member this.south = { this with y = south this.y }
-        member this.east  = { this with x = east  this.x }
-        member this.west  = { this with x = west  this.x }
-        
-        member this.surroundingPos =
-            surroundingPositions (this.x, this.y)
-            |> List.map Pos.fromTuple
-
-    // helper functions for use in compositions
-    type NextPosFn = Pos -> Pos
-    let northFrom (p:Pos) = p.north
-    let southFrom (p:Pos) = p.south
-    let eastFrom (p:Pos) = p.east
-    let westFrom (p:Pos) = p.west
 
     type Tile =
     | VerticalPipe     // | is a vertical pipe connecting north and south.

@@ -8,6 +8,7 @@ module Day10 =
     open FSharp.Data.UnitSystems.SI.UnitNames
     open AdventOfCode.Input
     open AdventOfCode.utils
+    open AdventOfCode.Grid2D
     open AdventOfCode.day10_Pipe_Maze
     open Xunit
     open FsUnit.Xunit
