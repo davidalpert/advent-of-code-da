@@ -9,6 +9,9 @@
     <ItemGroup>
         <Compile Include="day00_input.fs" />
         <Compile Include="day00_utils.fs" />
+        <Compile Include="day01_input.fs" />
+        <Compile Include="day01_historian_hysteria.fs" />
+        <Compile Include="day01_tests.fs" />
     </ItemGroup>
 
     <ItemGroup>

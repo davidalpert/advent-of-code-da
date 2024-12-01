@@ -65,7 +65,7 @@ module utils =
 
   let splitToTrimmedLines (input:string) =
     input.Trim().Split("\n")
-    |> Seq.map (fun s -> s.Trim())
+    |> Seq.map (_.Trim())
 
   let splitTo2DArray (transformer: char -> _) (str:string) =
       str
