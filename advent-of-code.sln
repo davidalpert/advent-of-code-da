@@ -26,6 +26,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".templates", ".templates", 
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "2023", "2023\2023.fsproj", "{A26B0B8D-7A54-43F1-AE63-B7B0A37BA5D4}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "2024", "2024\2024.fsproj", "{DB8C08E9-54C3-49E3-9CD1-E957C232DE8A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{A26B0B8D-7A54-43F1-AE63-B7B0A37BA5D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A26B0B8D-7A54-43F1-AE63-B7B0A37BA5D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A26B0B8D-7A54-43F1-AE63-B7B0A37BA5D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB8C08E9-54C3-49E3-9CD1-E957C232DE8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB8C08E9-54C3-49E3-9CD1-E957C232DE8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB8C08E9-54C3-49E3-9CD1-E957C232DE8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB8C08E9-54C3-49E3-9CD1-E957C232DE8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
