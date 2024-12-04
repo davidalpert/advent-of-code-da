@@ -12,6 +12,9 @@
         <Compile Include="day01_input.fs" />
         <Compile Include="day01_historian_hysteria.fs" />
         <Compile Include="day01_tests.fs" />
+        <Compile Include="day02_input.fs" />
+        <Compile Include="day02_red-nosed_reports.fs" />
+        <Compile Include="day02_tests.fs" />
     </ItemGroup>
 
     <ItemGroup>
