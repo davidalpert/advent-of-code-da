@@ -15,6 +15,9 @@
         <Compile Include="day02_input.fs" />
         <Compile Include="day02_red-nosed_reports.fs" />
         <Compile Include="day02_tests.fs" />
+        <Compile Include="day03_input.fs" />
+        <Compile Include="day03_mull_it_over.fs" />
+        <Compile Include="day03_tests.fs" />
     </ItemGroup>
 
     <ItemGroup>
