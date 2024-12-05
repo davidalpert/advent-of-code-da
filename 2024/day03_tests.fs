@@ -25,16 +25,21 @@ module Day03 =
         |> should equal 156388521
         // |> printfn "2024 - Day 03 - Part 1: %A"
 
-    // [<Fact>]
-    let ``2024 - Day 03 - part 2 - example`` () =
-        exampleInput
-        // |> fromInput
-        // |> Array.length
-        |> should equal 0
+    let part2ExampleInput =
+        "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"
+      // mul(2,4)            don't() --------            -----------do()-mul(8,5) "
 
-    // [<Fact>]
+    [<Fact>]
+    let ``2024 - Day 03 - part 2 - example`` () =
+        part2ExampleInput
+        |> part2Parser.parseInput
+        |> addUpResults
+        |> should equal 48
+
+    [<Fact>]
     let ``2024 - Day 03 - part 2`` () =
         day03input
-        // |> fromInput
-        // |> Array.length
-        |> printfn "2024 - Day 03 - Part 2: %A"
+        |> part2Parser.parseInput
+        |> addUpResults
+        |> should equal 75920122
+        // |> printfn "2024 - Day 03 - Part 2: %A"
