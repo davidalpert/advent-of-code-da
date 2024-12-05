@@ -39,16 +39,19 @@ MXMXAXMASX
         |> should equal 2406
         // |> printfn "2024 - Day 04 - Part 1: %A"
 
-    // [<Fact>]
+    [<Fact>]
     let ``2024 - Day 04 - part 2 - example`` () =
         exampleInput
-        // |> fromInput
-        // |> Array.length
-        |> should equal 0
+        |> fromInput
+        |> part2.findInstances
+        |> Array.length
+        |> should equal 9
 
-    // [<Fact>]
+    [<Fact>]
     let ``2024 - Day 04 - part 2`` () =
         day04input
-        // |> fromInput
-        // |> Array.length
-        |> printfn "2024 - Day 04 - Part 2: %A"
+        |> fromInput
+        |> part2.findInstances
+        |> Array.length
+        |> should equal 1807
+        // |> printfn "2024 - Day 04 - Part 2: %A"
