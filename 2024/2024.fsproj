@@ -21,6 +21,9 @@
         <Compile Include="day04_input.fs" />
         <Compile Include="day04_ceres_search.fs" />
         <Compile Include="day04_tests.fs" />
+        <Compile Include="day05_input.fs" />
+        <Compile Include="day05_print_queue.fs" />
+        <Compile Include="day05_tests.fs" />
     </ItemGroup>
 
     <ItemGroup>
